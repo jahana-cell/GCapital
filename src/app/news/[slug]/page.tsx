@@ -1,92 +1,135 @@
-// src/app/news/[slug]/page.tsx
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { dbAdmin } from "@/lib/firebase-admin";
+import NewsArticleClientPage from "./client-page";
 
-import type { Metadata } from 'next';
-import NewsArticleClientPage from './client-page';
-import { dbAdmin } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
-import type { Story } from '@/app/news/stories-data';
+// ✅ Force dynamic rendering so new articles appear instantly
+export const dynamic = "force-dynamic";
 
-// Force dynamic to ensure fresh data
-export const dynamic = 'force-dynamic';
-
-type Props = {
-  params: Promise<{ slug: string }> // Params is now a Promise in Next.js 15+
+// --- TYPE DEFINITION ---
+export interface Story {
+  id: string;
+  slug: string;
+  title: string;
+  description: string;
+  category: string;
+  image: string;
+  date: string;
+  author: string;
+  content: string;
+  status: "Published" | "Coming Soon" | undefined;
+  isFeatured: boolean;
+  imagePosition: "left" | "right" | "center";
 }
 
-async function getStoryData(slug: string): Promise<Story | null> {
-  const cleanSlug = decodeURIComponent(slug).trim();
-  
-  if (!dbAdmin) {
-    console.error("Admin DB not initialized");
-    return null;
+// --- HELPER: Sanitize Firestore Data ---
+function sanitizeStory(doc: any): Story {
+  const data = doc.data() || {};
+
+  let dateStr = new Date().toISOString();
+  if (data.date) {
+    if (typeof data.date.toDate === "function") {
+      dateStr = data.date.toDate().toISOString();
+    } else if (data.date instanceof Date) {
+      dateStr = data.date.toISOString();
+    } else {
+      dateStr = String(data.date);
+    }
   }
+
+  const rawStatus = data.status || "Published";
+  const validStatus = (rawStatus === "Coming Soon") ? "Coming Soon" : "Published";
+
+  return {
+    id: doc.id,
+    slug: data.slug || doc.id,
+    title: data.title || "Untitled Story",
+    description: data.description || "",
+    category: data.category || "News",
+    image: data.image || "",
+    date: dateStr,
+    author: data.author || "GrowShare Capital",
+    content: data.content || "",
+    status: validStatus,
+    isFeatured: !!data.isFeatured,
+    imagePosition: data.imagePosition || "center",
+  } as Story;
+}
+
+// --- SERVER FUNCTION: Fetch Single Article ---
+async function getStory(slug: string): Promise<Story | null> {
+  // Safety Check: If slug is missing or DB is down, return null (don't crash)
+  if (!slug || !dbAdmin) return null;
 
   try {
-    // Strategy 1: Search by ID
-    const docRef = dbAdmin.collection("stories").doc(cleanSlug);
-    const docSnap = await docRef.get();
+    const storiesRef = dbAdmin.collection("stories");
+    
+    // Query by 'slug' field
+    const q = storiesRef.where("slug", "==", slug).limit(1);
+    const snapshot = await q.get();
 
-    if (docSnap.exists) {
-       const data = docSnap.data()!;
-       return { 
-         id: docSnap.id, 
-         slug: data.slug || docSnap.id, 
-         ...data, 
-         date: data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date().toISOString() 
-       } as Story;
+    if (snapshot.empty) {
+      // Fallback: Try querying by document ID just in case
+      const docRef = storiesRef.doc(slug);
+      const docSnap = await docRef.get();
+      if (docSnap.exists) {
+        return sanitizeStory(docSnap);
+      }
+      return null;
     }
 
-    // Strategy 2: Fallback to slug field
-    const q = dbAdmin.collection("stories").where("slug", "==", cleanSlug);
-    const querySnap = await q.get();
-
-    if (!querySnap.empty) {
-       const docSnap = querySnap.docs[0];
-       const data = docSnap.data();
-       return { 
-         id: docSnap.id, 
-         slug: data.slug || docSnap.id, 
-         ...data, 
-         date: data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date().toISOString() 
-       } as Story;
-    }
-
-    return null;
+    return sanitizeStory(snapshot.docs[0]);
   } catch (error) {
-    console.error(`Fetch failed for slug "${slug}":`, error);
+    console.error(`❌ Error fetching story [${slug}]:`, error);
     return null;
   }
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // 1. Await params first!
-  const { slug } = await params;
+// --- TYPE FOR PAGE PROPS (Next.js 16) ---
+type Props = {
+  params: Promise<{ slug: string }>;
+};
 
-  if (process.env.NEXT_PHASE === 'phase-production-build') {
-      return { title: 'News Article' }; 
+// --- SEO: Generate Metadata ---
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  // ✅ NEXT.JS 16 FIX: Await params
+  const { slug } = await params;
+  
+  if (!slug) return { title: "Article Not Found" };
+
+  const story = await getStory(slug);
+
+  if (!story) {
+    return {
+      title: "Article Not Found | GrowShare Capital",
+    };
   }
 
-  const story = await getStoryData(slug);
-  if (!story) return { title: 'Loading Article...' };
-  
   return {
-    title: story.title,
+    title: `${story.title} | GrowShare Capital`,
     description: story.description,
     openGraph: {
       title: story.title,
       description: story.description,
-      type: 'article',
-      publishedTime: story.date,
-      images: [{ url: story.image }],
+      images: story.image ? [story.image] : [],
     },
   };
 }
 
+// --- MAIN PAGE COMPONENT ---
 export default async function NewsArticlePage({ params }: Props) {
-  // 1. Await params first!
+  // ✅ NEXT.JS 16 FIX: Await params
   const { slug } = await params;
-  
-  const story = await getStoryData(slug);
-  
+
+  if (!slug) {
+      notFound();
+  }
+
+  const story = await getStory(slug);
+
+  if (!story) {
+    notFound();
+  }
+
   return <NewsArticleClientPage initialStory={story} slug={slug} />;
 }

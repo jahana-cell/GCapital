@@ -4,19 +4,23 @@ import { getAuth, Auth } from "firebase/auth";
 import { getFirestore, Firestore } from "firebase/firestore";
 import { getStorage, FirebaseStorage } from "firebase/storage";
 import { initializeAppCheck, ReCaptchaV3Provider, AppCheck } from "firebase/app-check";
+import { getAnalytics, Analytics } from "firebase/analytics";
 
 /**
  * Firebase Configuration
- * authDomain is updated to your custom domain for professional branding.
+ * Updated to match your exact Firebase Console settings.
  */
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  // ✅ Professional domain branding
-  authDomain: "growsharecapital.com", 
+  // ✅ Updated to default domain to match your console screenshot
+  authDomain: "growshare-capital.firebaseapp.com",
   projectId: "growshare-capital",
   storageBucket: "growshare-capital.firebasestorage.app",
   messagingSenderId: "655144442348",
-  appId: "1:655144442348:web:5316340277259160538a7c"
+  // ✅ CRITICAL FIX: Updated App ID from your screenshot
+  appId: "1:655144442348:web:7f6f658c4139777fb548c9",
+  // ✅ Added Measurement ID from your screenshot
+  measurementId: "G-GWP7H9EE1P"
 };
 
 // Singleton instances
@@ -24,6 +28,7 @@ let app: FirebaseApp;
 let auth: Auth;
 let db: Firestore;
 let storage: FirebaseStorage;
+let analytics: Analytics | null = null;
 let appCheck: AppCheck | null = null;
 
 /**
@@ -46,12 +51,21 @@ if (typeof window === 'undefined') {
         db = getFirestore(app);
         storage = getStorage(app);
 
+        // Initialize Analytics safely (it only works in browser)
+        if (typeof window !== 'undefined') {
+             try {
+                 analytics = getAnalytics(app);
+             } catch (e) {
+                 console.warn("Analytics failed to init:", e);
+             }
+        }
+
         // ✅ APP CHECK LOGIC (Fixed with Hardcoded Token)
         const reCaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
         
         if (reCaptchaKey && !appCheck) {
             // 1. Force the Debug Token in Development
-            // This stops the "400 error" by telling Firebase to trust this specific token
+            // This stops the "403 Forbidden" errors on Cloud Workstations
             if (process.env.NODE_ENV === 'development') {
                 // @ts-ignore
                 self.FIREBASE_APPCHECK_DEBUG_TOKEN = "a087796d-3465-4f36-9769-952467575191";
@@ -77,4 +91,4 @@ if (typeof window === 'undefined') {
     }
 }
 
-export { app, auth, db, storage, appCheck };
+export { app, auth, db, storage, appCheck, analytics };
