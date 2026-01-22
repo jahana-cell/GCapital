@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, Variants } from "framer-motion"; // <--- Added Variants here
 import { ArrowRight, Building2, Wheat, HeartPulse, ShieldCheck, Globe } from "lucide-react";
 import type { Story } from '@/app/news/stories-data'; 
 import { formatInTimeZone } from 'date-fns-tz';
@@ -12,15 +12,32 @@ import { db } from '@/lib/firebase';
 import LeadershipSection from '@/components/sections/leadership-section';
 import OurPartners from '@/components/sections/our-partners';
 
+// --- SAFETY CONFIG ---
+const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop";
+
 // --- ANIMATION CONFIG ---
-const fadeUp = {
+// We explicitly type these as 'Variants' to fix the TypeScript error
+const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
-  show: { opacity: 1, y: 0, transition: { duration: 1.2, ease: [0.22, 1, 0.36, 1] } }
+  show: { 
+    opacity: 1, 
+    y: 0, 
+    transition: { 
+      duration: 1.2, 
+      ease: [0.22, 1, 0.36, 1] // TypeScript now knows this is a valid bezier curve
+    } 
+  }
 };
 
-const staggerContainer = {
+const staggerContainer: Variants = {
   hidden: { opacity: 0 },
-  show: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.3 } }
+  show: { 
+    opacity: 1, 
+    transition: { 
+      staggerChildren: 0.15, 
+      delayChildren: 0.3 
+    } 
+  }
 };
 
 // --- LUXURY CONTENT CONFIG ---
@@ -269,14 +286,14 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
 
                 {/* Image hides on small mobile or stacks below */}
                 <motion.div className="relative h-[400px] md:h-[600px] w-full lg:w-[90%] lg:ml-auto mt-8 lg:mt-0">
-                     <Image
+                      <Image
                         src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=1600"
                         alt="Meeting"
                         fill
                         sizes="(max-width: 1024px) 100vw, 45vw"
                         className="object-cover opacity-50 grayscale"
-                     />
-                     <div className="absolute -bottom-6 -left-6 md:-bottom-10 md:-left-10 w-24 h-24 md:w-40 md:h-40 border border-white/20" />
+                      />
+                      <div className="absolute -bottom-6 -left-6 md:-bottom-10 md:-left-10 w-24 h-24 md:w-40 md:h-40 border border-white/20" />
                 </motion.div>
             </div>
         </section>
@@ -295,7 +312,14 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-x-8 gap-y-12 md:gap-y-16">
                     {loading ? (
                         <p className="text-neutral-400 text-sm tracking-widest uppercase">Loading Journal...</p>
-                    ) : recentStories.map((story, i) => (
+                    ) : recentStories.map((story, i) => {
+                        // --- SAFETY CHECKS ---
+                        // Ensure we have fallback data so the page never crashes
+                        const safeImage = story.image || FALLBACK_IMAGE;
+                        const safeTitle = story.title || "Untitled Article";
+                        const safeCategory = story.category || "News";
+
+                        return (
                         <Link key={story.id} href={`/news/${story.slug}`} className="group block h-full">
                             <motion.article 
                                 initial={{ opacity: 0 }}
@@ -305,7 +329,7 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                                 className="flex flex-col h-full border-t border-neutral-200 pt-6 hover:border-black transition-colors duration-500"
                             >
                                 <div className="flex justify-between items-center mb-4 md:mb-6">
-                                    <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-neutral-900 truncate max-w-[120px]">{story.category}</span>
+                                    <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-neutral-900 truncate max-w-[120px]">{safeCategory}</span>
                                     <span className="text-[9px] tracking-[0.1em] uppercase text-neutral-400">
                                         <FormattedDate dateValue={story.date} />
                                     </span>
@@ -313,8 +337,8 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                                 
                                 <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100 mb-6 w-full md:grayscale md:group-hover:grayscale-0 transition-all duration-700">
                                     <Image
-                                        src={story.image}
-                                        alt={story.title}
+                                        src={safeImage}
+                                        alt={safeTitle}
                                         fill
                                         sizes="(max-width: 768px) 100vw, 33vw"
                                         className="object-cover transform group-hover:scale-105 transition-transform duration-[1.5s]"
@@ -322,11 +346,11 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                                 </div>
 
                                 <h3 className="text-xl md:text-2xl font-serif leading-tight text-[#1a1a1a] group-hover:underline underline-offset-4 decoration-1 decoration-neutral-300">
-                                    {story.title}
+                                    {safeTitle}
                                 </h3>
                             </motion.article>
                         </Link>
-                    ))}
+                    )})}
                     
                     {!loading && recentStories.length === 0 && (
                         <div className="col-span-3 py-12 text-center text-neutral-400 font-light italic">

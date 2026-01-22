@@ -1,78 +1,53 @@
-// /src/lib/firebase.ts
+// src/lib/firebase.ts
 import { initializeApp, getApps, getApp, FirebaseApp } from "firebase/app";
-import { getFirestore, Firestore } from "firebase/firestore";
-import { getFunctions, Functions } from "firebase/functions";
 import { getAuth, Auth } from "firebase/auth";
-import { AppCheck, initializeAppCheck, ReCaptchaV3Provider } from "firebase/app-check";
-import { getStorage } from "firebase/storage";
+import { getFirestore, Firestore } from "firebase/firestore";
+import { getStorage, FirebaseStorage } from "firebase/storage";
+import { initializeAppCheck, ReCaptchaV3Provider, AppCheck } from "firebase/app-check";
 
-// --- Augment Window Interface ---
-declare global {
-  interface Window {
-    FIREBASE_APPCHECK_INITIALIZED?: boolean;
-  }
-}
-
-// --- Firebase Config ---
-export const firebaseConfig = {
+const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  authDomain: "growshare-capital.firebaseapp.com",
+  projectId: "growshare-capital",
+  storageBucket: "growshare-capital.firebasestorage.app",
+  messagingSenderId: "655144442348",
+  appId: "1:655144442348:web:5316340277259160538a7c"
 };
 
-// --- Conditionally Initialize Firebase on the Client ---
+// Singleton variables
 let app: FirebaseApp;
-let db: Firestore;
-let functions: Functions;
 let auth: Auth;
-let storage: any;
-let appCheck: AppCheck | undefined;
+let db: Firestore;
+let storage: FirebaseStorage;
+let appCheck: AppCheck | null = null; // Initialize as null for SSR
 
-// This block ensures Firebase is only initialized in the browser where 'window' is defined
-// and the necessary API key is present. It prevents server-side build errors.
-if (typeof window !== 'undefined' && firebaseConfig.apiKey) {
-  if (getApps().length === 0) {
-    app = initializeApp(firebaseConfig);
-  } else {
-    app = getApp();
-  }
-
-  db = getFirestore(app);
-  functions = getFunctions(app, "nam5");
-  auth = getAuth(app);
-  storage = getStorage(app);
-
-  if (!window.FIREBASE_APPCHECK_INITIALIZED && app.options.appId) {
-    try {
-      appCheck = initializeAppCheck(app, {
-        provider: new ReCaptchaV3Provider("6Ld0k_UrAAAAAAkeU8nhe6nn2haxSbOeXPVRm407"),
-        isTokenAutoRefreshEnabled: true,
-      });
-      window.FIREBASE_APPCHECK_INITIALIZED = true;
-    } catch (e) {
-      console.info("Firebase App Check failed to initialize or running in a non-browser environment.", e);
-    }
-  }
+if (typeof window === 'undefined') {
+    // ⚠️ SERVER-SIDE (SSR/Build)
+    // Create dummy objects to prevent import crashes during 'next build'
+    app = {} as FirebaseApp;
+    auth = {} as Auth;
+    db = {} as Firestore;
+    storage = {} as FirebaseStorage;
 } else {
-    // If on the server or config is missing, we provide mock/empty objects
-    // to prevent errors when components import these services.
-    // @ts-ignore
-    app = {}; 
-    // @ts-ignore
-    db = {}; 
-    // @ts-ignore
-    functions = {};
-    // @ts-ignore
-    auth = {};
-    // @ts-ignore
-    storage = {};
+    // ✅ CLIENT-SIDE (Browser)
+    app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
+    auth = getAuth(app);
+    db = getFirestore(app);
+    storage = getStorage(app);
+
+    // Initialize App Check only if a Site Key exists
+    const reCaptchaKey = process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY;
+    if (reCaptchaKey) {
+        try {
+            appCheck = initializeAppCheck(app, {
+                provider: new ReCaptchaV3Provider(reCaptchaKey),
+                isTokenAutoRefreshEnabled: true
+            });
+        } catch (e) {
+            console.warn("App Check initialization skipped.");
+        }
+    }
 }
 
-// --- EXPORTS ---
-// @ts-ignore
-export { app, db, functions, auth, storage, appCheck };
-export type { Firestore };
+// Export appCheck so auth-context.tsx can find it
+export { app, auth, db, storage, appCheck };

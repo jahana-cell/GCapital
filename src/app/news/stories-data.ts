@@ -1,4 +1,3 @@
-
 import type { Timestamp } from "firebase/firestore";
 
 export type Story = {
@@ -10,7 +9,7 @@ export type Story = {
     category: string;
     author: string;
     image: string;
-    aiHint: string;
+    aiHint?: string;       // <--- Made Optional (Safe)
     imagePosition?: string;
     videoUrl?: string;
     pdfUrl?: string;
@@ -20,7 +19,7 @@ export type Story = {
     isFeatured?: boolean;
 };
 
-// This array is now restored to be the source of truth for the seeder.
+// This array is the source of truth for the seeder.
 export const storiesData: Omit<Story, 'id' | 'slug'>[] = [
     {
     title: 'GrowShare Capital Appoints Ryan Kelley to Lead Operations & Strategy',

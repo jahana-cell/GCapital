@@ -6,23 +6,23 @@ import { dbAdmin } from '@/lib/firebase-admin';
 import { Timestamp } from 'firebase-admin/firestore';
 import type { Story } from '@/app/news/stories-data';
 
-type Props = {
-  params: { slug: string }
-}
+// Force dynamic to ensure fresh data
+export const dynamic = 'force-dynamic';
 
-// 2. Ensure we do NOT export generateStaticParams
-// (Double check that this function is NOT present in this file)
+type Props = {
+  params: Promise<{ slug: string }> // Params is now a Promise in Next.js 15+
+}
 
 async function getStoryData(slug: string): Promise<Story | null> {
   const cleanSlug = decodeURIComponent(slug).trim();
   
   if (!dbAdmin) {
-    console.error("Admin DB not initialized for story page");
+    console.error("Admin DB not initialized");
     return null;
   }
 
   try {
-    // Strategy 1: Try Fetching by ID
+    // Strategy 1: Search by ID
     const docRef = dbAdmin.collection("stories").doc(cleanSlug);
     const docSnap = await docRef.get();
 
@@ -36,7 +36,7 @@ async function getStoryData(slug: string): Promise<Story | null> {
        } as Story;
     }
 
-    // Strategy 2: Fallback to querying the slug field
+    // Strategy 2: Fallback to slug field
     const q = dbAdmin.collection("stories").where("slug", "==", cleanSlug);
     const querySnap = await q.get();
 
@@ -52,21 +52,21 @@ async function getStoryData(slug: string): Promise<Story | null> {
     }
 
     return null;
-
   } catch (error) {
-    console.error(`Server fetch failed for slug "${slug}":`, error);
+    console.error(`Fetch failed for slug "${slug}":`, error);
     return null;
   }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // During build time, Next.js might try to run this.
-  // We add a quick check to prevent heavy DB calls if the build environment is restricted.
+  // 1. Await params first!
+  const { slug } = await params;
+
   if (process.env.NEXT_PHASE === 'phase-production-build') {
       return { title: 'News Article' }; 
   }
 
-  const story = await getStoryData(params.slug);
+  const story = await getStoryData(slug);
   if (!story) return { title: 'Loading Article...' };
   
   return {
@@ -77,20 +77,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: story.description,
       type: 'article',
       publishedTime: story.date,
-      images: [
-        {
-          url: story.image,
-          width: 1200,
-          height: 630,
-          alt: story.title,
-        },
-      ],
+      images: [{ url: story.image }],
     },
   };
 }
 
 export default async function NewsArticlePage({ params }: Props) {
-  const story = await getStoryData(params.slug);
-  // Pass the slug so the client knows what to fetch if 'story' is null
-  return <NewsArticleClientPage initialStory={story} slug={params.slug} />;
+  // 1. Await params first!
+  const { slug } = await params;
+  
+  const story = await getStoryData(slug);
+  
+  return <NewsArticleClientPage initialStory={story} slug={slug} />;
 }
