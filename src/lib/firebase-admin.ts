@@ -1,9 +1,8 @@
-// src/lib/firebase-admin.ts
 import "server-only";
 import admin from "firebase-admin";
 import { getFirestore } from "firebase-admin/firestore";
 
-// Define a global interface to prevent TypeScript errors
+// Define a global interface to prevent TypeScript errors/re-init on reload
 declare global {
   var firebaseAdminApp: admin.app.App | undefined;
 }
@@ -17,6 +16,7 @@ if (!global.firebaseAdminApp) {
   if (serviceAccountKey) {
     // A. Use provided Service Account (Local Dev)
     try {
+      // Clean up formatting issues (common with copy-pasting keys)
       const cleanKey = serviceAccountKey.replace(/\\n/g, '\n');
       const serviceAccount = JSON.parse(cleanKey);
       
@@ -49,7 +49,12 @@ if (!global.firebaseAdminApp) {
 // 2. Get Firestore Database
 const dbAdmin = getFirestore(app);
 
-// 3. Prevent "undefined" errors in queries
-dbAdmin.settings({ ignoreUndefinedProperties: true });
+// 3. Prevent "Already Initialized" Crashes during Build
+try {
+    dbAdmin.settings({ ignoreUndefinedProperties: true });
+} catch (error) {
+    // If settings are already applied, ignore the error.
+    // This is common during Next.js builds which import files multiple times.
+}
 
 export { dbAdmin };
