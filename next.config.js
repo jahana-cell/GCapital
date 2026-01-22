@@ -36,9 +36,6 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   
-  // 3. REMOVED: 'eslint' config here is invalid in Next.js 16.
-  // (ESLint ignores are now handled in the .eslintrc.json file instead).
-
   async headers() {
     return [
       {
@@ -49,6 +46,9 @@ const nextConfig = {
   },
 
   images: {
+    // 🛑 CRITICAL FIX: Disables image optimization to prevent server crashes on Cloud Functions
+    unoptimized: true,
+    
     remotePatterns: [
       {
         protocol: 'https',
@@ -220,7 +220,6 @@ const nextConfig = {
         destination: '/services/global-trade',
         permanent: true,
       },
-      // 🚀 NEW ADDITION BELOW:
       {
         source: '/skylinedb3',
         destination: '/services/skylinedb3',
