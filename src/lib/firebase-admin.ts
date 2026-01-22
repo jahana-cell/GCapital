@@ -10,11 +10,9 @@ let adminAuth: admin.auth.Auth | null = null;
 if (!admin.apps.length) {
   try {
     // This configuration is automatically populated by Firebase App Hosting.
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-      // FIX: Removed the incorrect backslash before the template literal
-      databaseURL: `https://${process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID}.firebaseio.com`,
-    });
+    // By calling initializeApp() without arguments, the SDK uses the
+    // GOOGLE_APPLICATION_CREDENTIALS environment variable to auto-configure.
+    admin.initializeApp();
     console.log("Firebase Admin SDK initialized successfully.");
     dbAdmin = admin.firestore();
     adminAuth = admin.auth();

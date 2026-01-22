@@ -1,4 +1,3 @@
-
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
@@ -9,6 +8,7 @@ import {
   signOut as firebaseSignOut,
   updateProfile,
   User,
+  Auth
 } from 'firebase/auth';
 import { auth, appCheck } from '@/lib/firebase';
 import { getToken } from 'firebase/app-check';
@@ -60,7 +60,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [appCheckReady, setAppCheckReady] = useState(false);
 
   useEffect(() => {
-    // This logic does not depend on Firebase services and can run anywhere.
+    // This logic checks for App Check availability and runs only in the browser.
     if (typeof window !== 'undefined' && appCheck) {
       const checkAppCheck = async () => {
           try {
@@ -68,20 +68,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
             setAppCheckReady(true);
           } catch (error) {
             console.error("App Check failed to initialize:", error);
+            // Even if it fails, we set ready to true so the app doesn't hang forever
             setAppCheckReady(true);
           }
       };
       checkAppCheck();
     } else {
+        // If App Check isn't active (or on server), we proceed immediately.
         setAppCheckReady(true);
     }
   }, []);
 
   useEffect(() => {
-    // CRITICAL FIX: If auth is null (we're on the server) or App Check isn't ready,
-    // do not attempt to call onAuthStateChanged.
-    if (!auth || !appCheckReady) {
-      setLoading(false); // Ensure loading is finished
+    // CRITICAL FIX: 
+    // 1. We check '!auth' to handle null cases.
+    // 2. We check '!auth.onAuthStateChanged' to handle the empty "dummy" object {} 
+    //    that we created in lib/firebase.ts to prevent build crashes.
+    // 3. We wait for appCheckReady to ensure security.
+    if (!auth || !auth.onAuthStateChanged || !appCheckReady) {
+      // If we are on the server (build time), stop loading immediately so pages can render.
+      if (typeof window === 'undefined') {
+          setLoading(false); 
+      }
       return;
     }
 
@@ -118,7 +126,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => unsubscribe();
-  }, [appCheckReady]); // Re-run when App Check becomes ready
+  }, [appCheckReady]); 
 
   const signIn = (email: string, pass: string) => {
     if (!auth) return Promise.reject(new Error("Firebase Auth is not available."));
@@ -128,7 +136,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signUp = async (email: string, pass: string, displayName: string) => {
     if (!auth) return Promise.reject(new Error("Firebase Auth is not available."));
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
-    await updateProfile(userCredential.user, { displayName });
+    if (userCredential.user) {
+        await updateProfile(userCredential.user, { displayName });
+    }
     return userCredential;
   };
 
