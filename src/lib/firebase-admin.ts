@@ -1,25 +1,28 @@
-import "server-only";
-import admin from "firebase-admin";
+import 'server-only';
+import { initializeApp, getApps, getApp, cert } from 'firebase-admin/app';
+import { getFirestore } from 'firebase-admin/firestore';
 
-let dbAdmin: FirebaseFirestore.Firestore | null = null;
+// Priority: Env Var -> Cloud Run Default -> Hardcoded Fallback
+const PROJECT_ID = process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID || 
+                   process.env.GCLOUD_PROJECT || 
+                   'growshare-capital'; 
 
-try {
-  if (!admin.apps.length) {
-    // 🤖 Use Application Default Credentials (ADC)
-    // This automatically detects your Cloud Workstation identity
-    admin.initializeApp({
-      credential: admin.credential.applicationDefault(),
-      projectId: "growshare-capital" 
-    });
-    console.log("✅ [Admin SDK] Initialized via Default Credentials.");
-  }
+let app;
 
-  if (admin.apps.length) {
-    dbAdmin = admin.firestore();
-  }
-} catch (error) {
-  console.error("❌ [Admin SDK] Initialization Error:", error);
-  dbAdmin = null;
+if (!getApps().length) {
+  // In Cloud Run (Production), we normally don't need credentials if IAM is set,
+  // BUT we MUST provide the projectId so it knows where to look.
+  app = initializeApp({
+    projectId: PROJECT_ID,
+    // credential: applicationDefault() // Optional: usually auto-detected if projectId is present
+  });
+} else {
+  app = getApp();
 }
+
+const dbAdmin = getFirestore(app);
+
+// Optimize for serverless environments
+dbAdmin.settings({ ignoreUndefinedProperties: true });
 
 export { dbAdmin };
