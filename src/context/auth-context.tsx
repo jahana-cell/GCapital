@@ -1,3 +1,4 @@
+
 'use client';
 
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
@@ -59,30 +60,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [appCheckReady, setAppCheckReady] = useState(false);
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
+    // This logic does not depend on Firebase services and can run anywhere.
+    if (typeof window !== 'undefined' && appCheck) {
       const checkAppCheck = async () => {
-        if (appCheck) {
           try {
             await getToken(appCheck, false);
             setAppCheckReady(true);
           } catch (error) {
             console.error("App Check failed to initialize:", error);
-            setAppCheckReady(true); // Still proceed to allow auth to be checked
+            setAppCheckReady(true);
           }
-        } else {
-          console.warn("App Check instance not available on client.");
-          setAppCheckReady(true); // Proceed even if app check isn't there
-        }
       };
       checkAppCheck();
     } else {
-      setAppCheckReady(true); // Set ready on server to allow auth state to be checked
+        setAppCheckReady(true);
     }
   }, []);
 
   useEffect(() => {
-    if (!appCheckReady) {
-      return; // Wait for App Check to be ready
+    // CRITICAL FIX: If auth is null (we're on the server) or App Check isn't ready,
+    // do not attempt to call onAuthStateChanged.
+    if (!auth || !appCheckReady) {
+      setLoading(false); // Ensure loading is finished
+      return;
     }
 
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
@@ -118,19 +118,22 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     });
 
     return () => unsubscribe();
-  }, [appCheckReady]);
+  }, [appCheckReady]); // Re-run when App Check becomes ready
 
   const signIn = (email: string, pass: string) => {
+    if (!auth) return Promise.reject(new Error("Firebase Auth is not available."));
     return signInWithEmailAndPassword(auth, email, pass);
   };
 
   const signUp = async (email: string, pass: string, displayName: string) => {
+    if (!auth) return Promise.reject(new Error("Firebase Auth is not available."));
     const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
     await updateProfile(userCredential.user, { displayName });
     return userCredential;
   };
 
   const signOut = () => {
+    if (!auth) return Promise.reject(new Error("Firebase Auth is not available."));
     return firebaseSignOut(auth);
   };
 
