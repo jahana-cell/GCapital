@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { dbAdmin } from '@/lib/firebase-admin';
 
-// Force Node.js runtime so we can use Firebase Admin SDK
+// ✅ Force Node.js runtime so we can use Firebase Admin SDK
 export const runtime = 'nodejs';
 
 export const alt = 'GrowShare Capital News';
@@ -12,18 +12,18 @@ export const size = {
 
 export const contentType = 'image/png';
 
-// Type definition for Next.js 15+ (Params is a Promise)
+// ✅ Type definition for Next.js 15+ (Params is a Promise)
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export default async function Image({ params }: Props) {
-  // FIX: Await the params Promise
+  // ✅ FIX: Await the params Promise
   const { slug } = await params;
   
   let title = 'Investment Insights';
   let date = '';
-  let imageUrl = ''; // <--- New variable for the image
+  let imageUrl = ''; // <--- We will store the image URL here
 
   console.log(`🖼️ Generating OpenGraph Image for: ${slug}`);
 
@@ -80,6 +80,7 @@ export default async function Image({ params }: Props) {
         }}
       >
         {/* --- LAYER 1: BACKGROUND IMAGE --- */}
+        {/* If image exists, use it. If not, stays black. */}
         {imageUrl ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
@@ -105,11 +106,11 @@ export default async function Image({ params }: Props) {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.9))',
+                background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9))',
             }}
         />
 
-        {/* --- LAYER 3: GOLD BORDER --- */}
+        {/* --- LAYER 3: GOLD BORDER (From your favorite design) --- */}
         <div style={{
             position: 'absolute',
             top: '20px', left: '20px', right: '20px', bottom: '20px',
@@ -118,7 +119,7 @@ export default async function Image({ params }: Props) {
             pointerEvents: 'none'
         }} />
 
-        {/* --- LAYER 4: CONTENT --- */}
+        {/* --- LAYER 4: CONTENT (Centered Text) --- */}
         <div style={{
             display: 'flex',
             flexDirection: 'column',
@@ -128,7 +129,7 @@ export default async function Image({ params }: Props) {
             padding: '0 60px',
             textAlign: 'center',
         }}>
-            {/* Brand Label */}
+            {/* Brand Label (The Gold Badge) */}
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
