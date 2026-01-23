@@ -18,11 +18,12 @@ type Props = {
 };
 
 export default async function Image({ params }: Props) {
+  // ✅ FIX: Await the params Promise
   const { slug } = await params;
   
   let title = 'Investment Insights';
   let date = '';
-  let imageUrl = ''; // <--- We will store the image URL here
+  let imageUrl = ''; // <--- Variable to store the article image
 
   console.log(`🖼️ Generating OpenGraph Image for: ${slug}`);
 
@@ -47,7 +48,7 @@ export default async function Image({ params }: Props) {
         // 3. Extract Data
         if (data) {
             title = data.title || title;
-            imageUrl = data.image || ''; // <--- Get the image
+            imageUrl = data.image || ''; // <--- Fetch the specific image
             
             if (data.date) {
                const d = typeof data.date.toDate === 'function' 
@@ -78,13 +79,13 @@ export default async function Image({ params }: Props) {
           position: 'relative',
         }}
       >
-        {/* --- LAYER 1: BACKGROUND (Image or Pattern) --- */}
+        {/* --- LAYER 1: BACKGROUND (Dynamic Image OR Classic Dots) --- */}
         {imageUrl ? (
-            /* A. If we have an image, show it */
-            // eslint-disable-next-line @next/next/no-img-element
+            /* OPTION A: Article Image (if available) */
+            /* eslint-disable-next-line @next/next/no-img-element */
             <img
                 src={imageUrl}
-                alt="bg"
+                alt="Background"
                 style={{
                     position: 'absolute',
                     top: 0,
@@ -95,7 +96,7 @@ export default async function Image({ params }: Props) {
                 }}
             />
         ) : (
-            /* B. If NO image, use your original "dots" pattern */
+            /* OPTION B: The Classic "Dots" Pattern (Fallback) */
             <div 
                 style={{
                     position: 'absolute',
@@ -106,8 +107,8 @@ export default async function Image({ params }: Props) {
             />
         )}
 
-        {/* --- LAYER 2: DARK OVERLAY (Only if image exists) --- */}
-        {/* This ensures your white text is readable even on bright photos */}
+        {/* --- LAYER 2: DARK OVERLAY (Only for Images) --- */}
+        {/* This makes sure white text is readable on top of photos */}
         {imageUrl && (
             <div
                 style={{
@@ -116,31 +117,31 @@ export default async function Image({ params }: Props) {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9))',
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.9))',
                 }}
             />
         )}
 
-        {/* --- LAYER 3: CONTENT (Your Exact Layout) --- */}
+        {/* --- LAYER 3: CONTENT (Kept exactly as you liked it) --- */}
         <div style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 10, 
+            zIndex: 10,
             width: '100%',
             height: '100%',
         }}>
-            {/* Border (Your original #333 border) */}
+             {/* Border Frame */}
             <div style={{
                 position: 'absolute',
                 top: '20px', left: '20px', right: '20px', bottom: '20px',
-                border: imageUrl ? '2px solid rgba(255, 255, 255, 0.1)' : '2px solid #333', // Subtle tweak: lighter border if on image, dark if on black
+                border: '2px solid #333', // Keeping the original border color
                 display: 'flex',
                 pointerEvents: 'none'
             }} />
 
-            {/* Brand Label */}
+            {/* Brand Label (Gold Badge) */}
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -167,12 +168,13 @@ export default async function Image({ params }: Props) {
                 lineHeight: 1.1,
                 maxWidth: '80%',
                 color: '#f5f5f5',
-                textShadow: imageUrl ? '0 4px 12px rgba(0,0,0,0.8)' : '0 4px 10px rgba(0,0,0,0.5)', // Stronger shadow on images
+                // Add a stronger shadow if we are using an image background
+                textShadow: imageUrl ? '0 4px 15px rgba(0,0,0,0.9)' : '0 4px 10px rgba(0,0,0,0.5)',
             }}>
                 {title}
             </div>
 
-            {/* Date */}
+            {/* Date / Footer */}
             {date && (
                 <div style={{
                     marginTop: 40,
@@ -180,6 +182,8 @@ export default async function Image({ params }: Props) {
                     color: '#888',
                     letterSpacing: '0.1em',
                     textTransform: 'uppercase',
+                    // Add shadow to date as well for readability
+                    textShadow: imageUrl ? '0 2px 4px rgba(0,0,0,0.9)' : 'none',
                 }}>
                     {date}
                 </div>
