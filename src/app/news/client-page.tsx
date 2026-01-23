@@ -47,7 +47,7 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
         return ["All", "Company News", "Real Estate", "Agriculture", "Healthcare", "AI & Technology", "Reports", "In The Media"].filter(cat => cat === "All" || uniqueCategories.has(cat));
     }, [stories]);
 
-    // 2. Fetch Data (Client Fallback)
+    // 2. Fetch Data
     useEffect(() => {
         if (initialStories.length > 0) {
             setLoading(false);
@@ -89,14 +89,19 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
         return published.filter(story => story.category === activeCategory);
     }, [stories, activeCategory]);
 
-    // 4. Determine Featured Article (Always show one if available)
+    // 4. Featured Article Logic (Now works for EVERY category)
     const featuredArticle = useMemo(() => {
         if (filteredStories.length === 0) return undefined;
-        // Find explicit feature, OR default to the newest one
-        return filteredStories.find(s => s.isFeatured) || filteredStories[0];
+        
+        // 1. Look for a manually "Featured" story in this category
+        const manualFeature = filteredStories.find(s => s.isFeatured);
+        
+        // 2. If none found, just pick the newest one (Index 0)
+        // This ensures the top section NEVER disappears on mobile
+        return manualFeature || filteredStories[0];
     }, [filteredStories]);
 
-    // 5. List Logic (Exclude featured)
+    // 5. List Logic (Everything except the featured one)
     const listArticles = useMemo(() => {
         const list = featuredArticle 
             ? filteredStories.filter(a => a.id !== featuredArticle.id)
@@ -140,18 +145,20 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
     return (
         <div className="min-h-screen bg-white pb-32">
             
-            {/* --- HERO HEADER (Fixes Mobile Spacing) --- */}
-            <div className="pt-32 md:pt-40 px-6 md:px-12 max-w-[1600px] mx-auto mb-12 md:mb-20">
-                <h1 className="text-5xl md:text-8xl font-serif text-[#1a1a1a] mb-8 leading-[0.9]">
+            {/* --- HERO HEADER --- */}
+            {/* Adjusted spacing: pt-24 for mobile (so it doesn't start in middle), pt-40 for desktop */}
+            <div className="pt-24 md:pt-40 px-6 md:px-12 max-w-[1600px] mx-auto mb-8 md:mb-20">
+                <h1 className="text-5xl md:text-8xl font-serif text-[#1a1a1a] mb-6 md:mb-8 leading-[0.9]">
                   The Journal
                 </h1>
                 <div className="h-[1px] w-full bg-neutral-200"></div>
             </div>
 
             {/* --- FEATURED SECTION --- */}
+            {/* Always visible if there is content */}
             {featuredArticle && (
-                 <section className="w-full bg-[#F9F9F7] border-y border-neutral-100 mb-16">
-                    <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-16 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-24 items-center">
+                 <section className="w-full bg-[#F9F9F7] border-y border-neutral-100 mb-12 md:mb-16">
+                    <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 items-center">
                         
                         {/* Text Content */}
                         <div className="order-2 lg:order-1 space-y-6 md:space-y-8">
@@ -204,7 +211,8 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
             {/* --- STANDARD GRID --- */}
             <div className="max-w-[1600px] mx-auto px-6 md:px-12">
                 {listArticles.length > 0 ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20">
+                    // GAP-Y-16 (4rem) creates big separation between rows on mobile
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16 md:gap-y-20">
                         {listArticles.map((article) => (
                         <Link 
                             key={article.id} 
@@ -212,7 +220,7 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
                             className="group block h-full flex flex-col"
                         >
                             {/* Image Wrapper */}
-                            <div className="relative aspect-[3/2] overflow-hidden bg-neutral-100 mb-6 w-full">
+                            <div className="relative aspect-[3/2] overflow-hidden bg-neutral-100 mb-6 w-full shadow-sm">
                                 <Image
                                     src={article.image}
                                     alt={article.title}
@@ -224,7 +232,8 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
                             </div>
 
                             {/* Content */}
-                            <div className="flex flex-col flex-grow">
+                            {/* Added 'pb-2' to ensure text doesn't hit the bottom edge visibly */}
+                            <div className="flex flex-col flex-grow pb-2">
                                 <div className="flex items-center gap-3 mb-3">
                                     <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-[#1a1a1a]">
                                         {article.category}
@@ -239,10 +248,11 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
                                     {article.title}
                                 </h3>
                                 
-                                <p className="text-sm text-neutral-500 font-light leading-relaxed line-clamp-3 mb-4 flex-grow">
+                                <p className="text-sm text-neutral-500 font-light leading-relaxed line-clamp-3 mb-6 flex-grow">
                                     {article.description}
                                 </p>
 
+                                {/* This button is now pushed up by the mb-6 on the paragraph above */}
                                 <div className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 group-hover:text-[#D4AF37] transition-colors mt-auto flex items-center gap-2">
                                     Read Article <ArrowRight className="w-3 h-3" />
                                 </div>
