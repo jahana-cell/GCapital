@@ -9,7 +9,7 @@ import {
 } from 'lucide-react';
 import { 
   doc, getDoc, collection, query, where, 
-  getDocs, Timestamp, setDoc, increment 
+  getDocs, Timestamp, setDoc, increment, onSnapshot 
 } from 'firebase/firestore';
 import { db } from '@/lib/firebase';
 import { motion, Variants } from 'framer-motion';
@@ -42,11 +42,10 @@ const fadeInUp: Variants = {
   }
 };
 
-// --- HELPER: UTC DATE FORMATTER (Fixes Hydration Error) ---
+// --- HELPER: UTC DATE FORMATTER ---
 function formatDateSafe(dateString: string) {
   if (!dateString) return "";
   const date = new Date(dateString);
-  // Force UTC Timezone to prevent Server (UTC) vs Client (CST) mismatch
   return date.toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
@@ -55,23 +54,23 @@ function formatDateSafe(dateString: string) {
   });
 }
 
-// --- VIEW COUNTER COMPONENT ---
+// --- VIEW COUNTER COMPONENT (Real-Time) ---
 function ViewCountDisplay({ slug }: { slug: string }) {
   const [views, setViews] = useState<number | null>(null);
 
   useEffect(() => {
-    const fetchViews = async () => {
-      try {
-        const viewRef = doc(db, 'page_views', slug);
-        const snap = await getDoc(viewRef);
-        if (snap.exists()) {
-          setViews(snap.data().count);
-        }
-      } catch (e) {
-        console.error("Error fetching views:", e);
+    if (!slug) return;
+    
+    // ✅ Use onSnapshot for Real-Time updates
+    // This ensures you see the count flip from 200 -> 201 instantly
+    const viewRef = doc(db, 'page_views', slug);
+    const unsubscribe = onSnapshot(viewRef, (docSnap) => {
+      if (docSnap.exists()) {
+        setViews(docSnap.data().count);
       }
-    };
-    fetchViews();
+    });
+
+    return () => unsubscribe();
   }, [slug]);
 
   if (views === null) return null;
@@ -91,7 +90,6 @@ const RyanKelleyPressReleasePage = ({ slug }: { slug: string }) => {
 
   return (
     <main className="min-h-screen bg-[#FFFCF5] text-stone-900 font-sans overflow-x-hidden selection:bg-[#D4AF37] selection:text-white">
-      {/* Background Pattern */}
       <div 
           className="fixed inset-0 z-0 opacity-[0.04] pointer-events-none"
           style={{
@@ -119,8 +117,7 @@ const RyanKelleyPressReleasePage = ({ slug }: { slug: string }) => {
             <span className="text-[#D4AF37] italic">Ryan Kelley</span> <br />
             to Lead Operations & Strategy
           </h1>
-          
-          {/* Header Metadata */}
+
           <div className="flex flex-col md:flex-row items-center justify-center gap-6 mt-8">
               <Button className="bg-[#D4AF37] hover:bg-[#b49021] text-white font-sans tracking-widest text-xs px-8 rounded-none h-12">
                   <Download className="w-4 h-4 mr-2" /> Download Press Kit
@@ -135,7 +132,6 @@ const RyanKelleyPressReleasePage = ({ slug }: { slug: string }) => {
           </div>
         </motion.header>
 
-        {/* Hardcoded Press Release Content */}
         <div className="font-serif text-lg md:text-xl leading-loose text-stone-800 space-y-8">
             <motion.section variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
               <p className="first-letter:text-7xl first-letter:font-serif first-letter:text-[#D4AF37] first-letter:float-left first-letter:mr-3 first-letter:mt-[-10px]">
@@ -199,8 +195,7 @@ const RyanKelleyPressReleasePage = ({ slug }: { slug: string }) => {
         </div>
 
         <motion.footer variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="bg-stone-900 text-[#FFFCF5] p-10 md:p-16">
-            {/* Footer content omitted for brevity, logic remains same as regular page */}
-            <div className="text-center text-sm text-stone-500">© GrowShare Capital. All Rights Reserved.</div>
+             <div className="text-center text-sm text-stone-500">© GrowShare Capital. All Rights Reserved.</div>
         </motion.footer>
       </article>
     </main>
@@ -218,13 +213,17 @@ export default function NewsArticleClientPage({ initialStory, slug }: Props) {
   const [story, setStory] = useState<Story | null>(initialStory);
   const [loading, setLoading] = useState(!initialStory);
   const [error, setError] = useState(false);
+  
+  // ✅ 1. Standardize Slug: decode first to avoid "1 View" duplicate bugs
+  const cleanSlug = decodeURIComponent(slug).trim();
 
-  // 1. VIEW COUNTER PING
+  // 2. VIEW COUNTER PING
   useEffect(() => {
-    if (!slug) return;
+    if (!cleanSlug) return;
     const incrementView = async () => {
       try {
-        const viewRef = doc(db, 'page_views', slug);
+        // ✅ Use cleanSlug here so we always target the correct document
+        const viewRef = doc(db, 'page_views', cleanSlug);
         await setDoc(viewRef, { 
           count: increment(1),
           lastViewed: new Date().toISOString() 
@@ -234,17 +233,14 @@ export default function NewsArticleClientPage({ initialStory, slug }: Props) {
       }
     };
     incrementView();
-  }, [slug]);
+  }, [cleanSlug]);
 
-  // 2. CLIENT-SIDE DATA RESCUE
-  // ✅ FIX: Runs if initialStory is missing OR if the content is empty/missing
+  // 3. CLIENT-SIDE DATA RESCUE
   useEffect(() => {
     if (initialStory && initialStory.content) return; 
 
     const fetchClientSide = async () => {
       setLoading(true);
-      const cleanSlug = decodeURIComponent(slug).trim();
-      
       try {
         let foundData: any = null;
         let foundId = cleanSlug;
@@ -269,7 +265,7 @@ export default function NewsArticleClientPage({ initialStory, slug }: Props) {
             ? foundData.date.toDate().toISOString() 
             : new Date().toISOString();
 
-          // ✅ CRITICAL FIX: Maps 'summary' (your DB field) to 'content'
+          // Map 'summary' to 'content'
           const content = foundData.content || foundData.summary || foundData.body || foundData.text || foundData.html || "";
 
           // Handle Status
@@ -296,9 +292,9 @@ export default function NewsArticleClientPage({ initialStory, slug }: Props) {
     };
 
     fetchClientSide();
-  }, [initialStory, slug]);
+  }, [initialStory, cleanSlug]);
 
-  // 3. TAB TITLE UPDATE
+  // 4. TAB TITLE UPDATE
   useEffect(() => {
     if (story?.title) {
       document.title = `${story.title} | GrowShare Capital`;
@@ -325,7 +321,8 @@ export default function NewsArticleClientPage({ initialStory, slug }: Props) {
   }
   
   if (story.slug === 'growshare-capital-appoints-ryan-kelley-to-lead-operations-strategy') {
-    return <RyanKelleyPressReleasePage slug={slug} />;
+    // ✅ Use cleanSlug here too
+    return <RyanKelleyPressReleasePage slug={cleanSlug} />;
   }
 
   return (
@@ -348,11 +345,11 @@ export default function NewsArticleClientPage({ initialStory, slug }: Props) {
           </Link>
           <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-4 text-amber-400 text-xs font-bold tracking-widest uppercase">
             <span className="flex items-center gap-2"><Tag className="w-3 h-3" /> {story.category}</span>
-            {/* ✅ SAFE DATE: Uses UTC to match server and prevent Red Error */}
             <span className="flex items-center gap-2" suppressHydrationWarning>
                 <Calendar className="w-3 h-3" /> {formatDateSafe(story.date)}
             </span>
-            <ViewCountDisplay slug={slug} />
+            {/* ✅ Pass cleanSlug to ensure consistent counts */}
+            <ViewCountDisplay slug={cleanSlug} />
           </div>
           <h1 className="text-3xl md:text-5xl lg:text-6xl font-serif text-white leading-tight max-w-4xl">
             {story.title}
@@ -365,7 +362,6 @@ export default function NewsArticleClientPage({ initialStory, slug }: Props) {
           {story.description}
         </p>
         
-        {/* Render HTML Content */}
         <div 
           className="prose prose-lg prose-neutral max-w-none font-light"
           dangerouslySetInnerHTML={{ __html: story.content || '' }}

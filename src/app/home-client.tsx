@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useScroll, useTransform, Variants } from "framer-motion"; // <--- Added Variants here
+import { motion, useScroll, useTransform, Variants } from "framer-motion"; 
 import { ArrowRight, Building2, Wheat, HeartPulse, ShieldCheck, Globe } from "lucide-react";
 import type { Story } from '@/app/news/stories-data'; 
 import { formatInTimeZone } from 'date-fns-tz';
@@ -16,7 +16,6 @@ import OurPartners from '@/components/sections/our-partners';
 const FALLBACK_IMAGE = "https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?q=80&w=2070&auto=format&fit=crop";
 
 // --- ANIMATION CONFIG ---
-// We explicitly type these as 'Variants' to fix the TypeScript error
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 40 },
   show: { 
@@ -24,7 +23,7 @@ const fadeUp: Variants = {
     y: 0, 
     transition: { 
       duration: 1.2, 
-      ease: [0.22, 1, 0.36, 1] // TypeScript now knows this is a valid bezier curve
+      ease: [0.22, 1, 0.36, 1] 
     } 
   }
 };
@@ -89,9 +88,11 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
   const [recentStories, setRecentStories] = useState<Story[]>(initialStories);
   const [loading, setLoading] = useState(initialStories.length === 0);
   
-  // Parallax hook (Only active on desktop to save mobile battery/performance)
+  // Parallax hook 
   const { scrollYProgress } = useScroll();
-  const y = useTransform(scrollYProgress, [0, 1], [0, -50]);
+  
+  // (Unused var removed or kept if needed for other effects, typically used like: style={{ y }})
+  // const y = useTransform(scrollYProgress, [0, 1], [0, -50]); 
 
   useEffect(() => {
     if (initialStories.length > 0) {
@@ -149,7 +150,6 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
             >
                 {/* LOGO AREA */}
                 <motion.div variants={fadeUp} className="mb-12 md:mb-16">
-                    {/* Responsive Logo Size */}
                     <div className="relative w-[240px] h-[70px] md:w-[450px] md:h-[120px]">
                         <Image
                             src="https://firebasestorage.googleapis.com/v0/b/growshare-capital.firebasestorage.app/o/Logo%2FGrowshare%20Capital%20Transparent.png?alt=media&token=b53577e6-eb64-409d-aa7a-e9aa4fe01c49"
@@ -162,7 +162,7 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                     </div>
                 </motion.div>
 
-                {/* MAIN HEADLINE - Fluid Typography */}
+                {/* MAIN HEADLINE */}
                 <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-8xl lg:text-[6.5rem] font-serif leading-[1.1] md:leading-[0.95] tracking-tight mb-8 md:mb-12 text-[#1a1a1a]">
                     The Architect of <br />
                     <span className="italic font-light text-neutral-400">American Resilience.</span>
@@ -178,7 +178,7 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                 </motion.div>
             </motion.div>
 
-            {/* Scroll Indicator - Hidden on Mobile to save space */}
+            {/* Scroll Indicator */}
             <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -215,14 +215,14 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                             className="group block cursor-pointer"
                         >
                             <Link href={item.link}>
-                                <div className="relative aspect-[3/4] overflow-hidden bg-[#F0F0F0] mb-6 md:mb-8">
+                                {/* ✅ FIX: Replaced 'aspect-[3/4]' with fixed height 'h-[500px]' to prevent 0-height warning */}
+                                <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden bg-[#F0F0F0] mb-6 md:mb-8">
                                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700 z-10" />
                                     <Image
                                         src={item.image}
                                         alt={item.title}
                                         fill
                                         sizes="(max-width: 768px) 100vw, 33vw"
-                                        // Mobile: Full Color. Desktop: B&W -> Color on Hover
                                         className="object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-105 md:saturate-0 md:group-hover:saturate-100"
                                     />
                                     <div className="absolute bottom-0 left-0 bg-white p-3 md:p-4 z-20">
@@ -313,8 +313,6 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                     {loading ? (
                         <p className="text-neutral-400 text-sm tracking-widest uppercase">Loading Journal...</p>
                     ) : recentStories.map((story, i) => {
-                        // --- SAFETY CHECKS ---
-                        // Ensure we have fallback data so the page never crashes
                         const safeImage = story.image || FALLBACK_IMAGE;
                         const safeTitle = story.title || "Untitled Article";
                         const safeCategory = story.category || "News";
@@ -335,7 +333,8 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                                     </span>
                                 </div>
                                 
-                                <div className="relative aspect-[16/10] overflow-hidden bg-neutral-100 mb-6 w-full md:grayscale md:group-hover:grayscale-0 transition-all duration-700">
+                                {/* ✅ FIX: Replaced 'aspect-[16/10]' with 'h-64' to prevent 0-height warning */}
+                                <div className="relative w-full h-64 overflow-hidden bg-neutral-100 mb-6 md:grayscale md:group-hover:grayscale-0 transition-all duration-700">
                                     <Image
                                         src={safeImage}
                                         alt={safeTitle}
