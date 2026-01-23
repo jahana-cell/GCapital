@@ -1,4 +1,3 @@
-
 import { ImageResponse } from 'next/og';
 import { dbAdmin } from '@/lib/firebase-admin';
 
@@ -13,35 +12,49 @@ export const size = {
 
 export const contentType = 'image/png';
 
-export default async function Image({ params }: { params: { slug: string } }) {
-  const { slug } = params;
+// ✅ Type definition for Next.js 15+ (Params is a Promise)
+type Props = {
+  params: Promise<{ slug: string }>;
+};
+
+export default async function Image({ params }: Props) {
+  // ✅ FIX: Await the params Promise
+  const { slug } = await params;
+  
   let title = 'Investment Insights';
   let date = '';
 
-  // 1. Try to fetch the real article title from Firestore
+  console.log(`🖼️ Generating OpenGraph Image for: ${slug}`);
+
   try {
     if (dbAdmin) {
-        // Try fetching by ID first (clean slug)
+        // 1. Try fetching by ID first (clean slug)
         const docRef = dbAdmin.collection('stories').doc(slug);
         const docSnap = await docRef.get();
         
         if (docSnap.exists) {
             const data = docSnap.data();
             title = data?.title || title;
-            // Format date if it exists
             if (data?.date) {
-               const d = new Date(data.date.toDate()); // Convert Firestore Timestamp to JS Date
+               // Handle Firestore Timestamp or Date string
+               const d = typeof data.date.toDate === 'function' 
+                 ? data.date.toDate() 
+                 : new Date(data.date);
+                 
                date = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
             }
         } else {
-             // Fallback: Try querying by slug field if ID doesn't match
+             // 2. Fallback: Query by 'slug' field
              const q = dbAdmin.collection('stories').where('slug', '==', slug).limit(1);
              const qSnap = await q.get();
              if (!qSnap.empty) {
                  const data = qSnap.docs[0].data();
                  title = data?.title || title;
                  if (data?.date) {
-                    const d = new Date(data.date.toDate());
+                    const d = typeof data.date.toDate === 'function' 
+                      ? data.date.toDate() 
+                      : new Date(data.date);
+                      
                     date = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
                  }
              }
@@ -51,7 +64,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
     console.error('OG Image Fetch Error:', e);
   }
 
-  // 2. Generate the Image
+  // 3. Generate the Image
   return new ImageResponse(
     (
       <div
@@ -62,7 +75,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          backgroundColor: '#0a0a0a', // Deep Black
+          backgroundColor: '#0a0a0a', 
           backgroundImage: 'radial-gradient(circle at 25px 25px, #1a1a1a 2%, transparent 0%), radial-gradient(circle at 75px 75px, #1a1a1a 2%, transparent 0%)',
           backgroundSize: '100px 100px',
           color: 'white',
@@ -70,7 +83,7 @@ export default async function Image({ params }: { params: { slug: string } }) {
           position: 'relative',
         }}
       >
-        {/* Border Border */}
+        {/* Border */}
         <div style={{
             position: 'absolute',
             top: '20px', left: '20px', right: '20px', bottom: '20px',
