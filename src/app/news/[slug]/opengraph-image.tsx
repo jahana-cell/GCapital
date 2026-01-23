@@ -18,7 +18,6 @@ type Props = {
 };
 
 export default async function Image({ params }: Props) {
-  // ✅ FIX: Await the params Promise
   const { slug } = await params;
   
   let title = 'Investment Insights';
@@ -48,7 +47,7 @@ export default async function Image({ params }: Props) {
         // 3. Extract Data
         if (data) {
             title = data.title || title;
-            imageUrl = data.image || ''; // <--- Fetch the image URL
+            imageUrl = data.image || ''; // <--- Get the image
             
             if (data.date) {
                const d = typeof data.date.toDate === 'function' 
@@ -79,13 +78,13 @@ export default async function Image({ params }: Props) {
           position: 'relative',
         }}
       >
-        {/* --- LAYER 1: BACKGROUND IMAGE --- */}
-        {/* If image exists, use it. If not, stays black. */}
+        {/* --- LAYER 1: BACKGROUND (Image or Pattern) --- */}
         {imageUrl ? (
-            /* eslint-disable-next-line @next/next/no-img-element */
+            /* A. If we have an image, show it */
+            // eslint-disable-next-line @next/next/no-img-element
             <img
                 src={imageUrl}
-                alt="Background"
+                alt="bg"
                 style={{
                     position: 'absolute',
                     top: 0,
@@ -95,55 +94,66 @@ export default async function Image({ params }: Props) {
                     objectFit: 'cover',
                 }}
             />
-        ) : null}
+        ) : (
+            /* B. If NO image, use your original "dots" pattern */
+            <div 
+                style={{
+                    position: 'absolute',
+                    top: 0, left: 0, width: '100%', height: '100%',
+                    backgroundImage: 'radial-gradient(circle at 25px 25px, #1a1a1a 2%, transparent 0%), radial-gradient(circle at 75px 75px, #1a1a1a 2%, transparent 0%)',
+                    backgroundSize: '100px 100px',
+                }}
+            />
+        )}
 
-        {/* --- LAYER 2: DARK GRADIENT OVERLAY --- */}
-        {/* This ensures text is readable even if the image is white/bright */}
-        <div
-            style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9))',
-            }}
-        />
+        {/* --- LAYER 2: DARK OVERLAY (Only if image exists) --- */}
+        {/* This ensures your white text is readable even on bright photos */}
+        {imageUrl && (
+            <div
+                style={{
+                    position: 'absolute',
+                    top: 0,
+                    left: 0,
+                    width: '100%',
+                    height: '100%',
+                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.6), rgba(0,0,0,0.9))',
+                }}
+            />
+        )}
 
-        {/* --- LAYER 3: GOLD BORDER (From your favorite design) --- */}
-        <div style={{
-            position: 'absolute',
-            top: '20px', left: '20px', right: '20px', bottom: '20px',
-            border: '2px solid rgba(212, 175, 55, 0.5)', // Gold with transparency
-            display: 'flex',
-            pointerEvents: 'none'
-        }} />
-
-        {/* --- LAYER 4: CONTENT (Centered Text) --- */}
+        {/* --- LAYER 3: CONTENT (Your Exact Layout) --- */}
         <div style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 10, // Sit on top of overlay
-            padding: '0 60px',
-            textAlign: 'center',
+            zIndex: 10, 
+            width: '100%',
+            height: '100%',
         }}>
-            {/* Brand Label (The Gold Badge) */}
+            {/* Border (Your original #333 border) */}
+            <div style={{
+                position: 'absolute',
+                top: '20px', left: '20px', right: '20px', bottom: '20px',
+                border: imageUrl ? '2px solid rgba(255, 255, 255, 0.1)' : '2px solid #333', // Subtle tweak: lighter border if on image, dark if on black
+                display: 'flex',
+                pointerEvents: 'none'
+            }} />
+
+            {/* Brand Label */}
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 backgroundColor: '#D4AF37', // Gold
                 color: '#000',
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: 900,
-                padding: '8px 20px',
+                padding: '8px 24px',
                 letterSpacing: '0.2em',
                 textTransform: 'uppercase',
-                marginBottom: 30,
+                marginBottom: 40,
                 borderRadius: '2px',
-                boxShadow: '0 4px 20px rgba(0,0,0,0.5)',
             }}>
                 GrowShare Capital
             </div>
@@ -152,11 +162,12 @@ export default async function Image({ params }: Props) {
             <div style={{
                 display: 'flex',
                 textAlign: 'center',
-                fontSize: 60,
+                fontSize: 64,
                 fontWeight: 'bold',
                 lineHeight: 1.1,
-                color: '#ffffff',
-                textShadow: '0 4px 12px rgba(0,0,0,0.8)', // Shadow for readability
+                maxWidth: '80%',
+                color: '#f5f5f5',
+                textShadow: imageUrl ? '0 4px 12px rgba(0,0,0,0.8)' : '0 4px 10px rgba(0,0,0,0.5)', // Stronger shadow on images
             }}>
                 {title}
             </div>
@@ -164,12 +175,11 @@ export default async function Image({ params }: Props) {
             {/* Date */}
             {date && (
                 <div style={{
-                    marginTop: 30,
+                    marginTop: 40,
                     fontSize: 20,
-                    color: '#e5e5e5',
+                    color: '#888',
                     letterSpacing: '0.1em',
                     textTransform: 'uppercase',
-                    textShadow: '0 2px 4px rgba(0,0,0,0.8)',
                 }}>
                     {date}
                 </div>
