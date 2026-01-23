@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { dbAdmin } from "@/lib/firebase-admin";
 import NewsArticleClientPage from "./client-page";
+import { collection, getDocs } from "firebase/firestore";
 
 // ✅ Force dynamic rendering so new articles appear instantly
 export const dynamic = "force-dynamic";
@@ -85,15 +86,31 @@ async function getStory(slug: string): Promise<Story | null> {
   }
 }
 
+// --- GENERATE STATIC PARAMS ---
+export async function generateStaticParams() {
+    if (!dbAdmin) return [];
+    try {
+        const storiesCollection = dbAdmin.collection('stories');
+        const snapshot = await storiesCollection.get();
+        return snapshot.docs.map(doc => ({
+            slug: doc.data().slug || doc.id,
+        }));
+    } catch (error) {
+        console.error("Error generating static params for news:", error);
+        return [];
+    }
+}
+
+
 // --- TYPE FOR PAGE PROPS (Next.js 16) ---
 type Props = {
-  params: Promise<{ slug: string }>;
+  params: { slug: string };
 };
 
 // --- SEO: Generate Metadata ---
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   // ✅ NEXT.JS 16 FIX: Await params
-  const { slug } = await params;
+  const { slug } = params;
   
   if (!slug) return { title: "Article Not Found" };
 
@@ -119,7 +136,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 // --- MAIN PAGE COMPONENT ---
 export default async function NewsArticlePage({ params }: Props) {
   // ✅ NEXT.JS 16 FIX: Await params
-  const { slug } = await params;
+  const { slug } = params;
 
   if (!slug) {
       notFound();
