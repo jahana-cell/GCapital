@@ -1,44 +1,87 @@
-
 import type { Metadata } from 'next';
 import NewsClientPage from './client-page';
 import { dbAdmin } from '@/lib/firebase-admin';
-import { Timestamp } from 'firebase-admin/firestore';
 import type { Story } from '@/app/news/stories-data';
 
+// ✅ Helper to clean up data (Same as we used in the Single Page)
+function sanitizeStory(doc: any): Story {
+  const data = doc.data() || {};
+
+  // 1. Safe Date Conversion
+  let dateStr = new Date().toISOString();
+  if (data.date) {
+    if (typeof data.date.toDate === "function") {
+      dateStr = data.date.toDate().toISOString();
+    } else if (data.date instanceof Date) {
+      dateStr = data.date.toISOString();
+    } else {
+      dateStr = String(data.date);
+    }
+  }
+
+  // 2. Safe Status
+  const rawStatus = data.status || "Published";
+  const validStatus = (rawStatus === "Coming Soon") ? "Coming Soon" : "Published";
+
+  // 3. Content Mapping (Maps 'summary' to 'content')
+  const content = data.content || data.summary || data.body || "";
+
+  return {
+    id: doc.id,
+    slug: data.slug || doc.id,
+    title: data.title || "Untitled Story",
+    description: data.description || "",
+    category: data.category || "News",
+    image: data.image || "",
+    date: dateStr,
+    author: data.author || "GrowShare Capital",
+    content: content,
+    status: validStatus,
+    isFeatured: !!data.isFeatured,
+    imagePosition: data.imagePosition || "center",
+  } as Story;
+}
 
 async function getStories(): Promise<Story[]> {
+  // Safety Check
   if (!dbAdmin) {
-    console.error("Admin DB not initialized for news page");
+    console.error("❌ Admin DB not initialized");
     return [];
   }
+
   try {
     const storiesRef = dbAdmin.collection("stories");
-    const q = storiesRef.orderBy("date", "desc");
-    const snapshot = await q.get();
-    if (snapshot.empty) {
-      return [];
+    
+    // 1. Try to fetch Sorted (Requires Index)
+    try {
+        const q = storiesRef.orderBy("date", "desc");
+        const snapshot = await q.get();
+        
+        if (!snapshot.empty) {
+            return snapshot.docs.map(doc => sanitizeStory(doc));
+        }
+    } catch (indexError) {
+        console.warn("⚠️ Sorting failed (likely missing index). Fetching unsorted...");
+        // 2. Fallback: Fetch Unsorted if index is missing
+        const snapshot = await storiesRef.get();
+        const stories = snapshot.docs.map(doc => sanitizeStory(doc));
+        
+        // Sort manually in JavaScript since DB sort failed
+        return stories.sort((a, b) => 
+            new Date(b.date).getTime() - new Date(a.date).getTime()
+        );
     }
-    return snapshot.docs.map(doc => {
-      const data = doc.data();
-      // Ensure date is a serializable string for the client
-      const date = data.date instanceof Timestamp ? data.date.toDate().toISOString() : new Date().toISOString();
-      return { 
-        ...data, 
-        id: doc.id,
-        slug: data.slug || doc.id,
-        date,
-      } as Story;
-    });
+
+    return [];
   } catch (error) {
-    console.error("Error fetching stories for news page:", error);
-    // Return empty array on error to prevent build failure
+    console.error("❌ Error fetching stories:", error);
     return [];
   }
 }
 
 export const metadata: Metadata = {
-  title: 'Newsroom',
-  description: 'Our latest company news, announcements, press releases, and in-depth reports on our investment sectors.',
+  title: 'Newsroom | GrowShare Capital',
+  description: 'Our latest company news, announcements, and press releases.',
   openGraph: {
     title: 'Newsroom | GrowShare Capital',
     description: 'The latest updates and insights from GrowShare Capital.',
@@ -53,8 +96,9 @@ export const metadata: Metadata = {
   },
 };
 
-
 export default async function NewsPage() {
   const initialStories = await getStories();
+  
+  // Pass the sanitized, safe data to the client
   return <NewsClientPage initialStories={initialStories} />;
 }
