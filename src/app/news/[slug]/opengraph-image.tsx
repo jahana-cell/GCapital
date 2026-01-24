@@ -5,6 +5,8 @@ import { dbAdmin } from '@/lib/firebase-admin';
 export const runtime = 'nodejs';
 
 export const alt = 'GrowShare Capital News';
+
+// ✅ SIZE MATTERS: 1200x630 is the standard for "Big Cards"
 export const size = {
   width: 1200,
   height: 630,
