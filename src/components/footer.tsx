@@ -70,7 +70,7 @@ export default function Footer() {
 
         {/* --- BOTTOM BAR --- */}
         <div className="border-t border-neutral-200 pt-8 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4 text-[10px] uppercase tracking-widest text-neutral-400">
-          <p className="text-center md:text-left">EST. 2022  •  © 2026 GrowShare Capital. All Rights Reserved.</p>
+          <p className="text-center md:text-left">EST. 2022 • © 2026 GrowShare Capital. All Rights Reserved.</p>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-neutral-900 transition-colors">Privacy Policy</Link>
             <Link href="/terms" className="hover:text-neutral-900 transition-colors">Terms of Service</Link>
