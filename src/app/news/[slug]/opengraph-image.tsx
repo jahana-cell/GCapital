@@ -1,12 +1,12 @@
 import { ImageResponse } from 'next/og';
 import { dbAdmin } from '@/lib/firebase-admin';
 
-// ✅ Force Node.js runtime so we can use Firebase Admin SDK
+// Force Node.js runtime so we can use Firebase Admin SDK
 export const runtime = 'nodejs';
 
 export const alt = 'GrowShare Capital News';
 
-// ✅ SIZE MATTERS: 1200x630 is the standard for "Big Cards"
+// 1200x630 is the standard for Large Summary Cards
 export const size = {
   width: 1200,
   height: 630,
@@ -14,20 +14,20 @@ export const size = {
 
 export const contentType = 'image/png';
 
-// ✅ Type definition for Next.js 15+ (Params is a Promise)
+// Type definition for Next.js 15+ (Params is a Promise)
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export default async function Image({ params }: Props) {
-  // ✅ FIX: Await the params Promise
+  // Await the params Promise
   const { slug } = await params;
   
   let title = 'Investment Insights';
   let date = '';
-  let imageUrl = ''; // <--- New variable to store the image URL
+  let imageUrl = '';
 
-  console.log(`🖼️ Generating OpenGraph Image for: ${slug}`);
+  console.log(`Generating OpenGraph Image for: ${slug}`);
 
   try {
     if (dbAdmin) {
@@ -50,7 +50,6 @@ export default async function Image({ params }: Props) {
         // 3. Extract Data
         if (data) {
             title = data.title || title;
-            // ✅ Get the image URL from the data
             imageUrl = data.image || '';
             
             if (data.date) {
@@ -80,12 +79,11 @@ export default async function Image({ params }: Props) {
           backgroundColor: '#0a0a0a', 
           fontFamily: 'serif',
           position: 'relative',
-          overflow: 'hidden', // Ensure image doesn't bleed out
+          overflow: 'hidden',
         }}
       >
-        {/* --- LAYER 1: BACKGROUND (Dynamic Image OR Old Pattern) --- */}
+        {/* LAYER 1: BACKGROUND (Dynamic Image OR Pattern Fallback) */}
         {imageUrl ? (
-            // A. If image exists, show it stretched full width/height
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
                 src={imageUrl}
@@ -100,7 +98,6 @@ export default async function Image({ params }: Props) {
                 }}
             />
         ) : (
-            // B. If NO image, use your ORIGINAL "dots" pattern exactly as before
             <div 
                 style={{
                     position: 'absolute',
@@ -111,8 +108,7 @@ export default async function Image({ params }: Props) {
             />
         )}
 
-        {/* --- LAYER 2: DARK OVERLAY (Only if image exists) --- */}
-        {/* This ensures white text is readable on top of photos. It creates the "dark luxury" look. */}
+        {/* LAYER 2: DARK OVERLAY (Only if image exists) */}
         {imageUrl && (
             <div
                 style={{
@@ -121,14 +117,13 @@ export default async function Image({ params }: Props) {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    backgroundColor: 'rgba(0,0,0,0.7)', // 70% opaque black layer
+                    backgroundColor: 'rgba(0,0,0,0.7)',
                 }}
             />
         )}
 
-        {/* --- LAYER 3: CONTENT (The Text & Badge) --- */}
+        {/* LAYER 3: CONTENT */}
         <div style={{
-            // We wrap the content in a relative container with zIndex to sit on top of the layers above
             position: 'relative',
             zIndex: 10,
             height: '100%',
@@ -138,7 +133,7 @@ export default async function Image({ params }: Props) {
             alignItems: 'center',
             justifyContent: 'center',
         }}>
-            {/* Border (Your original #333 border) */}
+            {/* Border */}
             <div style={{
                 position: 'absolute',
                 top: '20px', left: '20px', right: '20px', bottom: '20px',
@@ -147,12 +142,12 @@ export default async function Image({ params }: Props) {
                 pointerEvents: 'none'
             }} />
 
-            {/* Brand Label (Gold Badge) */}
+            {/* Brand Label */}
             <div style={{
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
-                backgroundColor: '#D4AF37', // Gold
+                backgroundColor: '#D4AF37',
                 color: '#000',
                 fontSize: 16,
                 fontWeight: 900,
@@ -174,13 +169,12 @@ export default async function Image({ params }: Props) {
                 lineHeight: 1.1,
                 maxWidth: '80%',
                 color: '#f5f5f5',
-                // Add a slightly stronger shadow if using an image background for extra readability
                 textShadow: imageUrl ? '0 4px 15px rgba(0,0,0,0.9)' : '0 4px 10px rgba(0,0,0,0.5)',
             }}>
                 {title}
             </div>
 
-            {/* Date / Footer */}
+            {/* Date */}
             {date && (
                 <div style={{
                     marginTop: 40,
