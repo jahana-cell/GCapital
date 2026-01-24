@@ -333,7 +333,7 @@ const SiteMenu = ({ isMenuOpen, setMenuOpen }: { isMenuOpen: boolean, setMenuOpe
           </div>
           
           <p className="text-[9px] tracking-widest text-neutral-400 uppercase text-center">
-            © 2025 GrowShare Capital
+            © 2026 GrowShare Capital
           </p>
         </div>
       </SheetContent>
