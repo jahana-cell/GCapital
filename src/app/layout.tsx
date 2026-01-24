@@ -85,7 +85,6 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteTitle,
     description: siteDescription,
-    // Removed explicit images array to allow News pages to inject their own
   },
 };
 
@@ -101,7 +100,14 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${playfairDisplay.variable} ${montserrat.variable} ${pinyonScript.variable} ${cinzel.variable} scroll-smooth`}>
+    <html 
+      lang="en" 
+      className={`${playfairDisplay.variable} ${montserrat.variable} ${pinyonScript.variable} ${cinzel.variable} scroll-smooth`}
+      data-scroll-behavior="smooth"
+    >
+      {/* The error likely happened here. 
+         Make sure this tag opens with '<' and not just 'body' 
+      */}
       <body>
         <ClientProviders>
           <LayoutWrapper>
