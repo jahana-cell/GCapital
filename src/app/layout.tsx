@@ -50,6 +50,7 @@ export const metadata: Metadata = {
     googleBot: {
       index: true,
       follow: true,
+      'max-image-preview': 'large',
     },
   },
   icons: {
@@ -68,7 +69,7 @@ export const metadata: Metadata = {
     title: siteTitle,
     description: siteDescription,
     siteName: siteTitle,
-    // We keep the logo here as a fallback for the Home Page only
+    // Logo fallback is okay here for home page
     images: [
       {
         url: previewImageUrl,
@@ -84,14 +85,14 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteTitle,
     description: siteDescription,
-    // ❌ DELETED: "images: [previewImageUrl]" 
-    // We removed the explicit logo here. 
-    // This allows the News Page's generated image to take over automatically.
+    // Removed explicit images array to allow News pages to inject their own
   },
 };
 
 export const viewport: Viewport = {
   themeColor: '#F9F7F2',
+  width: 'device-width',
+  initialScale: 1,
 };
 
 export default function RootLayout({

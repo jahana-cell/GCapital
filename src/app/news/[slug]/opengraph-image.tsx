@@ -1,26 +1,25 @@
 import { ImageResponse } from 'next/og';
 import { dbAdmin } from '@/lib/firebase-admin';
 
-// Force Node.js runtime so we can use Firebase Admin SDK
+// Force Node.js runtime to use Firebase Admin safely
 export const runtime = 'nodejs';
 
 export const alt = 'GrowShare Capital News';
 
-// 1200x630 is the standard for Large Summary Cards
+// Standard "Viral" Card Size
 export const size = {
   width: 1200,
   height: 630,
 };
 
-export const contentType = 'image/png';
+// CRITICAL FIX: Use JPEG to keep file size small for WhatsApp
+export const contentType = 'image/jpeg';
 
-// Type definition for Next.js 15+ (Params is a Promise)
 type Props = {
   params: Promise<{ slug: string }>;
 };
 
 export default async function Image({ params }: Props) {
-  // Await the params Promise
   const { slug } = await params;
   
   let title = 'Investment Insights';
@@ -31,7 +30,7 @@ export default async function Image({ params }: Props) {
 
   try {
     if (dbAdmin) {
-        // 1. Try fetching by ID first (clean slug)
+        // 1. Try fetching by ID first
         const docRef = dbAdmin.collection('stories').doc(slug);
         const docSnap = await docRef.get();
         let data: any = null;
@@ -39,7 +38,7 @@ export default async function Image({ params }: Props) {
         if (docSnap.exists) {
             data = docSnap.data();
         } else {
-             // 2. Fallback: Query by 'slug' field
+             // 2. Fallback: Query by slug field
              const q = dbAdmin.collection('stories').where('slug', '==', slug).limit(1);
              const qSnap = await q.get();
              if (!qSnap.empty) {
@@ -65,7 +64,6 @@ export default async function Image({ params }: Props) {
     console.error('OG Image Fetch Error:', e);
   }
 
-  // 4. Generate the Image
   return new ImageResponse(
     (
       <div
@@ -108,7 +106,7 @@ export default async function Image({ params }: Props) {
             />
         )}
 
-        {/* LAYER 2: DARK OVERLAY (Only if image exists) */}
+        {/* LAYER 2: DARK OVERLAY (70% Opacity) */}
         {imageUrl && (
             <div
                 style={{
