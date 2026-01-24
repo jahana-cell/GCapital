@@ -79,13 +79,13 @@ export default async function Image({ params }: Props) {
           position: 'relative',
         }}
       >
-        {/* --- LAYER 1: BACKGROUND (Dynamic Image OR Classic Dots) --- */}
+        {/* --- LAYER 1: BACKGROUND (Dynamic Image OR Old Pattern) --- */}
         {imageUrl ? (
-            /* OPTION A: Article Image (if available) */
-            /* eslint-disable-next-line @next/next/no-img-element */
+            // A. If image exists, show it stretched full width/height
+            // eslint-disable-next-line @next/next/no-img-element
             <img
                 src={imageUrl}
-                alt="Background"
+                alt="bg"
                 style={{
                     position: 'absolute',
                     top: 0,
@@ -96,7 +96,7 @@ export default async function Image({ params }: Props) {
                 }}
             />
         ) : (
-            /* OPTION B: The Classic "Dots" Pattern (Fallback) */
+            // B. If NO image, use your ORIGINAL "dots" pattern exactly as before
             <div 
                 style={{
                     position: 'absolute',
@@ -107,8 +107,8 @@ export default async function Image({ params }: Props) {
             />
         )}
 
-        {/* --- LAYER 2: DARK OVERLAY (Only for Images) --- */}
-        {/* This makes sure white text is readable on top of photos */}
+        {/* --- LAYER 2: DARK OVERLAY (Only if image exists) --- */}
+        {/* We need this so the text is readable. It's just a dark tint. */}
         {imageUrl && (
             <div
                 style={{
@@ -117,26 +117,26 @@ export default async function Image({ params }: Props) {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    background: 'linear-gradient(to bottom, rgba(0,0,0,0.5), rgba(0,0,0,0.9))',
+                    backgroundColor: 'rgba(0,0,0,0.6)', // 60% dark overlay
                 }}
             />
         )}
 
-        {/* --- LAYER 3: CONTENT (Kept exactly as you liked it) --- */}
+        {/* --- LAYER 3: CONTENT (EXACTLY YOUR OLD CODE) --- */}
         <div style={{
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            zIndex: 10,
+            zIndex: 10, 
             width: '100%',
             height: '100%',
         }}>
-             {/* Border Frame */}
+            {/* Border (Your original #333 border) */}
             <div style={{
                 position: 'absolute',
                 top: '20px', left: '20px', right: '20px', bottom: '20px',
-                border: '2px solid #333', // Keeping the original border color
+                border: '2px solid #333',
                 display: 'flex',
                 pointerEvents: 'none'
             }} />
@@ -168,8 +168,7 @@ export default async function Image({ params }: Props) {
                 lineHeight: 1.1,
                 maxWidth: '80%',
                 color: '#f5f5f5',
-                // Add a stronger shadow if we are using an image background
-                textShadow: imageUrl ? '0 4px 15px rgba(0,0,0,0.9)' : '0 4px 10px rgba(0,0,0,0.5)',
+                textShadow: '0 4px 10px rgba(0,0,0,0.5)',
             }}>
                 {title}
             </div>
@@ -182,8 +181,6 @@ export default async function Image({ params }: Props) {
                     color: '#888',
                     letterSpacing: '0.1em',
                     textTransform: 'uppercase',
-                    // Add shadow to date as well for readability
-                    textShadow: imageUrl ? '0 2px 4px rgba(0,0,0,0.9)' : 'none',
                 }}>
                     {date}
                 </div>
