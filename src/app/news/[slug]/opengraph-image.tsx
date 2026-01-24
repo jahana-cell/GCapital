@@ -5,6 +5,8 @@ import { dbAdmin } from '@/lib/firebase-admin';
 export const runtime = 'nodejs';
 
 export const alt = 'GrowShare Capital News';
+
+// ✅ SIZE MATTERS: 1200x630 is the standard for "Big Cards" on WhatsApp/Twitter/LinkedIn
 export const size = {
   width: 1200,
   height: 630,
@@ -23,7 +25,7 @@ export default async function Image({ params }: Props) {
   
   let title = 'Investment Insights';
   let date = '';
-  let imageUrl = ''; // <--- Variable to store the article image
+  let imageUrl = ''; // <--- We will store the image URL here
 
   console.log(`🖼️ Generating OpenGraph Image for: ${slug}`);
 
@@ -81,7 +83,6 @@ export default async function Image({ params }: Props) {
       >
         {/* --- LAYER 1: BACKGROUND (Dynamic Image OR Old Pattern) --- */}
         {imageUrl ? (
-            // A. If image exists, show it stretched full width/height
             // eslint-disable-next-line @next/next/no-img-element
             <img
                 src={imageUrl}
@@ -96,7 +97,7 @@ export default async function Image({ params }: Props) {
                 }}
             />
         ) : (
-            // B. If NO image, use your ORIGINAL "dots" pattern exactly as before
+            // Use your ORIGINAL "dots" pattern if no image exists
             <div 
                 style={{
                     position: 'absolute',
@@ -108,7 +109,7 @@ export default async function Image({ params }: Props) {
         )}
 
         {/* --- LAYER 2: DARK OVERLAY (Only if image exists) --- */}
-        {/* We need this so the text is readable. It's just a dark tint. */}
+        {/* We use a heavy 70% dark overlay. This keeps the "Black Card" look but shows the photo texture. */}
         {imageUrl && (
             <div
                 style={{
@@ -117,7 +118,7 @@ export default async function Image({ params }: Props) {
                     left: 0,
                     width: '100%',
                     height: '100%',
-                    backgroundColor: 'rgba(0,0,0,0.6)', // 60% dark overlay
+                    backgroundColor: 'rgba(0,0,0,0.7)', // 70% Black Overlay
                 }}
             />
         )}
