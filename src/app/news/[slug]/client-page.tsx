@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -195,7 +196,29 @@ const RyanKelleyPressReleasePage = ({ slug }: { slug: string }) => {
         </div>
 
         <motion.footer variants={fadeInUp} initial="hidden" whileInView="visible" viewport={{ once: true }} className="bg-stone-900 text-[#FFFCF5] p-10 md:p-16">
-             <div className="text-center text-sm text-stone-500">© GrowShare Capital. All Rights Reserved.</div>
+             <div className="grid md:grid-cols-3 gap-10 md:gap-16 text-left text-sm">
+                {/* About Section */}
+                <div className="md:col-span-2">
+                    <h4 className="font-serif text-lg text-white mb-4">About GrowShare Capital</h4>
+                    <p className="text-stone-400 font-light leading-relaxed">
+                        GrowShare Capital is a premier American private equity and impact investment platform building resilient communities through intelligent, ethical, and high-yield investments in real estate, agriculture, and healthcare.
+                    </p>
+                </div>
+                {/* Contact Section */}
+                <div>
+                    <h4 className="font-serif text-lg text-white mb-4">Media Inquiries</h4>
+                    <p className="font-medium text-stone-300">Kazi Nabiul Haque</p>
+                    <p className="text-xs text-stone-500 uppercase tracking-widest">Chief Marketing Officer</p>
+                    <a href="mailto:info@growsharecapital.com" className="block mt-2 text-amber-400 hover:text-white transition-colors">
+                        info@growsharecapital.com
+                    </a>
+                </div>
+             </div>
+             <div className="border-t border-white/10 mt-12 pt-8 text-center text-xs text-stone-500">
+                <span>© GrowShare Capital. All Rights Reserved.</span>
+                <span className="mx-2">|</span>
+                <a href="/privacy" className="hover:text-white transition-colors">Privacy Policy</a>
+             </div>
         </motion.footer>
       </article>
     </main>
