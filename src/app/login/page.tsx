@@ -3,7 +3,7 @@
 import { useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { 
-  signInWithPopup, 
+  signInWithRedirect, // CHANGED: Redirect avoids popup blockers
   GoogleAuthProvider, 
   signInWithEmailAndPassword, 
   createUserWithEmailAndPassword 
@@ -34,12 +34,12 @@ function LoginForm() {
     setError(null);
     try {
       const provider = new GoogleAuthProvider();
-      await signInWithPopup(auth, provider);
-      router.push(redirect); 
+      // Using redirect prevents browser popup blockers
+      await signInWithRedirect(auth, provider);
+      // No router.push needed; the page redirects automatically
     } catch (err: any) {
       setError('Could not sign in with Google. Please try again.');
       console.error(err);
-    } finally {
       setIsLoading(false);
     }
   };
