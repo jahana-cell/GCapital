@@ -9,7 +9,8 @@ import {
   Home,
   Download,
   CheckCircle2,
-  Layers
+  Layers,
+  FileText
 } from 'lucide-react';
 
 // --- IMAGES CONFIGURATION ---
@@ -24,9 +25,9 @@ const IMAGES = {
 
 export default function PlatformBrooksPage() {
   return (
-    <div className="min-h-screen bg-[#F5F5F0] text-[#111] font-sans selection:bg-[#D4AF37] selection:text-white pb-[120px] md:pb-24">
+    <div className="min-h-screen bg-[#F5F5F0] text-[#111] font-sans selection:bg-[#D4AF37] selection:text-white">
       
-      {/* --- 1. IMMERSIVE CINEMATIC HERO (Mobile Optimized) --- */}
+      {/* --- 1. IMMERSIVE CINEMATIC HERO --- */}
       <section className="relative w-full h-[100svh]">
         <Image
            src={IMAGES.hero}
@@ -39,7 +40,6 @@ export default function PlatformBrooksPage() {
         
         <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
            <div className="animate-fade-in-up space-y-6 max-w-4xl mx-auto">
-              {/* Luxury Badge */}
               <div className="inline-flex items-center gap-2 px-5 py-2 border border-[#D4AF37]/50 bg-black/40 backdrop-blur-xl rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse"/>
                 <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.3em] uppercase">
@@ -71,30 +71,26 @@ export default function PlatformBrooksPage() {
         </div>
       </section>
 
-      {/* --- 2. EXECUTIVE FINANCIAL DASHBOARD (App Style Grid) --- */}
+      {/* --- 2. EXECUTIVE FINANCIAL DASHBOARD --- */}
       <section className="relative -mt-12 md:-mt-20 z-10 px-4 md:px-8 max-w-7xl mx-auto">
         <div className="bg-white shadow-2xl border-t-4 border-[#D4AF37] grid grid-cols-2 md:grid-cols-4">
             
-            {/* Stat 1 */}
             <div className="p-6 md:p-10 border-b md:border-b-0 border-r border-neutral-100 text-center md:text-left">
                 <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2">Project Cost</p>
                 <p className="text-2xl md:text-4xl font-serif text-[#111]">$10.14 M</p>
             </div>
 
-            {/* Stat 2 */}
             <div className="p-6 md:p-10 border-b md:border-b-0 md:border-r border-neutral-100 text-center md:text-left bg-neutral-50/50">
                 <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2">Target Yield</p>
                 <p className="text-2xl md:text-4xl font-serif text-[#D4AF37]">5.42%</p>
                 <p className="hidden md:block text-xs text-neutral-500 font-medium mt-1">On Cost</p>
             </div>
 
-            {/* Stat 3 */}
             <div className="p-6 md:p-10 border-r border-neutral-100 text-center md:text-left">
                 <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2">Equity Mult.</p>
                 <p className="text-2xl md:text-4xl font-serif text-[#111]">2.1x</p>
             </div>
 
-            {/* Stat 4 */}
             <div className="p-6 md:p-10 text-center md:text-left">
                 <p className="text-[9px] md:text-[10px] uppercase tracking-[0.2em] text-neutral-400 mb-2">Total Density</p>
                 <p className="text-2xl md:text-4xl font-serif text-[#111]">52 Units</p>
@@ -108,8 +104,6 @@ export default function PlatformBrooksPage() {
         
         {/* BLOCK 1: THE ANCHOR */}
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            
-            {/* Mobile Order: Image First, Text Second */}
             <div className="order-2 lg:order-1 space-y-8">
                 <div className="inline-flex items-center gap-3 text-[#D4AF37]">
                     <span className="w-8 h-[1px] bg-[#D4AF37]"></span>
@@ -135,7 +129,6 @@ export default function PlatformBrooksPage() {
                 </div>
             </div>
             
-            {/* Image Frame (Gallery Style) */}
             <div className="order-1 lg:order-2">
                 <div className="relative h-[300px] md:h-[500px] w-full bg-white shadow-2xl p-4 border border-neutral-100">
                     <div className="relative w-full h-full">
@@ -146,7 +139,6 @@ export default function PlatformBrooksPage() {
                             className="object-contain" 
                         />
                     </div>
-                    {/* Floating Label */}
                     <div className="absolute -bottom-4 -left-4 bg-[#111] text-white px-6 py-3 shadow-lg z-10">
                          <span className="text-[10px] uppercase tracking-widest font-bold">Street-Front Activation</span>
                     </div>
@@ -154,12 +146,11 @@ export default function PlatformBrooksPage() {
             </div>
         </div>
 
-        {/* BLOCK 2: THE TOWNHOMES (Dark Mode) */}
+        {/* BLOCK 2: THE TOWNHOMES */}
         <div className="bg-[#111] text-white py-20 md:py-24 -mx-0 relative">
              <div className="absolute top-0 right-0 w-64 h-64 bg-[#D4AF37]/10 rounded-full blur-[80px] pointer-events-none"></div>
 
             <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-                {/* Image Frame */}
                 <div className="relative h-[300px] md:h-[500px] w-full bg-white shadow-2xl p-3 border border-white/20">
                     <div className="relative w-full h-full">
                         <Image 
@@ -192,21 +183,12 @@ export default function PlatformBrooksPage() {
                                 <p className="text-sm text-neutral-500 mt-1">54 protected parking spaces.</p>
                             </div>
                         </li>
-                        <li className="flex items-start gap-5">
-                            <div className="w-10 h-10 rounded-full bg-[#222] flex items-center justify-center shrink-0 border border-white/10">
-                                <CheckCircle2 className="w-5 h-5 text-[#D4AF37]" />
-                            </div>
-                            <div>
-                                <p className="font-serif text-xl">High-End Finishes</p>
-                                <p className="text-sm text-neutral-500 mt-1">Quartz counters & stainless appliances.</p>
-                            </div>
-                        </li>
                     </ul>
                 </div>
             </div>
         </div>
 
-        {/* BLOCK 3: THE ANNEX (Arbitrage) */}
+        {/* BLOCK 3: THE ANNEX */}
         <div className="max-w-7xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
                 <div className="inline-flex items-center gap-3 text-[#D4AF37]">
@@ -225,7 +207,6 @@ export default function PlatformBrooksPage() {
                 </div>
             </div>
             
-             {/* Image Frame */}
              <div className="relative h-[300px] md:h-[500px] w-full bg-white shadow-2xl p-4 border border-neutral-100">
                 <div className="relative w-full h-full">
                     <Image 
@@ -240,8 +221,8 @@ export default function PlatformBrooksPage() {
 
       </section>
 
-      {/* --- 4. SITE PLAN (Gallery Feel) --- */}
-      <section className="bg-white py-20 md:py-24 border-y border-neutral-200">
+      {/* --- 4. SITE PLAN (Fixed Mobile Size) --- */}
+      <section className="bg-white py-20 md:py-24 border-t border-neutral-200">
         <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-12 max-w-3xl mx-auto">
                 <h2 className="text-3xl md:text-4xl font-serif mb-4">Master Planned Efficiency</h2>
@@ -250,43 +231,55 @@ export default function PlatformBrooksPage() {
                 </p>
             </div>
             
-            <div className="relative aspect-square md:aspect-[16/9] w-full border border-neutral-200 shadow-inner bg-[#FAFAFA] p-4 md:p-8">
+            {/* Mobile Fix: h-[400px] instead of aspect-square ensures the landscape image 
+                has enough height to be visible without being tiny.
+                Removed padding (p-0) to maximize width.
+            */}
+            <div className="relative h-[400px] md:aspect-[16/9] md:h-auto w-full border border-neutral-200 shadow-inner bg-[#FAFAFA]">
                 <Image src={IMAGES.sitePlan} alt="Site Circulation Plan" fill className="object-contain" />
             </div>
         </div>
       </section>
 
-      {/* --- 5. PREMIUM STICKY FOOTER (Mobile Optimized) --- */}
-      <div className="fixed bottom-0 left-0 w-full bg-white/95 backdrop-blur-lg border-t border-neutral-200 p-4 z-50 shadow-[0_-10px_40px_rgba(0,0,0,0.1)] pb-safe">
-        <div className="max-w-7xl mx-auto flex items-center justify-between gap-4">
-            
-            <div className="hidden md:block">
-                <p className="text-sm font-serif text-[#111]">The PLATFORM @ Brooks</p>
-                <p className="text-[10px] text-neutral-400 uppercase tracking-widest">Target Yield: 5.42%</p>
-            </div>
-            
-            <div className="flex items-center gap-3 w-full md:w-auto">
-                {/* Download Button */}
-                <a 
-                  href="https://firebasestorage.googleapis.com/v0/b/growshare-capital.firebasestorage.app/o/Real%20Estate%2FThe%20Platform%2FThe%20Platform.pdf?alt=media&token=3433b90b-c4e4-41a7-99e2-402ea6e0fed5"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 md:flex-none flex items-center justify-center gap-3 px-4 h-14 bg-neutral-100 hover:bg-neutral-200 text-[#111] text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] transition-colors"
-                >
-                    <Download className="w-4 h-4" />
-                    <span className="hidden md:inline">Download</span> PDF
-                </a>
-                
-                {/* Invest Button - Taller and bolder for mobile */}
-                <Link 
-                  href="/contact" 
-                  className="flex-1 md:flex-none flex items-center justify-center gap-2 px-8 h-14 bg-[#111] hover:bg-[#D4AF37] hover:text-black text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.2em] transition-all shadow-lg"
-                >
-                    Request Access
-                </Link>
-            </div>
-        </div>
-      </div>
+      {/* --- 5. FOOTER / NEXT STEPS (Replaces Sticky Bar) --- */}
+      <section className="bg-[#111] text-white py-20 border-t border-white/10">
+          <div className="max-w-4xl mx-auto px-6 text-center space-y-10">
+              <div className="space-y-4">
+                  <h2 className="text-4xl md:text-5xl font-serif">Begin Your Diligence</h2>
+                  <p className="text-neutral-400 font-light max-w-lg mx-auto">
+                      Access the full Offering Memorandum, financial models, and architectural plans.
+                  </p>
+              </div>
+
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 w-full">
+                  {/* PDF DOWNLOAD */}
+                  <a 
+                    href="https://firebasestorage.googleapis.com/v0/b/growshare-capital.firebasestorage.app/o/Real%20Estate%2FThe%20Platform%2FThe%20Platform.pdf?alt=media&token=3433b90b-c4e4-41a7-99e2-402ea6e0fed5"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full md:w-auto px-8 h-14 bg-white hover:bg-neutral-200 text-[#111] flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-[0.2em] transition-colors"
+                  >
+                      <FileText className="w-4 h-4" />
+                      Download OM
+                  </a>
+
+                  {/* CONTACT */}
+                  <Link 
+                    href="/contact" 
+                    className="w-full md:w-auto px-8 h-14 border border-[#D4AF37] text-[#D4AF37] hover:bg-[#D4AF37] hover:text-black flex items-center justify-center gap-3 text-xs font-bold uppercase tracking-[0.2em] transition-all"
+                  >
+                      Contact IR Team
+                  </Link>
+              </div>
+
+              <div className="pt-12 border-t border-white/10 mt-12 flex flex-col md:flex-row justify-between items-center text-[10px] text-neutral-500 uppercase tracking-widest gap-4">
+                  <Link href="/real-estate" className="hover:text-white transition-colors flex items-center gap-2">
+                      <ArrowLeft className="w-3 h-3" /> Back to Portfolio
+                  </Link>
+                  <span>© 2024 GrowShare Capital</span>
+              </div>
+          </div>
+      </section>
 
     </div>
   );
