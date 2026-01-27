@@ -5,183 +5,236 @@ export type Story = {
   slug: string;
   title: string;
   description: string;
-  date: string; // Storing as YYYY-MM-DD string
+  date: string; 
   category: string;
   author: string;
   image: string;
-  aiHint?: string;        // Optional: for AI image generation prompts
+  aiHint?: string;
   imagePosition?: string;
   videoUrl?: string;
   pdfUrl?: string;
   summary?: string;
-  content?: string;       // The full HTML content of the article
+  content?: string;       
   status?: 'Published' | 'Coming Soon';
   isFeatured?: boolean;
 };
 
-// This array is the source of truth for the seeder.
 export const storiesData: Omit<Story, 'id' | 'slug'>[] = [
-  // STORY 1: Comparative Market Analysis (The New Report)
+  // STORY 1: Comparative Market Analysis (Full Report Version)
   {
     title: 'Comparative Market Analysis: Fourplex Development in Atlanta vs. Memphis',
-    description: 'A data-driven evaluation of development costs, rental income potential, and financial viability for 2025 investment strategies.',
+    description: 'A comprehensive data-driven report evaluating development costs, rental income potential, and financial viability (DSCR) for new fourplex construction in 2025.',
     date: '2026-01-27',
     category: 'Market Analysis',
     author: 'Ryan Kelley',
-    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop', // Kept original image, or update as needed
-    aiHint: 'architectural rendering of a modern townhome fourplex',
+    image: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?q=80&w=2070&auto=format&fit=crop',
+    aiHint: 'architectural blueprints and financial data on a desk',
     imagePosition: 'center',
     isFeatured: true,
     status: 'Published',
     content: `
       <h2>1.0 Introduction and Strategic Overview</h2>
-      <p>This report presents a data-driven comparison of Atlanta, Georgia, and Memphis, Tennessee, as potential markets for new fourplex developments. Each market is evaluated using key investment criteria: development costs, rental income potential, and overall financial viability.</p> 
-      
-      <p>The analysis uses 2025 estimates to identify which market offers the best balance of entry cost, operational cash flow, and potential profitability. </p>
+      <p>This report presents a data-driven comparison of Atlanta, Georgia, and Memphis, Tennessee, as potential markets for new fourplex developments. Each market is evaluated using key investment criteria: development costs, rental income potential, and overall financial viability. The analysis uses 2025 estimates to identify which market offers the best balance of entry cost, operational cash flow, and potential profitability.</p>
+      <p>The analysis starts with an overview of each city's economic and cultural landscape, followed by projected construction and development costs. Investment performance for a standard fourplex is modeled using Net Operating Income (NOI) and Debt Service Coverage Ratio (DSCR). The report concludes with a detailed analysis of Memphis and a targeted profitability strategy.</p>
+      <p>This structure provides GrowShare Capital with a clear framework for informed decision-making, consistently referencing the core decision metric.</p>
 
       <h2>2.0 High-Level Market Profile Comparison</h2>
-      <p>Before looking at the financial data, it is important to consider how economic and lifestyle factors in Atlanta and Memphis affect long-term tenant demand, rental growth, and property values. The table below highlights each city's main features.</p>
+      <p>Before looking at the financial data, it is important to consider how economic and lifestyle factors in Atlanta and Memphis affect long-term tenant demand, rental growth, and property values. The tables below highlight each city's main features and fourplex market conditions.</p>
 
-      <div class="overflow-x-auto my-8">
+      <h3>Market Snapshot</h3>
+      <div class="overflow-x-auto my-6 border border-neutral-200 rounded-lg">
         <table class="w-full text-left border-collapse min-w-[600px]">
-          <thead>
-            <tr class="border-b-2 border-neutral-200">
-              <th class="py-3 font-bold text-[#1a1a1a] w-1/3">Category</th>
-              <th class="py-3 font-bold text-[#1a1a1a] w-1/3">Atlanta, GA</th>
-              <th class="py-3 font-bold text-[#1a1a1a] w-1/3">Memphis, TN</th>
+          <thead class="bg-neutral-100 text-[#1a1a1a]">
+            <tr>
+              <th class="p-4 font-bold border-b border-neutral-200 w-1/4">Category</th>
+              <th class="p-4 font-bold border-b border-neutral-200 w-1/3">Atlanta, GA</th>
+              <th class="p-4 font-bold border-b border-neutral-200 w-1/3">Memphis, TN</th>
             </tr>
           </thead>
-          <tbody class="text-neutral-700 text-sm">
+          <tbody class="text-sm text-neutral-700">
             <tr class="border-b border-neutral-100">
-              <td class="py-3 font-semibold">Key Economic Drivers</td>
-              <td class="py-3">Thriving job market in tech, finance, and entertainment.</td>
-              <td class="py-3">Profile emphasizes lifestyle, logistics, and affordability over specific industry drivers.</td>
+              <td class="p-4 font-semibold">Key Economic Drivers</td>
+              <td class="p-4">Thriving job market in tech, finance, and entertainment.</td>
+              <td class="p-4">Market profile emphasizes lifestyle and affordability over specific industry drivers.</td>
             </tr>
             <tr class="border-b border-neutral-100">
-              <td class="py-3 font-semibold">Cultural & Lifestyle</td>
-              <td class="py-3">Rich history, vibrant cultural scene, museums, and extensive park systems.</td>
-              <td class="py-3">Rich musical heritage (Beale St), diverse cuisine (BBQ), and Mississippi River access.</td>
+              <td class="p-4 font-semibold">Cultural & Lifestyle Appeal</td>
+              <td class="p-4">Rich history, vibrant cultural scene, museums, festivals, and extensive park systems.</td>
+              <td class="p-4">Rich musical heritage (Beale Street), diverse cuisine (BBQ/Soul Food), and Mississippi River access.</td>
             </tr>
             <tr class="border-b border-neutral-100">
-              <td class="py-3 font-semibold">Median 4-Plex Cost</td>
-              <td class="py-3"><strong>$530,000</strong> (2,836 sq ft)</td>
-              <td class="py-3"><strong>$222,500</strong> (3,881 sq ft)</td>
+              <td class="p-4 font-semibold">Cost of Living</td>
+              <td class="p-4">Relatively low cost of living compared to other major cities.</td>
+              <td class="p-4">Low cost of living and affordable housing provide great value.</td>
+            </tr>
+            <tr class="bg-neutral-50 font-medium">
+              <td class="p-4">Median Fourplex Cost</td>
+              <td class="p-4">$530,000 (2,836 sq ft)</td>
+              <td class="p-4">$222,500 (3,881 sq ft)</td>
             </tr>
           </tbody>
         </table>
       </div>
+      <p>This overview highlights the main differences between the two markets. The following section examines the specific financial inputs required for new development in each city.</p>
 
       <h2>3.0 Comparative Development Cost Analysis</h2>
-      <p>Understanding Total Development Cost (TDC) is essential, as it determines the initial capital required and sets the cost basis for future profitability. The following analysis uses a standardized fourplex project (4 x 2BR/2BA units) to compare the markets directly.</p>
+      <p>Understanding Total Development Cost (TDC) is essential, as it determines the initial capital required and sets the cost basis for future profitability. The following analysis uses a standardized fourplex project to compare the Atlanta and Memphis metropolitan areas directly.</p>
+      
+      <div class="bg-neutral-50 p-6 rounded-lg border-l-4 border-[#D4AF37] my-6">
+        <h4 class="font-bold mb-2">Baseline Project Assumptions:</h4>
+        <ul class="list-disc pl-5 space-y-1 text-sm text-neutral-700">
+            <li><strong>Building Type:</strong> 4-Plex (Townhome or Garden-style)</li>
+            <li><strong>Unit Mix:</strong> Four (4) x 2BR / 2BA units</li>
+            <li><strong>Average Unit Size:</strong> 950–1,050 SF</li>
+            <li><strong>Total Gross Area:</strong> 4,000–4,200 SF</li>
+            <li><strong>Finish Level:</strong> Workforce / Market-Rate</li>
+        </ul>
+      </div>
 
-      <h3>3.1 Hard Construction Costs & TDC</h3>
-      <p>The analysis reveals a significant cost difference between the two markets, with Memphis’s projected TDC approximately <strong>$255,000 lower</strong> than Atlanta’s. This capital efficiency provides a strategic advantage by lowering the entry barrier.</p>
+      <h3>3.1 Hard Construction Costs</h3>
+      <p>Hard costs include the tangible aspects of construction, such as labor and materials. These costs account for the largest share of the development budget and are heavily influenced by local market conditions.</p>
 
-      <div class="overflow-x-auto my-8">
+      <h3>3.2 Total Development Cost (TDC)</h3>
+      <p>Total Development Cost includes all project expenses, from hard construction costs to soft costs like design fees, permits, financing, and contingency funds.</p>
+
+      <div class="overflow-x-auto my-6 border border-neutral-200 rounded-lg">
         <table class="w-full text-left border-collapse min-w-[600px]">
-          <thead>
-            <tr class="border-b-2 border-neutral-200">
-              <th class="py-3 font-bold text-[#1a1a1a]">Cost Item</th>
-              <th class="py-3 font-bold text-[#1a1a1a]">Atlanta Metro</th>
-              <th class="py-3 font-bold text-[#1a1a1a]">Memphis Metro</th>
+          <thead class="bg-neutral-100 text-[#1a1a1a]">
+            <tr>
+              <th class="p-3 font-bold border-b border-neutral-200">Cost Item</th>
+              <th class="p-3 font-bold border-b border-neutral-200">Atlanta Metro</th>
+              <th class="p-3 font-bold border-b border-neutral-200">Memphis Metro</th>
             </tr>
           </thead>
-          <tbody class="text-neutral-700">
-            <tr class="border-b border-neutral-100 bg-neutral-50">
-              <td class="py-3 pl-2 font-bold">Hard Costs</td>
-              <td class="py-3">$740,000</td>
-              <td class="py-3">$545,000</td>
+          <tbody class="text-sm text-neutral-700">
+            <tr class="border-b border-neutral-100">
+              <td class="p-3 font-semibold">Hard Costs</td>
+              <td class="p-3">$740,000</td>
+              <td class="p-3">$545,000</td>
             </tr>
             <tr class="border-b border-neutral-100">
-              <td class="py-3 pl-2">Architecture & Eng.</td>
-              <td class="py-3">$55,000</td>
-              <td class="py-3">$35,000</td>
+              <td class="p-3">Architecture & Engineering</td>
+              <td class="p-3">$55,000</td>
+              <td class="p-3">$35,000</td>
             </tr>
             <tr class="border-b border-neutral-100">
-              <td class="py-3 pl-2">Permits, Impact & Utilities</td>
-              <td class="py-3">$35k – $55k</td>
-              <td class="py-3">$15k – $25k</td>
+              <td class="p-3">Permits, Impact & Utilities</td>
+              <td class="p-3">$35,000 – $55,000</td>
+              <td class="p-3">$15,000 – $25,000</td>
             </tr>
             <tr class="border-b border-neutral-100">
-              <td class="py-3 pl-2">Financing & Legal</td>
-              <td class="py-3">$45,000</td>
-              <td class="py-3">$35,000</td>
+              <td class="p-3">Financing, Insurance, Legal</td>
+              <td class="p-3">$45,000</td>
+              <td class="p-3">$35,000</td>
             </tr>
-            <tr class="border-t-2 border-neutral-800 font-bold text-[#D4AF37]">
-              <td class="py-3 pl-2">Total Development Cost</td>
-              <td class="py-3">$925k – $975k</td>
-              <td class="py-3">$670k – $720k</td>
+            <tr class="border-b border-neutral-100">
+              <td class="p-3">Contingency (7%)</td>
+              <td class="p-3">$50,000</td>
+              <td class="p-3">$38,000</td>
+            </tr>
+            <tr class="bg-[#1a1a1a] text-white font-bold">
+              <td class="p-3">Total Development Cost</td>
+              <td class="p-3">$925,000 – $975,000</td>
+              <td class="p-3">$670,000 – $720,000</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p>The analysis reveals a significant cost difference between the two markets, with Memphis’s projected TDC approximately $255,000 lower than Atlanta’s. This capital efficiency provides a strategic advantage by lowering the entry barrier and enabling the development of nearly three projects in Memphis for every two in Atlanta. The absence of impact fees in Memphis further reduces soft costs compared to more developed markets such as Atlanta.</p>
+
+      <h2>4.0 Investment Performance and Financial Viability</h2>
+      <p>While development cost determines the initial investment, long-term financial viability depends on the project's ability to generate sufficient income to cover operating expenses and debt service. This is best evaluated using two key metrics: <strong>Net Operating Income (NOI)</strong> and <strong>Debt Service Coverage Ratio (DSCR)</strong>.</p>
+      
+      <p><strong>Key Financial Assumptions:</strong></p>
+      <ul class="list-disc pl-5 mb-4 text-sm text-neutral-700">
+        <li>Loan Terms: 75% LTV, 6.75% interest, 30-year amortization</li>
+        <li>Vacancy Rate: 7%</li>
+        <li>Operating Expenses: 35% of Gross Rent</li>
+      </ul>
+
+      <div class="overflow-x-auto my-6 border border-neutral-200 rounded-lg shadow-sm">
+        <table class="w-full text-left border-collapse min-w-[500px]">
+           <thead class="bg-neutral-100 text-[#1a1a1a]">
+            <tr>
+              <th class="p-3 font-bold border-b border-neutral-200">Metric</th>
+              <th class="p-3 font-bold border-b border-neutral-200">Atlanta Metro</th>
+              <th class="p-3 font-bold border-b border-neutral-200">Memphis Metro</th>
+            </tr>
+          </thead>
+          <tbody class="text-sm text-neutral-700">
+            <tr class="border-b border-neutral-100">
+              <td class="p-3">Avg Rent / Unit / Month</td>
+              <td class="p-3">$2,200</td>
+              <td class="p-3">$1,250</td>
+            </tr>
+            <tr class="border-b border-neutral-100">
+              <td class="p-3">Gross Annual Rent</td>
+              <td class="p-3">$105,600</td>
+              <td class="p-3">$60,000</td>
+            </tr>
+            <tr class="border-b border-neutral-100 font-semibold bg-neutral-50">
+              <td class="p-3">Net Operating Income (NOI)</td>
+              <td class="p-3">$68,500</td>
+              <td class="p-3">$39,000</td>
+            </tr>
+            <tr class="border-b border-neutral-100">
+              <td class="p-3">Annual Debt Service</td>
+              <td class="p-3">$53,500</td>
+              <td class="p-3">$36,000</td>
+            </tr>
+             <tr class="border-b border-neutral-100">
+              <td class="p-3">Cash Flow (Annual)</td>
+              <td class="p-3">$15,000</td>
+              <td class="p-3">$3,000</td>
+            </tr>
+            <tr class="bg-[#D4AF37] text-white font-bold">
+              <td class="p-3">DSCR</td>
+              <td class="p-3">1.28</td>
+              <td class="p-3">1.08</td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <p><strong>Key Insight:</strong> The absence of impact fees in Memphis significantly reduces soft costs compared to more developed markets such as Atlanta.</p>
-
-      <h2>4.0 Investment Performance and Financial Viability</h2>
-      <p>While development cost determines the initial investment, long-term financial viability depends on the project's ability to generate sufficient income. We modeled this using a <strong>75% LTV loan at 6.75% interest</strong>.</p>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
-        <div class="bg-neutral-50 p-6 rounded border border-neutral-200">
-          <h4 class="font-bold text-lg mb-4 text-[#1a1a1a]">Atlanta: High Income, High Stability</h4>
-          <ul class="space-y-2 text-sm">
-            <li class="flex justify-between"><span>Avg Rent/Unit:</span> <strong>$2,200</strong></li>
-            <li class="flex justify-between"><span>NOI:</span> <strong>$68,500</strong></li>
-            <li class="flex justify-between"><span>Annual Cash Flow:</span> <strong>$15,000</strong></li>
-            <li class="flex justify-between text-[#D4AF37] font-bold"><span>DSCR:</span> <span>1.28</span></li>
-          </ul>
-          <p class="mt-4 text-xs text-neutral-500">Result: A stable, financeable project with strong appreciation potential.</p>
-        </div>
-
-        <div class="bg-neutral-50 p-6 rounded border border-neutral-200">
-          <h4 class="font-bold text-lg mb-4 text-[#1a1a1a]">Memphis: Low Cost, Thin Margins</h4>
-          <ul class="space-y-2 text-sm">
-            <li class="flex justify-between"><span>Avg Rent/Unit:</span> <strong>$1,250</strong></li>
-            <li class="flex justify-between"><span>NOI:</span> <strong>$39,000</strong></li>
-            <li class="flex justify-between"><span>Annual Cash Flow:</span> <strong>$3,000</strong></li>
-            <li class="flex justify-between text-red-500 font-bold"><span>DSCR:</span> <span>1.08</span></li>
-          </ul>
-          <p class="mt-4 text-xs text-neutral-500">Result: Requires incentives or value engineering to meet underwriting standards.</p>
-        </div>
-      </div>
+      <p>The analysis demonstrates a clear trade-off. The Atlanta project, despite higher development costs, generates significantly higher rental income, resulting in a 1.28 DSCR and an annual pre-tax cash flow of $15,000. This outcome reflects a stable, financeable project with strong potential for asset appreciation.</p>
+      <p>In contrast, the Memphis project yields much thinner margins. Its lower entry cost results in a 1.08 DSCR and only $3,000 in annual cash flow. A DSCR near 1.0 does not meet conventional underwriting standards and requires additional incentives, such as tax abatements or subordinate debt, to achieve financeability.</p>
 
       <h2>5.0 Memphis Deep Dive: A Pathway to Profitability</h2>
-      <p>The expected 1.08 DSCR for the Memphis fourplex presents a significant challenge. To close the viability gap, the project must transition from a premium specification to a <strong>Value-Engineered (VE)</strong> rental model.</p>
+      <p>The expected 1.08 DSCR for the Memphis fourplex presents a significant challenge for investors seeking standard financing. This section examines the Memphis market in detail, quantifies the gap, and provides a clear plan to reduce risk and achieve a lender-acceptable DSCR.</p>
+      
+      <h3>5.1 The Viability Gap Analysis</h3>
+      <p>A typical valuation approach starts with the lender’s required DSCR to determine the maximum loan amount and purchase price. This analysis shows that to achieve a 1.28 DSCR with market rents of $1,250 per unit, the maximum supportable property price is about $465,000, which is well below the projected development cost of $670,000 to $720,000. In summary, at the current TDC, the project does not match Memphis’s supportable debt and income levels, so it cannot be financed as is.</p>
 
-      <h3>5.1 Strategic Cost Reduction</h3>
-      <p>By prioritizing structural efficiency over expensive finishes, we can align the Total Development Cost with realistic exit values. Key strategies include:</p>
-      <ul class="list-disc pl-5 space-y-2 mb-6">
-        <li><strong>Shell Optimization:</strong> Using slab-on-grade foundations and simple rectangular geometries to cut framing and concrete costs.</li>
-        <li><strong>Exterior:</strong> Using vinyl siding with brick accents rather than full masonry.</li>
-        <li><strong>Interiors:</strong> Installing all-electric systems, PEX piping, and durable Luxury Vinyl Plank (LVP) flooring.</li>
-      </ul>
-      <p class="bg-neutral-100 p-4 border-l-4 border-[#D4AF37] italic text-sm text-neutral-600">
-        <strong>Impact:</strong> Swapping expensive finishes for durable alternatives can save <strong>$45,000 to $60,000 per unit</strong>, enabling the development of a profitable financial model.
-      </p>
+      <h3>5.2 Strategic Cost Reduction via Value Engineering (VE)</h3>
+      <p>To close the current viability gap, the project will transition from a premium specification to a Value-Engineered (VE) rental model. This approach aligns the Total Development Cost (TDC) with realistic exit values by prioritizing structural efficiency and durability over expensive finishes.</p>
+      <p>The plan starts by optimizing the building shell, using a slab-on-grade foundation and a simple rectangular shape to cut framing and concrete costs. Exterior costs are reduced by choosing standard window sizes and a mix of vinyl siding with a brick accent rather than full masonry.</p>
+      <p>Inside, the design focuses on lowering utility and turnover costs. The plan uses all-electric systems instead of natural gas, PEX piping with stacked wet walls, and durable Luxury Vinyl Plank (LVP) flooring. By swapping expensive finishes like quartz and tile for laminate countertops and fiberglass tubs, the project can save $45,000 to $60,000 per unit, improving the financial outlook and helping to ensure profitability.</p>
 
       <h2>6.0 Final Recommendations for GrowShare Capital</h2>
-      <ol class="list-decimal pl-5 space-y-4">
+      <p>This analysis highlights the fundamental trade-off between the Atlanta and Memphis markets. Atlanta offers a higher-cost, higher-return profile with immediate financial stability, while Memphis provides a lower-cost entry point with higher initial risk but the potential for engineered profitability. Based on these findings, the following recommendations are provided.</p>
+      
+      <ol class="list-decimal pl-6 space-y-4 my-6">
         <li>
           <strong>Evaluate Atlanta for a Higher-Capital, Lower-Risk Strategy.</strong><br/>
-          Atlanta is a straightforward investment offering a strong initial DSCR of 1.28. It is best suited for investors who prioritize stability and are willing to commit more capital upfront ($925k+ TDC).
+          Atlanta is a straightforward investment, offering a strong initial DSCR of 1.28 and significant long-term appreciation potential. It is best suited for investors who prioritize stability and are willing to commit more capital upfront.
         </li>
         <li>
-          <strong>Pursue Memphis with a Disciplined, Value-Engineered Approach.</strong><br/>
-          Memphis offers a higher yield only if costs are controlled. Target a TDC of <strong>$580,000</strong> to achieve a developer profit of ~$95,000.
+          <strong>Pursue Memphis with a disciplined, value-engineered approach.</strong><br/>
+          Memphis offers a higher yield only if development costs are tightly controlled. The project should target a Total Development Cost of $580,000, reducing hard costs to about $450,000 ($125 per square foot).
         </li>
         <li>
           <strong>Leverage Key Memphis-Specific Optimizations.</strong><br/>
-          Verify with the Shelby County Assessor regarding the <strong>25% residential tax rate</strong> vs. the 40% commercial rate. This single action can reduce annual taxes by nearly $2,500 and increase valuation by approximately $35,000.
+          Beyond construction cost control, success in Memphis requires leveraging local market nuances. It is important to verify with the Shelby County Assessor whether the property can be structured to achieve the residential (25%) rather than the commercial (40%) tax assessment rate.
         </li>
       </ol>
 
       <div class="not-prose mt-16 pt-10 border-t border-neutral-200">
         <h2 class="text-2xl font-serif font-bold mb-8 text-[#1a1a1a]">About the Author</h2>
-        <div class="flex flex-col sm:flex-row items-start gap-8 bg-neutral-50 p-8 rounded-sm">
+        <div class="flex flex-col sm:flex-row items-start gap-8 bg-neutral-50 p-8 rounded-sm border border-neutral-200">
             <img 
               src="https://firebasestorage.googleapis.com/v0/b/growshare-capital.firebasestorage.app/o/profile%20pictures%2FRyan%20Kelly.png?alt=media&token=ec9d9c01-5329-4942-a5a2-333dcbcce376" 
               alt="Ryan Kelley" 
-              class="w-24 h-24 rounded-full object-cover shrink-0 border border-neutral-200 shadow-sm" 
+              class="w-24 h-24 rounded-full object-cover shrink-0 border border-neutral-300 shadow-sm" 
               style="object-position: top;" 
             />
             <div class="flex-1">
@@ -189,14 +242,14 @@ export const storiesData: Omit<Story, 'id' | 'slug'>[] = [
                 <p class="text-sm text-[#D4AF37] font-bold uppercase tracking-widest mb-4">Director of Operations & Strategy</p>
                 <div class="text-sm text-neutral-600 leading-relaxed space-y-4 font-light">
                     <p>Ryan Kelley is an operations leader and impact strategist combining capital formation with technical execution. As Director of Operations & Development at Dar Un Noor School in Atlanta, GA, he leads revenue strategy and strategic partnerships.</p>
-                    <p>Currently an Equity Partner at GrowShare Capital, Ryan leverages the intersection of fundraising, operations, and technology to build resilient infrastructure for high-impact investments.</p>
+                    <p>Currently an Equity Partner at GrowShare Capital, Ryan leverages this intersection of fundraising, operations, and technology to build resilient infrastructure for high-impact investments.</p>
                 </div>
             </div>
         </div>
       </div>
     `
   },
-  // STORY 2: The Appointment of Ryan Kelley (Unchanged)
+  // STORY 2: The Appointment of Ryan Kelley (Standard)
   {
     title: 'GrowShare Capital Appoints Ryan Kelley to Lead Operations & Strategy',
     description: 'This strategic move reinforces the operational backbone supporting the firm’s growing investment portfolio. Kelley enters the role with a resume that merges technical execution with the capital formation skills needed for impact-driven development.',
