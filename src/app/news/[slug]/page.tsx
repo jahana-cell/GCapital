@@ -105,7 +105,6 @@ type Props = {
 
 // --- SEO: Generate Metadata ---
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  // ✅ FIX: Await the params Promise
   const { slug } = await params;
   
   if (!slug) return { title: "Article Not Found" };
@@ -118,21 +117,46 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
+  // 1. Define the production URL (Update this if your domain is different)
+  const baseUrl = 'https://growsharecapital.com'; 
+  
+  // 2. Construct the URL to the OpenGraph image generator we just created
+  const ogImageUrl = `${baseUrl}/news/${slug}/opengraph-image`;
+
   return {
     title: `${story.title} | GrowShare Capital`,
     description: story.description,
-    // Note: We intentionally do NOT include 'images' here.
-    // Next.js automatically finds 'opengraph-image.tsx' and uses that generated image instead.
+    
+    // 3. EXPLICIT OPENGRAPH CONFIGURATION FOR WHATSAPP
     openGraph: {
       title: story.title,
       description: story.description,
+      url: `${baseUrl}/news/${slug}`,
+      siteName: 'GrowShare Capital',
+      locale: 'en_US',
+      type: 'article',
+      images: [
+        {
+          url: ogImageUrl,     // Points to generated PNG
+          width: 1200,         // Required by WhatsApp
+          height: 630,         // Required by WhatsApp
+          type: 'image/png',   // CRITICAL: Tells WhatsApp this is a PNG
+        },
+      ],
+    },
+    
+    // 4. Twitter Configuration
+    twitter: {
+      card: 'summary_large_image',
+      title: story.title,
+      description: story.description,
+      images: [ogImageUrl],
     },
   };
 }
 
 // --- MAIN PAGE COMPONENT ---
 export default async function NewsArticlePage({ params }: Props) {
-  // ✅ FIX: Await the params Promise
   const { slug } = await params;
 
   if (!slug) {
