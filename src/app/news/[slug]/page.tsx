@@ -3,7 +3,23 @@ import { notFound } from "next/navigation";
 import { dbAdmin } from "@/lib/firebase-admin";
 import NewsArticleClientPage from "./client-page";
 
+// Force dynamic rendering so new articles appear instantly
 export const dynamic = "force-dynamic";
+
+// --- 1. DYNAMIC BASE URL HELPER ---
+// This ensures the image link works on Localhost AND Production automatically.
+const getBaseUrl = () => {
+  // Check standard environment variables
+  if (process.env.NEXT_PUBLIC_BASE_URL) {
+    return process.env.NEXT_PUBLIC_BASE_URL;
+  }
+  // Vercel automatically sets this one
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+  // Fallback for local development
+  return 'http://localhost:3000';
+};
 
 // --- TYPE DEFINITION ---
 export interface Story {
@@ -98,7 +114,6 @@ export async function generateStaticParams() {
     }
 }
 
-// --- TYPE FOR PROPS (Next.js 15+) ---
 type Props = {
   params: Promise<{ slug: string }>;
 };
@@ -117,17 +132,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
 
-  // 1. Define the production URL (Update this if your domain is different)
-  const baseUrl = 'https://growsharecapital.com'; 
-  
-  // 2. Construct the URL to the OpenGraph image generator we just created
+  // 2. CONSTRUCT THE MAGIC IMAGE URL
+  const baseUrl = getBaseUrl();
+  // This points to the file `opengraph-image.tsx` we created
   const ogImageUrl = `${baseUrl}/news/${slug}/opengraph-image`;
 
   return {
+    // Critical: Tells Next.js how to resolve relative URLs
+    metadataBase: new URL(baseUrl), 
+    
     title: `${story.title} | GrowShare Capital`,
     description: story.description,
     
-    // 3. EXPLICIT OPENGRAPH CONFIGURATION FOR WHATSAPP
+    // 3. WHATSAPP SPECIFIC CONFIGURATION
     openGraph: {
       title: story.title,
       description: story.description,
@@ -137,15 +154,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       type: 'article',
       images: [
         {
-          url: ogImageUrl,     // Points to generated PNG
-          width: 1200,         // Required by WhatsApp
-          height: 630,         // Required by WhatsApp
-          type: 'image/png',   // CRITICAL: Tells WhatsApp this is a PNG
+          url: ogImageUrl,     // The Generated PNG
+          width: 1200,         
+          height: 630,         
+          alt: story.title,
+          type: 'image/png',   // Explicitly tell WhatsApp it's a PNG
         },
       ],
     },
     
-    // 4. Twitter Configuration
     twitter: {
       card: 'summary_large_image',
       title: story.title,
@@ -159,15 +176,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function NewsArticlePage({ params }: Props) {
   const { slug } = await params;
 
-  if (!slug) {
-      notFound();
-  }
+  if (!slug) notFound();
 
   const story = await getStory(slug);
 
-  if (!story) {
-    notFound();
-  }
+  if (!story) notFound();
 
   return <NewsArticleClientPage initialStory={story} slug={slug} />;
 }
