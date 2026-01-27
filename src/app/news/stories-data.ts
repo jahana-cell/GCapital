@@ -20,7 +20,7 @@ export type Story = {
 };
 
 export const storiesData: Omit<Story, 'id' | 'slug'>[] = [
-  // STORY 1: Comparative Market Analysis (Mobile Optimized)
+  // STORY 1: Comparative Market Analysis
   {
     title: 'Comparative Market Analysis: Fourplex Development in Atlanta vs. Memphis',
     description: 'A comprehensive data-driven report evaluating development costs, rental income potential, and financial viability (DSCR) for new fourplex construction in 2025.',
@@ -75,7 +75,7 @@ export const storiesData: Omit<Story, 'id' | 'slug'>[] = [
           </tbody>
         </table>
       </div>
-      <p class="text-sm text-neutral-500 italic mb-8">Scroll table horizontally to view full data on mobile.</p>
+      <p class="text-sm text-neutral-500 italic mb-8 block md:hidden">Scroll table horizontally to view full data on mobile.</p>
 
       <h2>3.0 Comparative Development Cost Analysis</h2>
       <p>Understanding Total Development Cost (TDC) is essential, as it determines the initial capital required and sets the cost basis for future profitability. The following analysis uses a standardized fourplex project to compare the Atlanta and Memphis metropolitan areas directly.</p>
