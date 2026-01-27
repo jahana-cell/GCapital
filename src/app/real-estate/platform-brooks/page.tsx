@@ -15,7 +15,8 @@ import {
 
 // --- IMAGES CONFIGURATION ---
 const IMAGES = {
-  hero: "https://i.imgur.com/cLGTKIk.png",       // Aerial Shot
+  hero: "https://i.imgur.com/cLGTKIk.png",       // Desktop Wide Shot
+  heroMobile: "https://i.imgur.com/cq8QhWo.png", // NEW: Mobile Portrait Shot
   sitePlan: "https://i.imgur.com/kuZC1Hb.png",   // 3D Site Map
   anchor: "https://i.imgur.com/rxhCvZ3.jpeg",    // Brooks Market Exterior
   interior: "https://i.imgur.com/Q3idXhM.png",   // Living Room Render
@@ -27,19 +28,40 @@ export default function PlatformBrooksPage() {
   return (
     <div className="min-h-screen bg-[#F5F5F0] text-[#111] font-sans selection:bg-[#D4AF37] selection:text-white">
       
-      {/* --- 1. IMMERSIVE CINEMATIC HERO --- */}
+      {/* --- 1. HERO SECTION (Smart Image Swapping) --- */}
       <section className="relative w-full h-[100svh]">
-        <Image
-           src={IMAGES.hero}
-           alt="The PLATFORM @ Brooks"
-           fill
-           className="object-cover"
-           priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/20 to-black/90" />
         
-        <div className="absolute inset-0 flex flex-col justify-center items-center text-center px-6">
+        {/* MOBILE IMAGE: Visible only on small screens */}
+        <div className="block md:hidden absolute inset-0">
+            <Image
+                src={IMAGES.heroMobile}
+                alt="The PLATFORM @ Brooks"
+                fill
+                className="object-cover"
+                priority
+            />
+        </div>
+
+        {/* DESKTOP IMAGE: Visible only on medium+ screens */}
+        <div className="hidden md:block absolute inset-0">
+            <Image
+                src={IMAGES.hero}
+                alt="The PLATFORM @ Brooks"
+                fill
+                className="object-cover"
+                priority
+            />
+        </div>
+
+        {/* GRADIENT OVERLAY (Shared) */}
+        {/* Darker at bottom to make text pop against any image */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent via-60% to-black/90" />
+        
+        {/* CONTENT OVERLAY */}
+        <div className="absolute inset-0 flex flex-col justify-end pb-32 md:justify-center md:pb-0 items-center text-center px-6">
            <div className="animate-fade-in-up space-y-6 max-w-4xl mx-auto">
+              
+              {/* Badge */}
               <div className="inline-flex items-center gap-2 px-5 py-2 border border-[#D4AF37]/50 bg-black/40 backdrop-blur-xl rounded-full">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#D4AF37] animate-pulse"/>
                 <span className="text-[#D4AF37] text-[10px] font-bold tracking-[0.3em] uppercase">
@@ -221,7 +243,7 @@ export default function PlatformBrooksPage() {
 
       </section>
 
-      {/* --- 4. SITE PLAN (Fixed Mobile Size) --- */}
+      {/* --- 4. SITE PLAN --- */}
       <section className="bg-white py-20 md:py-24 border-t border-neutral-200">
         <div className="max-w-7xl mx-auto px-6">
             <div className="text-center mb-12 max-w-3xl mx-auto">
@@ -231,17 +253,13 @@ export default function PlatformBrooksPage() {
                 </p>
             </div>
             
-            {/* Mobile Fix: h-[400px] instead of aspect-square ensures the landscape image 
-                has enough height to be visible without being tiny.
-                Removed padding (p-0) to maximize width.
-            */}
             <div className="relative h-[400px] md:aspect-[16/9] md:h-auto w-full border border-neutral-200 shadow-inner bg-[#FAFAFA]">
                 <Image src={IMAGES.sitePlan} alt="Site Circulation Plan" fill className="object-contain" />
             </div>
         </div>
       </section>
 
-      {/* --- 5. FOOTER / NEXT STEPS (Replaces Sticky Bar) --- */}
+      {/* --- 5. FOOTER / NEXT STEPS --- */}
       <section className="bg-[#111] text-white py-20 border-t border-white/10">
           <div className="max-w-4xl mx-auto px-6 text-center space-y-10">
               <div className="space-y-4">
