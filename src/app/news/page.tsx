@@ -3,7 +3,10 @@ import NewsClientPage from './client-page';
 import { dbAdmin } from '@/lib/firebase-admin';
 import type { Story } from '@/app/news/stories-data';
 
-// ✅ Helper to clean up data (Same as we used in the Single Page)
+// CRITICAL: Ensures the page rebuilds on every request so new stories appear instantly
+export const dynamic = 'force-dynamic';
+
+// ✅ Helper to clean up data
 function sanitizeStory(doc: any): Story {
   const data = doc.data() || {};
 
@@ -23,7 +26,7 @@ function sanitizeStory(doc: any): Story {
   const rawStatus = data.status || "Published";
   const validStatus = (rawStatus === "Coming Soon") ? "Coming Soon" : "Published";
 
-  // 3. Content Mapping (Maps 'summary' to 'content')
+  // 3. Content Mapping
   const content = data.content || data.summary || data.body || "";
 
   return {
@@ -43,7 +46,6 @@ function sanitizeStory(doc: any): Story {
 }
 
 async function getStories(): Promise<Story[]> {
-  // Safety Check
   if (!dbAdmin) {
     console.error("❌ Admin DB not initialized");
     return [];
@@ -52,21 +54,20 @@ async function getStories(): Promise<Story[]> {
   try {
     const storiesRef = dbAdmin.collection("stories");
     
-    // 1. Try to fetch Sorted (Requires Index)
+    // 1. Try to fetch Sorted
     try {
         const q = storiesRef.orderBy("date", "desc");
         const snapshot = await q.get();
-        
         if (!snapshot.empty) {
             return snapshot.docs.map(doc => sanitizeStory(doc));
         }
     } catch (indexError) {
         console.warn("⚠️ Sorting failed (likely missing index). Fetching unsorted...");
-        // 2. Fallback: Fetch Unsorted if index is missing
+        // 2. Fallback: Fetch Unsorted
         const snapshot = await storiesRef.get();
         const stories = snapshot.docs.map(doc => sanitizeStory(doc));
         
-        // Sort manually in JavaScript since DB sort failed
+        // Sort manually
         return stories.sort((a, b) => 
             new Date(b.date).getTime() - new Date(a.date).getTime()
         );
@@ -98,7 +99,6 @@ export const metadata: Metadata = {
 
 export default async function NewsPage() {
   const initialStories = await getStories();
-  
-  // Pass the sanitized, safe data to the client
+  // We pass ALL stories here. The filtering happens in the Client Page.
   return <NewsClientPage initialStories={initialStories} />;
 }

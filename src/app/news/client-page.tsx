@@ -89,32 +89,27 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
         return published.filter(story => story.category === activeCategory);
     }, [stories, activeCategory]);
 
-    // 4. Featured Article Logic (Now works for EVERY category)
+    // 4. Featured Article Logic
     const featuredArticle = useMemo(() => {
         if (filteredStories.length === 0) return undefined;
-        
-        // 1. Look for a manually "Featured" story in this category
+        // 1. Look for a manually "Featured" story
         const manualFeature = filteredStories.find(s => s.isFeatured);
-        
-        // 2. If none found, just pick the newest one (Index 0)
-        // This ensures the top section NEVER disappears on mobile
+        // 2. Or pick the newest one
         return manualFeature || filteredStories[0];
     }, [filteredStories]);
 
-    // 5. List Logic (Everything except the featured one)
+    // 5. List Logic (MODIFIED: Allows duplicates now)
     const listArticles = useMemo(() => {
-        const list = featuredArticle 
-            ? filteredStories.filter(a => a.id !== featuredArticle.id)
-            : filteredStories;
-        return list.slice(0, displayedCount);
-    }, [filteredStories, displayedCount, featuredArticle]);
+        // If you want to show the featured article in the list too, just use filteredStories directly.
+        // If you wanted to hide it, you would filter it out here.
+        // We are using filteredStories directly to ensure it appears in "All Categories" as requested.
+        return filteredStories.slice(0, displayedCount);
+    }, [filteredStories, displayedCount]);
 
     // 6. Pagination Logic
     const hasMore = useMemo(() => {
-        const totalInList = filteredStories.length;
-        const effectiveTotal = featuredArticle ? totalInList - 1 : totalInList;
-        return displayedCount < effectiveTotal;
-    }, [displayedCount, filteredStories.length, featuredArticle]);
+        return displayedCount < filteredStories.length;
+    }, [displayedCount, filteredStories.length]);
 
     const handleLoadMore = () => {
         startTransition(() => {
@@ -146,7 +141,6 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
         <div className="min-h-screen bg-white pb-32">
             
             {/* --- HERO HEADER --- */}
-            {/* Adjusted spacing: pt-24 for mobile (so it doesn't start in middle), pt-40 for desktop */}
             <div className="pt-24 md:pt-40 px-6 md:px-12 max-w-[1600px] mx-auto mb-8 md:mb-20">
                 <h1 className="text-5xl md:text-8xl font-serif text-[#1a1a1a] mb-6 md:mb-8 leading-[0.9]">
                   The Journal
@@ -155,7 +149,6 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
             </div>
 
             {/* --- FEATURED SECTION --- */}
-            {/* Always visible if there is content */}
             {featuredArticle && (
                  <section className="w-full bg-[#F9F9F7] border-y border-neutral-100 mb-12 md:mb-16">
                     <div className="max-w-[1600px] mx-auto px-6 md:px-12 py-12 md:py-24 grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-24 items-center">
@@ -211,7 +204,6 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
             {/* --- STANDARD GRID --- */}
             <div className="max-w-[1600px] mx-auto px-6 md:px-12">
                 {listArticles.length > 0 ? (
-                    // GAP-Y-16 (4rem) creates big separation between rows on mobile
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-16 md:gap-y-20">
                         {listArticles.map((article) => (
                         <Link 
@@ -232,7 +224,6 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
                             </div>
 
                             {/* Content */}
-                            {/* Added 'pb-2' to ensure text doesn't hit the bottom edge visibly */}
                             <div className="flex flex-col flex-grow pb-2">
                                 <div className="flex items-center gap-3 mb-3">
                                     <span className="text-[9px] tracking-[0.2em] uppercase font-bold text-[#1a1a1a]">
@@ -252,7 +243,6 @@ export default function NewsClientPage({ initialStories }: { initialStories: Sto
                                     {article.description}
                                 </p>
 
-                                {/* This button is now pushed up by the mb-6 on the paragraph above */}
                                 <div className="text-[10px] uppercase tracking-widest font-bold text-neutral-400 group-hover:text-[#D4AF37] transition-colors mt-auto flex items-center gap-2">
                                     Read Article <ArrowRight className="w-3 h-3" />
                                 </div>
