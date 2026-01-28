@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og';
 import { dbAdmin } from '@/lib/firebase-admin';
 
-// 1. Force Node.js runtime (Required for Firebase Admin)
+// 1. Force Node.js runtime
 export const runtime = 'nodejs';
 
 export const alt = 'GrowShare Capital News';
@@ -11,9 +11,6 @@ export const size = {
   height: 630,
 };
 
-// 2. CRITICAL FOR WHATSAPP: 
-// ImageResponse generates PNGs by default. 
-// Do not set this to 'image/jpeg' or the file will be corrupt.
 export const contentType = 'image/png';
 
 type Props = {
@@ -21,39 +18,37 @@ type Props = {
 };
 
 /**
- * Helper to ensure background images aren't too massive.
- * WhatsApp fails if the final OG image is >300KB.
- * We request a smaller version from the CDN if possible.
+ * OPTIMIZATION HELPER
+ * WhatsApp Limit: 300KB.
+ * We must request a tiny, low-quality version of the background image.
+ * Since we put a dark overlay on top, the user won't notice the low quality.
  */
 const optimizeImageUrl = (url: string) => {
   if (!url) return '';
   
-  // If using Unsplash, we can control quality via URL params
+  // 1. Unsplash Optimization (Aggressive)
   if (url.includes('unsplash.com')) {
-    // w=1200: Resize to fit OG width
-    // q=60: Lower quality to reduce file size
-    // fm=jpg: Fetch as JPEG source (smaller download)
-    return `${url}&w=1200&q=60&fm=jpg`;
+    // w=600: Fetch half-width (we stretch it, which blurs it slightly - good for backgrounds)
+    // q=10: Very low quality (hidden by overlay)
+    // fm=jpg: Force JPEG source
+    return `${url}&w=600&q=10&fm=jpg&blur=20`; 
   }
-  
-  // For Firebase Storage, we use the URL as is, 
-  // but the overlay in the CSS will help hide artifacts if we scale it.
+
+  // 2. Firebase Optimization
+  // Firebase doesn't support dynamic resizing easily, so we can't force it here.
+  // If you use Firebase images, ensure you upload smaller versions or use a cloud function resizer.
   return url;
 };
 
 export default async function Image({ params }: Props) {
   const { slug } = await params;
   
-  // Default values
   let title = 'Investment Insights';
   let date = '';
   let imageUrl = '';
 
-  console.log(`Generating OpenGraph Image for: ${slug}`);
-
   try {
     if (dbAdmin) {
-        // A. Try fetching by Document ID first
         const docRef = dbAdmin.collection('stories').doc(slug);
         const docSnap = await docRef.get();
         let data: any = null;
@@ -61,7 +56,6 @@ export default async function Image({ params }: Props) {
         if (docSnap.exists) {
             data = docSnap.data();
         } else {
-             // B. Fallback: Query by 'slug' field
              const q = dbAdmin.collection('stories').where('slug', '==', slug).limit(1);
              const qSnap = await q.get();
              if (!qSnap.empty) {
@@ -69,24 +63,18 @@ export default async function Image({ params }: Props) {
              }
         }
 
-        // C. Extract Data
         if (data) {
             title = data.title || title;
-            // Optimize the image URL to prevent bloating the PNG size
             imageUrl = optimizeImageUrl(data.image || ''); 
             
             if (data.date) {
-               // Handle Firebase Timestamp or String dates
                const d = typeof data.date.toDate === 'function' 
                  ? data.date.toDate() 
                  : new Date(data.date);
-                 
-               // Check if date is valid
+               
                if (!isNaN(d.getTime())) {
                    date = d.toLocaleDateString('en-US', { 
-                       month: 'long', 
-                       day: 'numeric', 
-                       year: 'numeric' 
+                       month: 'long', day: 'numeric', year: 'numeric' 
                    });
                }
             }
@@ -112,7 +100,7 @@ export default async function Image({ params }: Props) {
           overflow: 'hidden',
         }}
       >
-        {/* LAYER 1: BACKGROUND IMAGE OR FALLBACK PATTERN */}
+        {/* LAYER 1: BACKGROUND */}
         {imageUrl ? (
             /* eslint-disable-next-line @next/next/no-img-element */
             <img
@@ -127,27 +115,24 @@ export default async function Image({ params }: Props) {
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
+                    // CSS Blur to hide the low quality artifacts
+                    filter: 'blur(4px)', 
+                    transform: 'scale(1.1)', // Scale up slightly to hide blurred edges
                 }}
             />
         ) : (
-            // Fallback pattern if no image exists
             <div 
                 style={{
                     position: 'absolute',
                     top: 0, left: 0, width: '100%', height: '100%',
-                    backgroundImage: 'radial-gradient(circle at 25px 25px, #1a1a1a 2%, transparent 0%), radial-gradient(circle at 75px 75px, #1a1a1a 2%, transparent 0%)',
-                    backgroundSize: '100px 100px',
+                    backgroundImage: 'radial-gradient(circle at 25px 25px, #222 2%, transparent 0%)',
+                    backgroundSize: '50px 50px',
                     backgroundColor: '#111',
                 }}
             />
         )}
 
-        {/* LAYER 2: DARK OVERLAY 
-            We use a strong overlay (0.85 opacity).
-            Why? It dramatically reduces the color complexity of the image,
-            which makes the final PNG file size much smaller (fixing WhatsApp issues)
-            while still showing the texture of the background image.
-        */}
+        {/* LAYER 2: DARK OVERLAY (Opacity 0.9 = Darker = Less Colors = Smaller File) */}
         <div
             style={{
                 position: 'absolute',
@@ -155,11 +140,11 @@ export default async function Image({ params }: Props) {
                 left: 0,
                 width: '100%',
                 height: '100%',
-                backgroundColor: 'rgba(5, 5, 5, 0.85)', 
+                backgroundColor: 'rgba(10, 10, 10, 0.9)', 
             }}
         />
 
-        {/* LAYER 3: CONTENT CONTAINER */}
+        {/* LAYER 3: CONTENT */}
         <div style={{
             position: 'relative',
             zIndex: 10,
@@ -169,9 +154,9 @@ export default async function Image({ params }: Props) {
             flexDirection: 'column',
             alignItems: 'center',
             justifyContent: 'center',
-            padding: '40px 80px', // Extra padding to prevent text hitting edges
+            padding: '40px 80px',
         }}>
-            {/* Decorative Border */}
+            {/* Border */}
             <div style={{
                 position: 'absolute',
                 top: '24px', left: '24px', right: '24px', bottom: '24px',
@@ -180,16 +165,14 @@ export default async function Image({ params }: Props) {
                 pointerEvents: 'none'
             }} />
 
-            {/* Brand Badge */}
+            {/* Logo */}
             <div style={{
                 display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                backgroundColor: '#D4AF37', // Gold
+                backgroundColor: '#D4AF37',
                 color: '#000',
-                fontSize: 14,
+                fontSize: 16,
                 fontWeight: 900,
-                padding: '8px 20px',
+                padding: '8px 24px',
                 letterSpacing: '0.15em',
                 textTransform: 'uppercase',
                 marginBottom: 30,
@@ -198,27 +181,26 @@ export default async function Image({ params }: Props) {
                 GrowShare Capital
             </div>
 
-            {/* Title - Clamped and Centered */}
+            {/* Title */}
             <div style={{
                 display: 'flex',
                 textAlign: 'center',
-                fontSize: 56, 
+                fontSize: 60, 
                 fontWeight: 'bold',
                 lineHeight: 1.1,
-                color: '#f5f5f5',
-                textShadow: '0 4px 12px rgba(0,0,0,0.6)',
-                maxWidth: '100%',
-                wordWrap: 'break-word',
+                color: '#fff',
+                textShadow: '0 4px 10px rgba(0,0,0,0.8)',
+                maxWidth: '90%',
             }}>
                 {title}
             </div>
 
-            {/* Date Footer */}
+            {/* Date */}
             {date && (
                 <div style={{
                     marginTop: 30,
-                    fontSize: 18,
-                    color: '#a3a3a3',
+                    fontSize: 20,
+                    color: '#ccc',
                     letterSpacing: '0.1em',
                     textTransform: 'uppercase',
                     fontFamily: 'sans-serif',
