@@ -14,82 +14,73 @@ function cn(...classes: (string | undefined | null | false)[]) {
 
 // --- ASSETS ---
 const HERO_IMAGE = "https://i.imgur.com/klLlEA4.jpeg"; 
-const CHEF_IMAGE = "https://images.unsplash.com/photo-1586985289906-406988974504?q=80&w=1200"; 
+const CHEF_IMAGE = "https://i.imgur.com/oKurtPO.jpeg"; 
 const TEXTURE_URL = "https://www.transparenttextures.com/patterns/cream-paper.png"; 
 
-// --- DATA: 9 ITEMS (3x3 Grid) ---
+// --- DATA: 10 ITEMS (2x5 Grid - LV Style) ---
 const COLLECTIONS = [
-    // Row 1
     { 
-        title: 'The Bridal Edit', 
-        price: 'Custom', 
-        desc: 'Bespoke multi-tiered architectural centerpieces with hand-piped lace details.', 
-        img: 'https://images.unsplash.com/photo-1525257831700-183b9b8bf5c4?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' 
+        title: "Wedding Cakes", 
+        price: "Bespoke",
+        img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000&auto=format&fit=crop" 
     },
     { 
-        title: 'Velvet & Rose', 
-        price: 'From $85', 
-        desc: 'Dark chocolate layers with rosewater buttercream infusion and edible gold.', 
-        img: 'https://images.unsplash.com/photo-1571115177098-24ec42ed204d?q=80&w=1200' 
+        title: "Signature Cupcakes", 
+        price: "Box of 6 / $35",
+        img: "https://i.imgur.com/9wVuwPK.jpeg" 
     },
     { 
-        title: 'Botanical Box', 
-        price: '$55 / Doz', 
-        desc: 'Hand-piped buttercream peonies in blush, sage, and cream palettes.', 
-        img: 'https://i.imgur.com/9wVuwPK.jpeg' 
-    },
-    
-    // Row 2
-    { 
-        title: 'Heirloom Macarons', 
-        price: '$45 / Box', 
-        desc: 'Almond meringue shells filled with Earl Grey ganache and local honey.', 
-        img: 'https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1200' 
+        title: "Artisan Macarons", 
+        price: "Box of 12 / $45",
+        img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000&auto=format&fit=crop" 
     },
     { 
-        title: 'The Golden Loaf', 
-        price: '$18', 
-        desc: 'Artisanal sourdough fermented for 48 hours, crusty and open-crumbed.', 
-        img: 'https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1200' 
+        title: "Rustic Tarts", 
+        price: "From $55",
+        img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000&auto=format&fit=crop" 
     },
     { 
-        title: 'Midnight Truffles', 
-        price: '$38 / Box', 
-        desc: 'Belgian dark chocolate dusted with cocoa and infused with espresso.', 
-        img: 'https://images.unsplash.com/photo-1548848221-0c2e497ed557?q=80&w=1200' 
-    },
-
-    // Row 3
-    { 
-        title: 'Citrus & Sage', 
-        price: 'From $65', 
-        desc: 'A rustic tart featuring seasonal blood orange, frangipane, and fresh herbs.', 
-        img: 'https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1200' 
+        title: "Sourdough Loaves", 
+        price: "$18",
+        img: "https://images.unsplash.com/photo-1627308595171-d1b5d67129c4?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
     },
     { 
-        title: 'Sablé Breton', 
-        price: '$28 / Doz', 
-        desc: 'Buttery French shortbread cookies with a hint of fleur de sel.', 
-        img: 'https://images.unsplash.com/photo-1605138693981-6c8a5ea87796?q=80&w=1171&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' 
+        title: "Cream Puffs", 
+        price: "Set of 4 / $28",
+        img: "https://images.unsplash.com/photo-1633424411336-f5b7a6886d88?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
     },
     { 
-        title: 'Petite Fours', 
-        price: '$75 / Set', 
-        desc: 'Miniature glazed cakes layered with apricot jam and marzipan.', 
-        img: 'https://images.unsplash.com/photo-1579306194872-64d3b7bac4c2?q=80&w=1200' 
+        title: "Dark Chocolates", 
+        price: "Gift Box / $40",
+        img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000&auto=format&fit=crop" 
     },
+    { 
+        title: "Croissants", 
+        price: "Dozen / $48",
+        img: "https://images.unsplash.com/photo-1651604033534-e66b281f1981?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+    },
+    { 
+        title: "Layered Parfaits", 
+        price: "$12 ea",
+        img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000&auto=format&fit=crop" 
+    },
+    { 
+        title: "Custom Gift Sets", 
+        price: "Inquire",
+        img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000&auto=format&fit=crop" 
+    }
 ];
 
 // 8 Images for a perfect 4x2 Grid
 const GALLERY_IMAGES = [
-  "https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80&w=1200", // Cake 1
-  "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1200", // Cake 2
-  "https://images.unsplash.com/photo-1668887461930-44237b5eb558?q=80&w=1319&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Cake 3
-  "https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?q=80&w=1200", // Cake 4
-  "https://images.unsplash.com/photo-1558326567-98ae2405596b?q=80&w=759&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D", // Macarons
-  "https://images.unsplash.com/photo-1525253086316-d0c936c814f8?q=80&w=1200", // Wedding Cake
-  "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1200", // Bread/Artisan
-  "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1200"  // Cupcake/Sweet
+  "https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80&w=1200", 
+  "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1200", 
+  "https://images.unsplash.com/photo-1668887461930-44237b5eb558?q=80&w=1319", 
+  "https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?q=80&w=1200", 
+  "https://images.unsplash.com/photo-1558326567-98ae2405596b?q=80&w=759", 
+  "https://images.unsplash.com/photo-1525253086316-d0c936c814f8?q=80&w=1200", 
+  "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1200", 
+  "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1200"  
 ];
 
 const BRAND_NAME = "SAFURA'S";
@@ -199,8 +190,6 @@ export default function SafuraLuxuryPage() {
 
             {/* --- HERO SECTION --- */}
             <section className="relative h-[100svh] w-full overflow-hidden flex items-center justify-center">
-                
-                {/* --- TOP BANNER --- */}
                 <motion.div 
                     initial={{ opacity: 0, y: -10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -212,27 +201,23 @@ export default function SafuraLuxuryPage() {
                     </span>
                 </motion.div>
 
-                {/* Back Button */}
                 <div className="absolute top-8 left-6 z-40">
                     <a href="/services" className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/40 text-white hover:bg-white/30 transition-all duration-300">
                         <ArrowLeft size={16} />
                     </a>
                 </div>
 
-                {/* Hero Background */}
                 <motion.div style={{ y: isMobile ? 0 : yHero }} className="absolute inset-0 z-0">
                     <img src={HERO_IMAGE} alt="Hero" className="w-full h-full object-cover brightness-[0.5]" />
                     <div className="absolute inset-0 bg-gradient-to-t from-[#2B120A]/70 via-[#2B120A]/20 to-[#2B120A]/40" />
                 </motion.div>
                 
-                {/* Main Content */}
                 <div className="relative z-10 text-center px-4 w-full max-w-5xl">
                     <motion.div 
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1.5, ease: "easeOut" }}
                     >
-                        {/* "Est. 2024" with Heart Icon */}
                         <div className="flex items-center justify-center gap-4 mb-6 md:mb-8 opacity-90">
                             <div className="h-[1px] bg-[#FADADD] w-12 md:w-20" />
                             <div className="text-[#FADADD] flex items-center gap-2 text-[10px] md:text-xs tracking-[0.3em] uppercase font-sans font-bold">
@@ -241,7 +226,6 @@ export default function SafuraLuxuryPage() {
                             <div className="h-[1px] bg-[#FADADD] w-12 md:w-20" />
                         </div>
                         
-                        {/* THE NEW TYPOGRAPHY - MOBILE SAFE */}
                         <h1 className="text-white font-serif text-[4rem] md:text-[7rem] lg:text-[9rem] leading-[0.85] tracking-normal font-normal mb-0 drop-shadow-sm uppercase">
                             SAFURA'S
                         </h1>
@@ -250,7 +234,6 @@ export default function SafuraLuxuryPage() {
                             Atelier & Bakery
                         </p>
                         
-                        {/* Buttons matching image colors - Stacked on Mobile */}
                         <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
                             <a href="#collections" className="bg-[#C08A82] text-white px-10 py-4 text-[11px] uppercase tracking-[0.25em] font-sans font-bold hover:bg-[#A8726A] transition-all duration-500 w-full md:w-auto min-w-[220px] rounded-[4px] shadow-lg text-center">
                                 View Collection
@@ -301,29 +284,34 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- COLLECTIONS (9 ITEMS - 3x3 GRID) --- */}
-            <section id="collections" className="py-20 md:py-32 bg-[#FFFDFD] px-6 md:px-12 relative">
+            {/* --- COLLECTIONS (2x5 Grid - LV Style) --- */}
+            <section id="collections" className="py-20 md:py-32 bg-[#FFFDFD] px-4 md:px-12 relative">
                 <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-[#FDF5F5] to-transparent" />
                 
-                <div className="max-w-[1400px] mx-auto">
+                <div className="max-w-[1200px] mx-auto">
                     <SectionHeading subtitle="The Atelier" title="Curated Sweets" />
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-8 lg:gap-12">
+                    
+                    {/* LOUIS VUITTON STYLE GRID: 2 Columns, 10 Items */}
+                    <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-20">
                         {COLLECTIONS.map((item, i) => (
-                            <Reveal key={i} delay={i * 0.1} width="100%">
-                                <div className="group cursor-pointer flex flex-col h-full">
-                                    <div className="relative aspect-[3/4] mb-6 overflow-hidden bg-[#FDF5F5] rounded-t-[10px] rounded-b-[0px]">
+                            <Reveal key={i} delay={i * 0.05} width="100%">
+                                <div className="group cursor-pointer flex flex-col items-center text-center">
+                                    {/* Image Container with Soft Gradient Background (LV Style) */}
+                                    <div className="relative w-full aspect-[4/5] mb-6 overflow-hidden bg-gradient-to-b from-[#F9F7F5] to-[#F0EFED] rounded-[4px]">
                                         <img 
                                             src={item.img} 
                                             alt={item.title}
-                                            className="absolute inset-0 w-full h-full object-cover transition-transform duration-[1.5s] ease-out group-hover:scale-110"
+                                            className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-[1.2s] ease-out group-hover:scale-105"
                                         />
-                                        <div className="absolute inset-0 bg-[#D48F85]/0 group-hover:bg-[#D48F85]/10 transition-colors duration-500 mix-blend-overlay" />
                                     </div>
-                                    <div className="flex justify-between items-baseline border-b border-[#2B120A]/10 pb-3 mb-3">
-                                        <h3 className="font-serif text-2xl text-[#2B120A] group-hover:text-[#D48F85] transition-colors italic">{item.title}</h3>
-                                        <span className="font-sans text-[10px] font-bold text-[#D48F85] uppercase tracking-wide bg-[#FFF0F0] px-2 py-1 rounded-full">{item.price}</span>
-                                    </div>
-                                    <p className="font-sans text-xs text-[#8C6A64] leading-relaxed">{item.desc}</p>
+                                    
+                                    {/* Minimal Text Below */}
+                                    <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-2 group-hover:text-[#D48F85] transition-colors">
+                                        {item.title}
+                                    </h3>
+                                    <span className="font-serif text-sm md:text-base text-[#8C6A64] italic">
+                                        {item.price}
+                                    </span>
                                 </div>
                             </Reveal>
                         ))}
@@ -331,7 +319,7 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- GALLERY (8 IMAGES - 4x2 GRID) --- */}
+            {/* --- GALLERY (8 IMAGES) --- */}
             <section className="py-20 md:py-32 bg-[#FDF5F5] overflow-hidden">
                 <div className="max-w-[1600px] mx-auto px-6">
                     <Reveal>
@@ -340,7 +328,6 @@ export default function SafuraLuxuryPage() {
                         </div>
                     </Reveal>
                     
-                    {/* 8 Images in a 4-column layout */}
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                         {GALLERY_IMAGES.map((src, index) => (
                             <Reveal key={index} delay={index * 0.05}>
@@ -363,7 +350,6 @@ export default function SafuraLuxuryPage() {
                 <div className="max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32">
                         
-                        {/* Text Content */}
                         <div>
                             <div className="flex items-center gap-3 mb-8">
                                 <Sparkles className="text-[#D48F85] w-5 h-5" />
@@ -396,7 +382,6 @@ export default function SafuraLuxuryPage() {
                             </div>
                         </div>
 
-                        {/* Image Side */}
                         <div className="relative mt-8 lg:mt-0 hidden md:block">
                             <div className="absolute -inset-4 border border-[#FDF5F5]/10 z-0 rounded-t-[100px]" />
                             <div className="h-[600px] w-full z-10 relative overflow-hidden rounded-t-[100px]">
@@ -424,8 +409,6 @@ export default function SafuraLuxuryPage() {
 
             {/* --- FOOTER --- */}
             <section id="contact" className="relative bg-white pt-24 pb-16 px-6 overflow-hidden">
-                
-                {/* Pink/Gold Glow */}
                 <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-[#FADADD]/20 rounded-full blur-[100px] pointer-events-none" />
 
                 <div className="relative max-w-4xl mx-auto text-center z-10">
@@ -437,7 +420,6 @@ export default function SafuraLuxuryPage() {
                             We accept a limited number of bookings per month.
                         </p>
                         
-                        {/* Pills - Responsive Stack */}
                         <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-6 mb-16">
                             <div className="flex items-center justify-center gap-4 px-10 py-5 bg-[#FDF5F5]/80 backdrop-blur-sm rounded-full border border-[#2B120A]/5 min-w-[240px] hover:border-[#D48F85]/30 hover:bg-[#FFF0F0] transition-colors w-full md:w-auto">
                                 <MapPin className="w-4 h-4 text-[#C08A82]" />
@@ -455,9 +437,7 @@ export default function SafuraLuxuryPage() {
                             </div>
                         </div>
 
-                        {/* Socials - IMPROVED */}
                         <div className="flex justify-center gap-8 mb-16">
-                             {/* Facebook */}
                              <a 
                                 href={FACEBOOK_LINK} 
                                 target="_blank" 
@@ -478,7 +458,6 @@ export default function SafuraLuxuryPage() {
 
                         <div className="h-[1px] w-full bg-[#2B120A]/5 mb-10" />
 
-                        {/* Brand Signature */}
                         <div className="flex flex-col items-center gap-3 animate-fade-in-up">
                             <p className="text-[10px] md:text-[11px] uppercase tracking-[0.2em] text-[#8C6A64]/70 font-sans">
                                 © 2026 {BRAND_NAME}. ALL RIGHTS RESERVED.
