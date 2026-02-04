@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, MapPin, Phone, Star, 
-  Truck, Instagram, Facebook, Sparkles, Heart, ChefHat
+  Truck, Instagram, Facebook, Sparkles, Heart, ChefHat, X
 } from 'lucide-react';
 
 // --- UTILITY: Class Merger ---
@@ -23,52 +23,62 @@ const COLLECTIONS = [
     { 
         title: "Wedding Cakes", 
         price: "Bespoke", 
-        img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000&auto=format&fit=crop",
+        ingredients: "Madagascan vanilla bean, European cultured butter, Swiss meringue, edible gold leaf"
     },
     { 
         title: "Signature Cupcakes", 
         price: "Box of 6 / $35", 
-        img: "https://i.imgur.com/9wVuwPK.jpeg" 
+        img: "https://i.imgur.com/9wVuwPK.jpeg",
+        ingredients: "Valrhona cocoa, sea salt caramel core, italian buttercream, candied hazelnut"
     },
     { 
         title: "Artisan Macarons", 
         price: "Box of 12 / $45", 
-        img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000&auto=format&fit=crop",
+        ingredients: "California almond flour, ganache monté, seasonal fruit coulis, rose water"
     },
     { 
         title: "Rustic Tarts", 
         price: "From $55", 
-        img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000&auto=format&fit=crop",
+        ingredients: "Pâte sablée, crème diplomat, fresh locally sourced berries, apricot glaze"
     },
     { 
         title: "Sourdough Loaves", 
         price: "$18", 
-        img: "https://images.unsplash.com/photo-1627308595171-d1b5d67129c4?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+        img: "https://images.unsplash.com/photo-1627308595171-d1b5d67129c4?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        ingredients: "Organic stone-ground flour, 48-hour natural levain, filtered spring water, sea salt"
     },
     { 
         title: "Cream Puffs", 
         price: "Set of 4 / $28", 
-        img: "https://images.unsplash.com/photo-1633424411336-f5b7a6886d88?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+        img: "https://images.unsplash.com/photo-1633424411336-f5b7a6886d88?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        ingredients: "Choux pastry, craquelin crust, Tahitian vanilla bean chantilly, praline paste"
     },
     { 
         title: "Dark Chocolates", 
         price: "Gift Box / $40", 
-        img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000&auto=format&fit=crop",
+        ingredients: "70% Single-origin dark chocolate, espresso infusion, freeze-dried raspberry dust"
     },
     { 
         title: "Croissants", 
         price: "Dozen / $48", 
-        img: "https://images.unsplash.com/photo-1651604033534-e66b281f1981?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+        img: "https://images.unsplash.com/photo-1651604033534-e66b281f1981?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        ingredients: "Isigny Ste Mère butter, organic wheat flour, acacia honey glaze"
     },
     { 
         title: "Layered Parfaits", 
         price: "$12 ea", 
-        img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000&auto=format&fit=crop",
+        ingredients: "Mascarpone mousse, espresso-soaked sponge, cocoa nibs, dark chocolate shavings"
     },
     { 
         title: "Custom Gift Sets", 
         price: "Inquire", 
-        img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000&auto=format&fit=crop" 
+        img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000&auto=format&fit=crop",
+        ingredients: "A curated selection of our finest seasonal offerings, wrapped in silk ribbon"
     }
 ];
 
@@ -160,6 +170,7 @@ function SectionHeading({ subtitle, title, align = "center", dark = false }: { s
 export default function SafuraLuxuryPage() {
     const { scrollYProgress } = useScroll();
     const [isMobile, setIsMobile] = useState(false);
+    const [selectedItem, setSelectedItem] = useState<typeof COLLECTIONS[0] | null>(null);
 
     useEffect(() => {
         const checkMobile = () => setIsMobile(window.innerWidth < 768);
@@ -167,6 +178,15 @@ export default function SafuraLuxuryPage() {
         window.addEventListener('resize', checkMobile);
         return () => window.removeEventListener('resize', checkMobile);
     }, []);
+
+    // Prevent scrolling when modal is open
+    useEffect(() => {
+        if (selectedItem) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+    }, [selectedItem]);
 
     return (
         <div className="bg-[#FFFDFD] text-[#2B120A] min-h-screen font-sans selection:bg-[#D48F85] selection:text-white relative">
@@ -189,7 +209,6 @@ export default function SafuraLuxuryPage() {
             />
 
             {/* --- HERO SECTION --- */}
-            {/* 'justify-center' to vertically center everything */}
             <section className="relative h-[100svh] w-full overflow-hidden flex flex-col items-center justify-center pb-12 md:pb-24">
                 
                 {/* --- TOP BANNER (Exact Light Beige) --- */}
@@ -210,31 +229,21 @@ export default function SafuraLuxuryPage() {
                 </div>
 
                 <div className="absolute inset-0 z-0">
-                    {/* IMAGE STYLING */}
                     <img 
                         src={HERO_IMAGE} 
                         alt="Hero" 
                         className="w-full h-full object-cover object-[center_25%] brightness-[0.85] contrast-[1.0] saturate-[1.0] blur-[0.5px]" 
                     />
-                    
-                    {/* --- LAYERS --- */}
-                    {/* Lighter Gradient Overlay: 50% via 25% */}
                     <div className="absolute top-0 left-0 w-full h-2/3 bg-gradient-to-b from-black/50 via-black/25 to-transparent" />
-                    
-                    {/* Bottom Fade */}
                     <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-[#FFFDFD] via-[#FFFDFD]/80 to-transparent" />
                 </div>
                 
-                {/* POSITIONING:
-                   - 'mt-20 md:mt-32': Pushes text down onto the cake.
-                */}
                 <div className="relative z-10 text-center px-4 w-full max-w-5xl mt-20 md:mt-32"> 
                     <motion.div 
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1.5, ease: "easeOut" }}
                     >
-                        {/* DECORATIVE LINES (Very Light Pink) */}
                         <div className="flex items-center justify-center gap-4 mb-4 md:mb-8 opacity-90">
                             <div className="h-[1px] bg-[#FFF5F5]/70 w-8 md:w-20" />
                             <div className="text-[#FFF5F5]/90 flex items-center gap-2 text-[9px] md:text-xs tracking-[0.3em] uppercase font-sans font-bold">
@@ -243,26 +252,18 @@ export default function SafuraLuxuryPage() {
                             <div className="h-[1px] bg-[#FFF5F5]/70 w-8 md:w-20" />
                         </div>
                         
-                        {/* MAIN TITLE (Very Light Pink / Almost White - #FFF5F5) */}
                         <h1 className="text-[#FFF5F5] font-serif text-[3.5rem] md:text-[6.5rem] lg:text-[8rem] leading-[0.85] tracking-normal font-normal mb-0 drop-shadow-sm uppercase">
                             SAFURA'S
                         </h1>
 
-                        {/* SCRIPT SUBTITLE (UPDATED: Lighter Pink #FFD9D5) */}
                         <p className="font-script text-[#FFD9D5] text-[3rem] md:text-[6rem] lg:text-[8rem] leading-[1.1] mb-8 md:mb-12 mt-4 relative z-10 drop-shadow-md">
                             Atelier & Bakery
                         </p>
                         
-                        {/* BUTTONS CONTAINER:
-                           - 'mt-24 md:mt-32': Pushes buttons further down to keep them at the bottom.
-                        */}
                         <div className="flex flex-col items-center justify-center gap-3 md:gap-4 w-full max-w-xs mx-auto mt-24 md:mt-32">
-                            {/* Top Button: "Deep Terracotta" */}
                             <a href="#collections" className="bg-[#CC8C82] text-white px-6 py-3 md:px-8 md:py-4 text-[10px] md:text-[11px] uppercase tracking-[0.25em] font-sans font-bold hover:bg-[#B57970] transition-all duration-500 w-full rounded-[2px] shadow-lg text-center">
                                 View Collection
                             </a>
-                            
-                            {/* Bottom Button: "Pale Blush" */}
                             <a href="#contact" className="bg-[#F5D0CD] text-[#5A3A35] px-6 py-3 md:px-8 md:py-4 text-[10px] md:text-[11px] uppercase tracking-[0.25em] font-sans font-bold hover:bg-[#EBC5C2] transition-all w-full rounded-[2px] shadow-lg text-center">
                                 Custom Inquiry
                             </a>
@@ -278,7 +279,6 @@ export default function SafuraLuxuryPage() {
                     {/* LEFT: SAFURA IMAGE */}
                     <div className="lg:col-span-5 order-2 lg:order-1">
                        <Reveal>
-                            {/* Clean, full-frame container */}
                             <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-xl border border-[#2B120A]/5">
                                  <ParallaxImage 
                                     src={SAFURA_IMAGE} 
@@ -320,8 +320,7 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- PHILOSOPHY SECTION (RESTORED) --- */}
-            {/* Layout Swapped: Text Left, Image Right for visual flow */}
+            {/* --- PHILOSOPHY SECTION --- */}
             <section id="our-philosophy" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                     
@@ -349,10 +348,9 @@ export default function SafuraLuxuryPage() {
                         </Reveal>
                     </div>
 
-                    {/* RIGHT: CHEF IMAGE (Original Image) */}
+                    {/* RIGHT: CHEF IMAGE */}
                     <div className="lg:col-span-5 order-2 lg:order-2">
                        <Reveal>
-                            {/* Same full-frame style for consistency */}
                             <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-sm">
                                  <ParallaxImage 
                                     src={CHEF_IMAGE} 
@@ -376,17 +374,20 @@ export default function SafuraLuxuryPage() {
                     <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-20">
                         {COLLECTIONS.map((item, i) => (
                             <Reveal key={i} delay={i * 0.05} width="100%">
-                                <div className="group cursor-pointer flex flex-col items-center text-center">
-                                    {/* Image Container with Soft Gradient Background (LV Style) */}
+                                <div 
+                                    className="group cursor-pointer flex flex-col items-center text-center"
+                                    onClick={() => setSelectedItem(item)}
+                                >
+                                    {/* Image Container */}
                                     <div className="relative w-full aspect-[4/5] mb-6 overflow-hidden bg-gradient-to-b from-[#F9F7F5] to-[#F0EFED] rounded-[4px]">
                                         <img 
                                             src={item.img} 
                                             alt={item.title}
                                             className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-[1.2s] ease-out group-hover:scale-105"
                                         />
+                                        <div className="absolute inset-0 bg-[#D48F85]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                     </div>
                                     
-                                    {/* Minimal Text Below */}
                                     <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-2 group-hover:text-[#D48F85] transition-colors">
                                         {item.title}
                                     </h3>
@@ -399,6 +400,74 @@ export default function SafuraLuxuryPage() {
                     </div>
                 </div>
             </section>
+
+            {/* --- PRODUCT MODAL --- */}
+            <AnimatePresence>
+                {selectedItem && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setSelectedItem(null)}
+                        className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+                    >
+                        <motion.div 
+                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                            animate={{ scale: 1, opacity: 1, y: 0 }}
+                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            onClick={(e) => e.stopPropagation()}
+                            className="bg-[#FFFDFD] w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-lg shadow-2xl relative flex flex-col md:flex-row"
+                        >
+                            <button 
+                                onClick={() => setSelectedItem(null)}
+                                className="absolute top-4 right-4 z-10 p-2 bg-white/50 hover:bg-white rounded-full transition-colors"
+                            >
+                                <X className="w-5 h-5 text-[#2B120A]" />
+                            </button>
+
+                            {/* Modal Image */}
+                            <div className="w-full md:w-1/2 h-64 md:h-auto relative bg-[#F9F7F5]">
+                                <img 
+                                    src={selectedItem.img} 
+                                    alt={selectedItem.title} 
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+
+                            {/* Modal Content */}
+                            <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
+                                <div className="mb-8">
+                                    <h3 className="font-serif text-3xl md:text-4xl text-[#2B120A] mb-2">{selectedItem.title}</h3>
+                                    <p className="font-sans text-[#D48F85] text-sm uppercase tracking-widest font-bold">{selectedItem.price}</p>
+                                </div>
+
+                                <div className="space-y-6">
+                                    <div>
+                                        <h4 className="font-sans text-xs uppercase tracking-[0.2em] text-[#8C6A64] mb-4 border-b border-[#2B120A]/10 pb-2">Key Notes & Ingredients</h4>
+                                        <ul className="space-y-3">
+                                            {selectedItem.ingredients.split(',').map((ingredient, idx) => (
+                                                <li key={idx} className="flex items-start gap-3 text-[#2B120A] font-serif text-lg leading-relaxed">
+                                                    <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#D48F85] flex-shrink-0" />
+                                                    <span className="capitalize">{ingredient.trim()}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+                                    
+                                    <div className="pt-6">
+                                        <a 
+                                            href={WHATSAPP_LINK}
+                                            className="inline-block w-full text-center bg-[#2B120A] text-[#FFFDFD] py-4 px-8 text-xs uppercase tracking-[0.2em] hover:bg-[#4A3228] transition-colors rounded-[2px]"
+                                        >
+                                            Inquire to Order
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </motion.div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* --- GALLERY (8 IMAGES) --- */}
             <section className="py-20 md:py-32 bg-[#FDF5F5] overflow-hidden">
