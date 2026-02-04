@@ -14,6 +14,7 @@ function cn(...classes: (string | undefined | null | false)[]) {
 
 // --- ASSETS ---
 const HERO_IMAGE = "https://i.imgur.com/klLlEA4.jpeg"; 
+const SAFURA_IMAGE = "https://i.imgur.com/47VIaGf.jpeg"; 
 const CHEF_IMAGE = "https://i.imgur.com/oKurtPO.jpeg"; 
 const TEXTURE_URL = "https://www.transparenttextures.com/patterns/cream-paper.png"; 
 
@@ -270,22 +271,62 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- PHILOSOPHY SECTION --- */}
-            <section id="our-story" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            {/* --- INTRO / MEET SAFURA SECTION --- */}
+            <section id="meet-safura" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
+                    
+                    {/* LEFT: SAFURA IMAGE */}
                     <div className="lg:col-span-5 order-2 lg:order-1">
                        <Reveal>
-                            {/* UPDATED: Clean, full-frame container without complex borders */}
-                            <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-sm">
+                            {/* Clean, full-frame container */}
+                            <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-xl border border-[#2B120A]/5">
                                  <ParallaxImage 
-                                    src={CHEF_IMAGE} 
-                                    alt="Safura Signature Cake" 
-                                    className="w-full h-full grayscale-[10%] contrast-[1.1]" 
+                                    src={SAFURA_IMAGE} 
+                                    alt="Safura - Founder & Artist" 
+                                    className="w-full h-full grayscale-[5%] contrast-[1.05]" 
                                  />
                             </div>
                        </Reveal>
                     </div>
+
+                    {/* RIGHT: BIO TEXT */}
                     <div className="lg:col-span-7 order-1 lg:order-2">
+                        <Reveal delay={0.2}>
+                            <div className="flex items-center gap-3 mb-6">
+                                <span className="h-[1px] w-8 bg-[#D48F85]"></span>
+                                <span className="text-[10px] uppercase tracking-[0.3em] text-[#D48F85] font-bold">The Patissier</span>
+                            </div>
+
+                            <h2 className="font-serif text-4xl md:text-6xl text-[#2B120A] leading-[1.1] mb-6 md:mb-8">
+                                The Art of <br/> 
+                                Edible Couture.
+                            </h2>
+                            
+                            <p className="font-sans text-[#8C6A64] text-sm md:text-base leading-relaxed md:leading-loose max-w-xl font-light mb-6">
+                                "Welcome to my <strong>atelier</strong>. To me, a cake is more than a dessert; it is a moment of architecture and emotion. We don't just mix ingredients; we curate experiences."
+                            </p>
+
+                            <p className="font-sans text-[#8C6A64] text-sm md:text-base leading-relaxed md:leading-loose max-w-xl font-light mb-10">
+                                Every bespoke commission is a collaboration, transforming your vision into an edible masterpiece using exclusively sourced European butters and grand cru chocolates. My promise is simple: absolute beauty, uncompromised taste.
+                            </p>
+
+                            {/* SIGNATURE */}
+                            <div className="flex flex-col items-start gap-1">
+                                <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#2B120A]/60">With Love,</span>
+                                <span className="font-script text-5xl md:text-7xl text-[#D48F85]">Safura</span>
+                            </div>
+                        </Reveal>
+                    </div>
+                </div>
+            </section>
+
+            {/* --- PHILOSOPHY SECTION (RESTORED) --- */}
+            {/* Layout Swapped: Text Left, Image Right for visual flow */}
+            <section id="our-philosophy" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+                    
+                    {/* LEFT: TEXT */}
+                    <div className="lg:col-span-7 order-1 lg:order-1">
                         <Reveal delay={0.2}>
                             <h2 className="font-serif text-4xl md:text-6xl text-[#2B120A] leading-[1.1] mb-6 md:mb-8">
                                 Pure Butter. <br/> 
@@ -306,6 +347,20 @@ export default function SafuraLuxuryPage() {
                                 </div>
                             </div>
                         </Reveal>
+                    </div>
+
+                    {/* RIGHT: CHEF IMAGE (Original Image) */}
+                    <div className="lg:col-span-5 order-2 lg:order-2">
+                       <Reveal>
+                            {/* Same full-frame style for consistency */}
+                            <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-sm">
+                                 <ParallaxImage 
+                                    src={CHEF_IMAGE} 
+                                    alt="Safura Cake Detail" 
+                                    className="w-full h-full grayscale-[10%] contrast-[1.1]" 
+                                 />
+                            </div>
+                       </Reveal>
                     </div>
                 </div>
             </section>
