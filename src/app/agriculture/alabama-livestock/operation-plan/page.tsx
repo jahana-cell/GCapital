@@ -1,812 +1,406 @@
-
 'use client';
 
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableCaption, TableFooter } from "@/components/ui/table";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { FadeIn } from "@/components/fade-in";
-import { BarChart, Scale, Users, FileText, DollarSign, TrendingUp, CheckCircle, XCircle, Award, Zap, Leaf, Anchor, ArrowRight, ShieldCheck, Target, Lightbulb, PieChart, AlertTriangle, HardHat, ChevronsRight, Milestone, Briefcase, Handshake, ShoppingCart, Tv, Newspaper, Construction, Dog, Syringe, ClipboardCheck, Calendar, Wallet, Landmark as LandmarkIcon } from "lucide-react";
+import { 
+  TrendingUp, Target, Factory, ShieldCheck, PieChart, Scale, 
+  Briefcase, CheckCircle2, Landmark, ScrollText, Handshake, Gem, ArrowUpRight
+} from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
-import { MapPin } from 'lucide-react';
-import { Landmark } from "lucide-react";
 import { AgricultureNav } from "@/components/agriculture-nav";
+import React from "react";
 
-const SectionHeader = ({ icon: Icon, title, subtitle }: { icon: any, title: string, subtitle?: string }) => (
-    <div className="mb-8 text-center">
-        <div className="inline-block p-4 bg-primary/10 rounded-full mb-4">
-            <Icon className="w-10 h-10 text-primary" />
-        </div>
-        <h2 className="text-3xl md:text-4xl font-headline font-bold">{title}</h2>
-        {subtitle && <p className="mt-2 text-lg text-muted-foreground max-w-3xl mx-auto">{subtitle}</p>}
+// --- UTILS & CUSTOM COMPONENTS ---
+
+// A bespoke card component with luxury styling (subtle gold borders, richer background)
+const LuxuryCard = ({ children, className = "" }: { children: React.ReactNode; className?: string }) => (
+  <div className={`bg-white border-t-2 border-amber-400/60 rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.06)] overflow-hidden ${className}`}>
+    {children}
+  </div>
+);
+
+const LuxuryCardHeader = ({ title, icon: Icon, subtitle }: { title: string; icon?: any; subtitle?: string }) => (
+  <div className="px-8 pt-8 pb-4 border-b border-stone-100">
+    <h3 className="text-2xl font-serif text-stone-900 flex items-center gap-3">
+      {Icon && <Icon className="w-6 h-6 text-amber-500" strokeWidth={1.5} />}
+      {title}
+    </h3>
+    {subtitle && <p className="text-stone-500 text-sm mt-1 ml-9">{subtitle}</p>}
+  </div>
+);
+
+const HeroMetric = ({ label, value, subtext }: { label: string, value: string, subtext?: string }) => (
+    <div className="p-6 bg-stone-50 border-l-2 border-amber-400/60 rounded-r-lg">
+        <p className="text-xs font-bold uppercase tracking-widest text-stone-500 mb-3">{label}</p>
+        <p className="text-4xl font-serif text-stone-900 mb-1">{value}</p>
+        {subtext && <p className="text-xs text-stone-600 font-medium flex items-center gap-1">
+          <ArrowUpRight className="w-3 h-3 text-emerald-600" /> {subtext}
+        </p>}
     </div>
 );
 
-const llcFormationCosts = [
-    { item: "Name Reservation", cost: "$28" },
-    { item: "Certificate of Formation", cost: "$200" },
-    { item: "Initial Business Privilege Tax", cost: "$100" },
-    { item: "Legal Consultation (optional but recommended)", cost: "$500 - $1,500" },
-];
-const totalLlcCost = 28 + 200 + 100;
+// --- PROSPECTUS DATA ---
 
-const lawyerStartupCosts = [
-    { item: "Initial Consultation & LLC Formation", cost: "$500 - $1,200" },
-    { item: "Drafting Custom Operating Agreement (10 members)", cost: "$2,500 - $5,000+" },
-    { item: "Land Purchase or Lease Agreement Review", cost: "$750 - $1,500" },
+const customerSegments = [
+    { segment: "Halal Grocers & Markets", strategy: "Contract pricing for 'Boxed Beef/Goat' to replace frozen imports.", volume: "High", margin: "Low-Medium" },
+    { segment: "Restaurants & Caterers", strategy: "Value-added services (pre-cubed, patties) to save kitchen labor.", volume: "Medium", margin: "High" },
+    { segment: "Masjids & Community", strategy: "Direct-to-community bulk drops; 'Share a Cow' programs.", volume: "Seasonal", margin: "Medium" },
+    { segment: "Ethical/Local Buyers", strategy: "Market 'Farm-to-Table' & humane handling to high-end butchers.", volume: "Low-Medium", margin: "Very High" },
+    { segment: "Local Farmers (Service)", strategy: "Toll Processing fees to process farmers' own livestock.", volume: "Variable", margin: "High (No COGS)" },
 ];
 
-const cpaStartupCosts = [
-    { item: "Business Structure & Tax Consultation", cost: "$400 - $800" },
-    { item: "Accounting System Setup (e.g., QuickBooks)", cost: "$500 - $1,000" },
+const procurementData = [
+    { 
+        type: "Community Beef (Economy)", 
+        target: "Boner Cows (80-85% Lean)", 
+        marketPrice: "$1.56", 
+        finalCost: "~$6.00/lb" 
+    },
+    { 
+        type: "High-Volume Processing", 
+        target: "Slaughter Bulls (YG 1-2)", 
+        marketPrice: "$1.89", 
+        finalCost: "High Yield" 
+    },
+    { 
+        type: "Premium Steak Option", 
+        target: "Heavy Feeder Steers", 
+        marketPrice: "$3.10", 
+        finalCost: "~$9.75/lb" 
+    },
 ];
 
-const cpaAnnualCosts = [
-    { item: "Annual Tax Preparation (Form 1065 & K-1s)", cost: "$1,200 - $2,500" },
-    { item: "Quarterly Bookkeeping Review & Tax Planning", cost: "$600 - $1,500" },
+const fixedCosts = [
+    { item: "Core Staff Salaries", cost: "$25,000" },
+    { item: "Facility Overhead", cost: "$8,500" },
+    { item: "Insurance & Compliance", cost: "$3,000" },
+    { item: "Lease / Debt Service", cost: "$5,000" },
 ];
 
-const starterFlock = [
-    { item: "48 Quality Ewes", price: "$350/head", total: "$16,800" },
-    { item: "2 Quality Rams", price: "$600/head", total: "$1,200" },
-];
-const totalLivestockCost = 16800 + 1200;
-
-const infraCosts = [
-    { item: "Woven Wire Fencing", cost: "$5 - $10 / foot installed" },
-    { item: "Well Drilling", cost: "$5,000 - $15,000+" },
-    { item: "Handling System (Corral, Chute)", cost: "$2,500 - $6,000" },
-    { item: "Used Tractor with Loader", cost: "$15,000 - $40,000" },
-    { item: "Used Bush Hog/Mower", cost: "$1,500 - $4,000" },
-    { item: "Used Livestock Trailer", cost: "$3,000 - $8,000" },
+const breakEvenScenarios = [
+    { title: "Beef Service Only", daily: "~5 Head", icon: Factory },
+    { title: "Goat Service Only", daily: "~26 Head", icon: Target },
+    { title: "Wholesale Beef Sales", daily: "~3.5 Head", icon: TrendingUp },
 ];
 
-const initialInvestmentPurchase = [
-    { item: "LLC Formation", cost: 400 },
-    { item: "Land Purchase (30 acres)", cost: 120000 },
-    { item: "Livestock (50-head flock)", cost: 18000 },
-    { item: "Fencing (Perimeter & Cross)", cost: 20000 },
-    { item: "Handling System", cost: 4000 },
-    { item: "Used Tractor & Mower", cost: 22000 },
-    { item: "Used Livestock Trailer", cost: 5000 },
-    { item: "Water System Installation", cost: 6000 },
-    { item: "Initial Hay and Feed", cost: 3000 },
-];
-const totalInitialInvestmentPurchase = initialInvestmentPurchase.reduce((acc, item) => acc + item.cost, 0);
-const investmentPerMemberPurchase = totalInitialInvestmentPurchase / 10;
+// --- HEADER COMPONENT ---
 
-const initialInvestmentLease = [
-    { item: "LLC Formation", cost: 400 },
-    { item: "Land Lease (First Year, 30 acres)", cost: 720 },
-    { item: "Livestock (50-head flock)", cost: 18000 },
-    { item: "Fencing (Perimeter & Cross)", cost: 20000 },
-    { item: "Handling System", cost: 4000 },
-    { item: "Used Tractor & Mower", cost: 22000 },
-    { item: "Used Livestock Trailer", cost: 5000 },
-    { item: "Water System Installation", cost: 6000 },
-    { item: "Initial Hay and Feed", cost: 3000 },
-];
-const totalInitialInvestmentLease = initialInvestmentLease.reduce((acc, item) => acc + item.cost, 0);
-const investmentPerMemberLease = totalInitialInvestmentLease / 10;
-
-
-const annualOperatingCosts = [
-    { item: "Hay", cost: "$2,500" },
-    { item: "Supplemental Feed & Minerals", cost: "$5,500" },
-    { item: "Veterinary Care", cost: "$2,500" },
-    { item: "Land Lease", cost: "$720" },
-    { item: "Insurance", cost: "$1,500" },
-    { item: "Fuel & Maintenance", cost: "$2,000" },
-    { item: "Marketing/Sales", cost: "$1,000" },
-    { item: "Utilities", cost: "$800" },
-    { item: "Miscellaneous", cost: "$1,000" },
-];
-const totalAnnualOperatingCosts = annualOperatingCosts.reduce((acc, item) => acc + parseFloat(item.cost.replace('$', '').replace(',', '')), 0);
-
-const marketingCosts = [
-    { item: "Basic Website with E-commerce", cost: "$250 - $500 / year" },
-    { item: "Logo Design", cost: "$50 - $300" },
-    { item: "Business Cards & Brochures", cost: "$100 - $200" },
-    { item: "Farmers' Market Kit (Canopy, Banner)", cost: "$200 - $400" },
-    { item: "Farmers' Market Stall Fees", cost: "$25 - $50 / day" },
-];
-
-const processingCosts = [
-    { item: "Harvest Fee (Kill Fee)", cost: "$75 - $125 / head" },
-    { item: "Basic Cut & Wrap Fee", cost: "$1.10 - $1.50 / lb hanging weight" },
-    { item: "Vacuum Sealing (add-on)", cost: "$0.10 - $0.25 / lb" },
-    { item: "Sausage Making (add-on)", cost: "$2.00 - $4.00 / lb" },
-    { item: "On-Farm Chest Freezer (20-25 cu ft)", cost: "$800 - $1,200" },
-];
-
-const riskCosts = [
-    { item: "Livestock Guardian Dog (Puppy)", cost: "$800 - $1,500" },
-    { item: "General Farm Liability Insurance", cost: "$800 - $2,000 / year" },
-    { item: "Veterinary Emergency Fund (Recommended)", cost: "$1,000 - $2,500" },
-];
-
-const healthCosts = [
-    { item: "Scrapie Tags", cost: "$1.50 - $2.50 / tag" },
-    { item: "Tag Applicator Tool", cost: "$25 - $40" },
-    { item: "Veterinary Farm Call Fee", cost: "$85 - $150 / visit" },
-    { item: "CD&T Vaccine", cost: "$0.75 - $1.50 / dose" },
-];
-
-const savedCosts = [
-    { item: "LLC Formation & Legal Fees", saved: "$4,000 - $8,000" },
-    { item: "CPA & Accounting Setup", saved: "$900 - $1,800" },
-    { item: "Website, Logo & Marketing Materials", saved: "$500 - $1,500" },
-];
-
-
-export default function SheepAndLambPlanPage() {
-  return (
-    <div className="bg-muted/50">
-        <header className="bg-background py-10">
-            <div className="container mx-auto px-4 text-center">
-                <p className="font-semibold text-primary">DETAILED BUSINESS PLAN</p>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-extrabold leading-tight font-headline mt-2">
-                    Launching a Thriving Sheep &amp; Lamb Operation in Alabama
-                </h1>
-                <p className="mt-4 text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto">
-                    A comprehensive guide for a 10-member LLC to establish a successful and sustainable sheep farm.
-                </p>
+const ProspectusHeader = () => (
+    <div className="relative bg-stone-900 text-white py-24 overflow-hidden">
+        {/* Luxurious subtle background texture and gradient overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-emerald-950/40 via-stone-900 to-stone-900"></div>
+        <div className="absolute inset-0 opacity-[0.03] bg-[url('https://www.transparenttextures.com/patterns/brushed-alum-dark.png')] mix-blend-overlay"></div>
+        
+        <div className="container mx-auto px-4 relative z-10 text-center">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 border border-amber-500/30 bg-amber-500/10 rounded-full text-amber-300 text-xs font-bold uppercase tracking-widest mb-8">
+                <Gem className="w-4 h-4" /> Confidential Investment Memo • Feb 2026
             </div>
-        </header>
-
-      <main className="container mx-auto px-4 py-16 md:py-24 space-y-20">
-        <div className="max-w-5xl mx-auto -mt-12">
-            <AgricultureNav />
+            <h1 className="text-5xl md:text-7xl font-serif font-medium leading-tight mb-6 tracking-tight">
+                Cullman Meat Processors
+            </h1>
+            <p className="text-xl md:text-2xl text-stone-300 max-w-3xl mx-auto font-light leading-relaxed">
+                A vertically integrated Halal meat processing facility bridging the critical gap between Alabama's producers and the <span className="text-amber-200 font-medium">$20B+ domestic market.</span>
+            </p>
         </div>
+    </div>
+);
 
-        <FadeIn>
-            <section id="growshare-advantage">
-                <Card className="max-w-4xl mx-auto bg-primary/5 border-primary/20 shadow-xl">
-                    <CardHeader>
-                        <SectionHeader icon={Handshake} title="The GrowShare Capital Advantage: Your Strategic Partner" />
-                        <CardDescription className="text-center text-lg -mt-4">
-                            This plan details the steps to start from scratch. However, by partnering with GrowShare Capital, you bypass many complexities and costs by leveraging our existing infrastructure.
-                        </CardDescription>
-                    </CardHeader>
-                    <CardContent className="grid md:grid-cols-2 gap-8">
-                        <div className="flex items-start gap-4">
-                            <div className="bg-background p-3 rounded-lg mt-1 shadow">
-                                <Wallet className="w-6 h-6 text-primary" />
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-lg">Save on Startup Costs</h4>
-                                <p className="text-sm text-muted-foreground">Operate under the GrowShare Capital LLC, eliminating the need and cost of forming your own legal entity, drafting complex operating agreements, and securing separate legal and CPA services.</p>
-                            </div>
-                        </div>
-                         <div className="flex items-start gap-4">
-                            <div className="bg-background p-3 rounded-lg mt-1 shadow">
-                                <Tv className="w-6 h-6 text-primary" />
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-lg">Instant Marketing & Branding</h4>
-                                <p className="text-sm text-muted-foreground">Leverage our established brand, professional website, and marketing strategies. We provide professionally designed flyers, social media promotion, and a built-in audience from day one.</p>
-                            </div>
-                        </div>
-                         <div className="flex items-start gap-4">
-                            <div className="bg-background p-3 rounded-lg mt-1 shadow">
-                                <LandmarkIcon className="w-6 h-6 text-primary" />
-                            </div>
-                            <div>
-                                <h4 className="font-bold text-lg">Streamlined Access to Financing</h4>
-                                <p className="text-sm text-muted-foreground">Leverage our established relationships and expertise to navigate and secure specialized agricultural financing, including loans from Alabama Farm Credit, USDA FSA programs, and value-added producer grants.</p>
-                            </div>
-                        </div>
-                        <div className="md:col-span-2">
-                             <Card className="bg-background">
-                                <CardHeader>
-                                    <CardTitle>Estimated Startup Savings</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="overflow-x-auto">
-                                        <Table>
-                                            <TableBody>
-                                                {savedCosts.map((item) => (
-                                                    <TableRow key={item.item}>
-                                                        <TableCell className="font-medium">{item.item}</TableCell>
-                                                        <TableCell className="text-right font-mono">{item.saved}</TableCell>
-                                                    </TableRow>
-                                                ))}
-                                            </TableBody>
-                                            <TableFooter>
-                                                <TableRow className="font-bold text-lg bg-green-50 text-green-700">
-                                                    <TableCell>Total Potential Savings</TableCell>
-                                                    <TableCell className="text-right font-mono">$5,400 - $11,300</TableCell>
-                                                </TableRow>
-                                            </TableFooter>
-                                        </Table>
+// --- MAIN PAGE ---
+
+export default function CullmanMeatProcessorsPlan() {
+  return (
+    <div className="bg-stone-100 min-h-screen text-stone-800 font-sans selection:bg-amber-100 selection:text-amber-900">
+        
+        <ProspectusHeader />
+
+        <main className="container mx-auto px-4 py-16 -mt-20 relative z-20 space-y-20">
+            
+            {/* Navigation Anchor */}
+            <div className="bg-white/90 backdrop-blur-md rounded-xl p-2 shadow-lg border-t border-white/50 max-w-fit mx-auto mb-12">
+                <AgricultureNav />
+            </div>
+
+            {/* 1. EXECUTIVE SUMMARY & KEY METRICS */}
+            <FadeIn>
+                <section className="grid lg:grid-cols-12 gap-8 items-start">
+                    <div className="lg:col-span-8">
+                        <LuxuryCard>
+                            <LuxuryCardHeader title="Executive Summary" icon={Landmark} />
+                            <div className="px-8 py-6 prose prose-stone prose-lg max-w-none">
+                                <p className="leading-relaxed text-stone-700">
+                                    Cullman Meat Processors is strategically positioned to become the premier Halal processing hub in the Southern US. By leveraging Cullman, Alabama's status as a livestock center, we will utilize USDA-inspected infrastructure to service the high-volume, unmet demand within the Muslim community and the rapidly growing ethical meat sector.
+                                </p>
+                                <div className="grid md:grid-cols-2 gap-6 mt-8 not-prose">
+                                    <div className="p-6 rounded-xl bg-stone-50 border-l-2 border-emerald-600">
+                                        <h4 className="font-bold text-stone-900 flex items-center gap-2 mb-3 text-lg">
+                                            <Target className="w-5 h-5 text-emerald-700" /> The Mission
+                                        </h4>
+                                        <p className="text-stone-600 leading-relaxed">To provide a transparent, ethically sourced, and Shariah-compliant meat supply chain that empowers local farmers and feeds communities with dignity.</p>
                                     </div>
-                                </CardContent>
-                            </Card>
+                                    <div className="p-6 rounded-xl bg-stone-50 border-l-2 border-emerald-600">
+                                        <h4 className="font-bold text-stone-900 flex items-center gap-2 mb-3 text-lg">
+                                            <TrendingUp className="w-5 h-5 text-emerald-700" /> The Advantage
+                                        </h4>
+                                        <p className="text-stone-600 leading-relaxed">Located at the source of supply with direct Interstate logistics to major metro hubs: Birmingham, Atlanta, and Nashville.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </LuxuryCard>
+                    </div>
+                    <div className="lg:col-span-4 space-y-4">
+                        <HeroMetric label="Market Opportunity" value="$20B+" subtext="Domestic Halal Market Growth" />
+                        <HeroMetric label="Daily Capacity Target" value="80 Head" subtext="Small Ruminant (Goat/Lamb)" />
+                        <HeroMetric label="Beef Break-Even" value="5 Head" subtext="Daily Service Volume" />
+                    </div>
+                </section>
+            </FadeIn>
+
+            {/* 2. MARKET STRATEGY */}
+            <FadeIn>
+                <section>
+                    <div className="mb-10 text-center">
+                        <h2 className="text-4xl font-serif text-stone-900 mb-2">Market Strategy</h2>
+                        <p className="text-stone-500 uppercase tracking-widest font-bold text-sm">Phase 1: Regional Dominance</p>
+                    </div>
+                    
+                    <div className="grid lg:grid-cols-2 gap-8">
+                        <LuxuryCard>
+                            <LuxuryCardHeader title="The Gap & Opportunity" icon={PieChart} />
+                            <div className="px-8 py-6">
+                                <ul className="space-y-8">
+                                    <li className="flex gap-5">
+                                        <div className="mt-1.5 flex-shrink-0"><div className="w-3 h-3 rounded-full bg-red-400 ring-4 ring-red-50"></div></div>
+                                        <div>
+                                            <h4 className="font-bold text-lg text-stone-900 mb-2">The Problem</h4>
+                                            <p className="text-stone-600 leading-relaxed">High demand for fresh Zabiha meat is currently met by frozen imports due to a lack of regional USDA infrastructure capable of high-volume, religious-compliant processing.</p>
+                                        </div>
+                                    </li>
+                                    <li className="flex gap-5">
+                                        <div className="mt-1.5 flex-shrink-0"><div className="w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-50"></div></div>
+                                        <div>
+                                            <h4 className="font-bold text-lg text-stone-900 mb-2">The Solution</h4>
+                                            <p className="text-stone-600 leading-relaxed">A local, USDA-inspected facility combining high-volume slaughter with value-added processing (marination, portioning) tailored for restaurants and grocers.</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </LuxuryCard>
+
+                        <div className="space-y-4">
+                            {customerSegments.map((item, i) => (
+                                <div key={i} className="group p-6 bg-white border-l-2 border-stone-200 hover:border-amber-400 rounded-r-xl shadow-sm transition-all duration-300 hover:shadow-md hover:translate-x-1">
+                                    <div className="flex justify-between items-center mb-3">
+                                        <h4 className="font-bold text-xl text-stone-900 group-hover:text-amber-600 transition-colors">{item.segment}</h4>
+                                        <span className="text-xs font-bold uppercase tracking-wider bg-stone-100 text-stone-500 px-3 py-1 rounded-full">{item.margin} Margin</span>
+                                    </div>
+                                    <p className="text-stone-600 mb-3">{item.strategy}</p>
+                                    <p className="text-sm font-mono text-stone-400 flex items-center gap-2">
+                                        <Scale className="w-4 h-4"/> Volume: {item.volume}
+                                    </p>
+                                </div>
+                            ))}
                         </div>
-                    </CardContent>
-                    <CardFooter className="text-center block pt-6">
-                        <p className="text-sm text-muted-foreground">Focus on what you do best—raising healthy livestock—while we handle the corporate and marketing complexities.</p>
-                    </CardFooter>
-                </Card>
-            </section>
-        </FadeIn>
-        
-        <FadeIn>
-            <section id="business-structure">
-                <SectionHeader icon={Briefcase} title="Business Structure: A 10-Member Agricultural LLC" subtitle="An LLC offers personal liability protection and management flexibility, making it ideal for this venture." />
-                <div className="max-w-4xl mx-auto space-y-8">
-                    <Card>
-                        <CardHeader><CardTitle>A. Forming the LLC in Alabama</CardTitle></CardHeader>
-                        <CardContent>
-                             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                                <li><strong>Name Reservation:</strong> The first step is to choose a unique name for your LLC and reserve it with the Alabama Secretary of State. The reservation fee is approximately $28 online.</li>
-                                <li><strong>Certificate of Formation:</strong> File the Certificate of Formation with the Alabama Secretary of State. The filing fee is $200. This document officially creates your LLC.</li>
-                                <li><strong>Registered Agent:</strong> You must appoint a registered agent in Alabama to receive legal documents. This can be one of the members or a professional service.</li>
-                                <li><strong>Federal Employer Identification Number (EIN):</strong> Obtain a free EIN from the IRS. This is essential for tax purposes, opening a business bank account, and hiring employees.</li>
-                                <li><strong>Business Privilege Tax:</strong> Alabama imposes a Business Privilege Tax. An initial return is due within 2.5 months of formation. The minimum tax is $100.</li>
-                            </ul>
-                        </CardContent>
-                         <CardFooter>
-                            <p className="text-sm text-muted-foreground"><strong>Estimated Cost of LLC Formation:</strong> Approximately $350 - $500, including filing fees and the initial Business Privilege Tax.</p>
-                         </CardFooter>
-                    </Card>
-                     <Card>
-                        <CardHeader><CardTitle>B. The Operating Agreement: The Blueprint for Your 10-Member LLC</CardTitle></CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground mb-4">A comprehensive operating agreement is crucial for a 10-member LLC to prevent future disputes and outline the operational framework. Key provisions must include:</p>
-                             <ul className="list-disc list-inside space-y-2 text-muted-foreground">
-                                <li>Member Contributions and Ownership: Clearly define the initial capital contribution of each of the 10 members and their corresponding ownership percentages.</li>
-                                <li>Profit and Loss Distribution: Detail how profits and losses will be allocated among the members. This can be based on ownership percentage or other agreed-upon metrics.</li>
-                                <li>Management Structure: Specify whether the LLC will be member-managed (all 10 members have a say in daily operations) or manager-managed (a smaller group or an individual is elected to manage the farm).</li>
-                                <li>Voting Rights: Establish the voting power of each member, typically proportional to their ownership interest.</li>
-                                <li>Roles and Responsibilities: Clearly outline the specific duties and responsibilities of each member (e.g., animal care, financial management, marketing) to ensure accountability.</li>
-                                <li>Buy-Sell Agreement: Include provisions for what happens if a member wants to leave the LLC, passes away, or becomes disabled. This will dictate how their ownership interest is valued and transferred.</li>
-                                <li>Dispute Resolution: Outline a process for resolving disagreements among members, such as mediation or arbitration.</li>
-                            </ul>
-                        </CardContent>
-                    </Card>
-                </div>
-            </section>
-        </FadeIn>
-        
-        <FadeIn>
-            <section id="professional-services">
-                <SectionHeader icon={LandmarkIcon} title="Professional Services: Legal & Accounting" subtitle="This is an investment in setting up your business correctly and protecting all 10 members from future liability and disputes." />
-                <div className="max-w-4xl mx-auto space-y-8">
-                     <Card>
-                        <CardHeader><CardTitle>Lawyer Expenses</CardTitle></CardHeader>
-                        <CardContent className="space-y-6">
-                            <div>
-                                <h4 className="font-bold">Startup / One-Time Costs</h4>
-                                <p className="text-sm text-muted-foreground mb-2">For a 10-member LLC, using online templates is extremely risky. A lawyer specializing in business formation is essential.</p>
-                                <div className="overflow-x-auto">
-                                    <Table>
-                                        <TableBody>
-                                            {lawyerStartupCosts.map(item => (
-                                                <TableRow key={item.item}>
-                                                    <TableCell className="font-medium">{item.item}</TableCell>
-                                                    <TableCell className="text-right font-mono">{item.cost}</TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                        <TableFooter>
-                                            <TableRow className="font-bold"><TableCell>Total Estimated Startup Legal Fees</TableCell><TableCell className="text-right font-mono">$3,750 - $7,700</TableCell></TableRow>
-                                        </TableFooter>
-                                    </Table>
-                                </div>
+                    </div>
+                </section>
+            </FadeIn>
+
+            {/* 3. OPERATIONAL PLAN */}
+            <FadeIn>
+                <LuxuryCard className="bg-stone-900 text-white border-t-amber-500">
+                    <div className="px-8 py-10">
+                        <div className="flex items-center gap-4 mb-10">
+                            <div className="p-3 bg-amber-500/20 rounded-lg">
+                                <Factory className="w-8 h-8 text-amber-400" />
                             </div>
                             <div>
-                                <h4 className="font-bold">Ongoing / Annual Costs</h4>
-                                <p className="text-sm text-muted-foreground">Budget for a few hours of legal consultation per year for contract reviews and general counsel.</p>
-                                <p className="font-semibold mt-2">Estimated Annual Budget: <span className="font-mono">$500 - $1,000</span></p>
+                                <h2 className="text-3xl font-serif text-white">Operational Plan: Phase 1</h2>
+                                <p className="text-stone-400">Years 1–2 Focus: Stability & Compliance</p>
                             </div>
-                        </CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader><CardTitle>CPA (Certified Public Accountant) Expenses</CardTitle></CardHeader>
-                        <CardContent className="space-y-6">
-                           <div>
-                                <h4 className="font-bold">Startup / One-Time Costs</h4>
-                                <p className="text-sm text-muted-foreground mb-2">A CPA with agricultural experience can be invaluable for setting up your finances correctly.</p>
-                                <div className="overflow-x-auto">
-                                    <Table>
-                                        <TableBody>
-                                            {cpaStartupCosts.map(item => (
-                                                <TableRow key={item.item}>
-                                                    <TableCell className="font-medium">{item.item}</TableCell>
-                                                    <TableCell className="text-right font-mono">{item.cost}</TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                        <TableFooter>
-                                            <TableRow className="font-bold"><TableCell>Total Estimated Startup CPA Fees</TableCell><TableCell className="text-right font-mono">$900 - $1,800</TableCell></TableRow>
-                                        </TableFooter>
-                                    </Table>
+                        </div>
+
+                        <div className="grid md:grid-cols-3 gap-12">
+                            <div className="md:col-span-2 space-y-8">
+                                <div className="grid grid-cols-2 gap-6">
+                                    <div className="p-6 bg-white/5 border border-white/10 rounded-xl text-center relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-amber-500/10 to-transparent opacity-50"></div>
+                                        <p className="text-sm text-stone-400 mb-2 relative z-10">Goat/Lamb Capacity</p>
+                                        <p className="text-4xl font-serif text-white relative z-10">40-80 <span className="text-lg font-sans text-stone-400">Head/Day</span></p>
+                                    </div>
+                                    <div className="p-6 bg-white/5 border border-white/10 rounded-xl text-center relative overflow-hidden">
+                                        <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/10 to-transparent opacity-50"></div>
+                                        <p className="text-sm text-stone-400 mb-2 relative z-10">Beef Capacity</p>
+                                        <p className="text-4xl font-serif text-white relative z-10">10-25 <span className="text-lg font-sans text-stone-400">Head/Day</span></p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div>
-                                <h4 className="font-bold">Ongoing / Annual Costs</h4>
-                                <p className="text-sm text-muted-foreground mb-2">This includes preparing the LLC's partnership tax return (Form 1065) and issuing Schedule K-1s to all 10 members.</p>
-                                <div className="overflow-x-auto">
-                                <Table>
-                                    <TableBody>
-                                        {cpaAnnualCosts.map(item => (
-                                            <TableRow key={item.item}>
-                                                <TableCell className="font-medium">{item.item}</TableCell>
-                                                <TableCell className="text-right font-mono">{item.cost}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                    <TableFooter>
-                                        <TableRow className="font-bold"><TableCell>Total Estimated Annual CPA Fees</TableCell><TableCell className="text-right font-mono">$1,800 - $4,000</TableCell></TableRow>
-                                    </TableFooter>
-                                </Table>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                     <Card className="bg-primary/5 border-primary/20">
-                        <CardHeader><CardTitle>Budget Summary & Recommendation</CardTitle></CardHeader>
-                        <CardContent className="prose prose-base max-w-none text-muted-foreground">
-                            <p>For accurate financial projections, it is essential to budget for professional services. We recommend the following allocations:</p>
-                            <ul>
-                                <li><strong>Initial Investment Costs:</strong> Allocate <strong>$4,650 - $9,500</strong> for "Professional Services" to cover both legal and CPA startup fees.</li>
-                                <li><strong>Annual Operating Costs:</strong> Budget <strong>$2,300 - $5,000</strong> for "Legal &amp; Accounting" to cover ongoing compliance and advisory needs.</li>
-                            </ul>
-                            <p className="mt-4"><strong>Strategic Recommendation:</strong> To ensure the best fit and manage costs, the LLC should interview at least two law firms and two CPA firms. Inquire about their experience with agricultural businesses and multi-member LLCs, and seek flat-fee arrangements for startup services where possible.</p>
-                        </CardContent>
-                    </Card>
-                </div>
-            </section>
-        </FadeIn>
-        
-        <FadeIn>
-            <section id="land-acquisition">
-                <SectionHeader icon={MapPin} title="Acquiring the Farm: Land Purchase or Lease" subtitle="The land is your single largest investment. While state averages are a starting point, the 'actual price' depends on location, quality, and existing infrastructure."/>
-                <div className="max-w-4xl mx-auto space-y-8">
-                     <Card>
-                        <CardHeader><CardTitle>Factors That Determine the 'Actual Price'</CardTitle></CardHeader>
-                        <CardContent className="prose prose-base max-w-none text-muted-foreground">
-                           <p>The state average for pastureland is a useful benchmark, but the price for a suitable farm varies significantly. As of October 2, 2025, several key factors influence the final cost:</p>
-                            <ul>
-                                <li><strong>Location:</strong> Proximity to suburban areas like Hoover, Birmingham, or Huntsville dramatically increases the price. Land in more rural counties will be more affordable.</li>
-                                <li><strong>Water Access:</strong> This is non-negotiable for livestock. A property with a year-round creek, a large pond, or county water access is worth significantly more than dry land requiring a well (an additional $8,000 - $15,000+ cost).</li>
-                                <li><strong>Fencing:</strong> This is the second most critical factor. A property with existing, sheep-quality (woven wire) fencing is immensely more valuable than one with no fencing or just barbed wire, which can cost thousands per acre to install.</li>
-                                <li><strong>Infrastructure:</strong> The presence of a barn for hay storage, on-site electricity, a good internal road system, and handling pens will all add to the per-acre cost.</li>
-                            </ul>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader><CardTitle>Realistic Price Scenarios for a 20-40 Acre Sheep Farm</CardTitle></CardHeader>
-                        <CardContent>
-                            <p className="text-muted-foreground mb-4">For a 50-ewe flock, you will need between 20 and 40 acres to allow for proper pasture rotation and future growth. Here are three realistic scenarios for what you might find and what the "actual price" would look like.</p>
-                            <div className="space-y-6">
                                 <div>
-                                    <h4 className="font-bold text-lg">Scenario 1: "The Blank Slate" - Raw Pastureland</h4>
-                                    <p className="text-muted-foreground text-sm">Description: Open pastureland, may have an old barbed-wire perimeter fence (unsuitable for sheep), no internal fences, no barn, and water may be from a small pond or require drilling a well. Access might be via a dirt road.</p>
-                                    <p className="mt-2"><strong>Typical Price Range:</strong> $2,500 - $3,200 per acre.</p>
-                                    <p><strong>Total Purchase Price (30 acres @ $2,900/acre):</strong> $87,000</p>
-                                    <p className="text-destructive font-semibold"><strong>Hidden Costs:</strong> You would immediately need to spend an additional $40,000 - $70,000+ on essential infrastructure like sheep-proof fencing, running water lines, building a basic barn/shelter, and establishing handling pens.</p>
-                                </div>
-                                <div className="border-t pt-6">
-                                    <h4 className="font-bold text-lg">Scenario 2: "The Good Foundation" - Partially Improved Farmland (Most Likely Target)</h4>
-                                    <p className="text-muted-foreground text-sm">Description: A former small cattle farm with a decent perimeter fence (may need some repairs), a pond or county water access, an older but functional barn, and power on the property. It will likely lack the cross-fencing needed for rotational grazing.</p>
-                                    <p className="mt-2"><strong>Typical Price Range:</strong> $3,300 - $4,800 per acre.</p>
-                                    <p><strong>Total Purchase Price (30 acres @ $4,000/acre):</strong> $120,000</p>
-                                    <p className="text-orange-600 font-semibold"><strong>Follow-Up Costs:</strong> Your initial costs will be lower. You might spend $15,000 - $25,000 on necessary upgrades like adding cross-fencing, updating the water system for sheep, and building a specific handling area.</p>
-                                </div>
-                                <div className="border-t pt-6">
-                                    <h4 className="font-bold text-lg">Scenario 3: "The Turnkey Farm" - Ready-to-Go Operation</h4>
-                                    <p className="text-muted-foreground text-sm">Description: A property set up specifically for small ruminants. It features excellent woven wire fencing, established rotational grazing paddocks, automatic waterers, a solid barn with lambing pens, and a well-maintained handling facility.</p>
-                                    <p className="mt-2"><strong>Typical Price Range:</strong> $5,000 - $7,500+ per acre.</p>
-                                    <p><strong>Total Purchase Price (30 acres @ $6,000/acre):</strong> $180,000</p>
-                                    <p className="text-green-600 font-semibold"><strong>Follow-Up Costs:</strong> Minimal. Your initial costs would be focused on livestock and operating expenses, not major infrastructure projects.</p>
+                                    <h4 className="font-bold text-white text-lg mb-4">Compliance Framework</h4>
+                                    <ul className="grid grid-cols-1 gap-3">
+                                        <li className="flex items-center gap-3 text-stone-300 bg-white/5 p-3 rounded-lg"><CheckCircle2 className="w-5 h-5 text-emerald-400"/> <strong>Zabiha:</strong> Strict hand-slaughter protocols.</li>
+                                        <li className="flex items-center gap-3 text-stone-300 bg-white/5 p-3 rounded-lg"><CheckCircle2 className="w-5 h-5 text-emerald-400"/> <strong>USDA:</strong> HACCP plans & daily inspection workflows.</li>
+                                        <li className="flex items-center gap-3 text-stone-300 bg-white/5 p-3 rounded-lg"><CheckCircle2 className="w-5 h-5 text-emerald-400"/> <strong>Retail:</strong> Permits for on-site DTC sales.</li>
+                                    </ul>
                                 </div>
                             </div>
-                        </CardContent>
-                    </Card>
-                     <Card className="bg-primary/5 border-primary/20">
-                        <CardHeader><CardTitle>Conclusion and Recommendation</CardTitle></CardHeader>
-                        <CardContent className="prose prose-base max-w-none text-muted-foreground">
-                           <p>A realistic budget for a functional 30-acre property is <strong>$105,000 to $135,000</strong>. Actively searching listings on sites like LandWatch and consulting with a local farm real estate agent is essential. For a new venture, leasing is a highly cost-effective strategy to minimize initial capital outlay.</p>
-                        </CardContent>
-                    </Card>
-                </div>
-            </section>
-        </FadeIn>
+                            <div className="border-l border-white/10 pl-12">
+                                <h4 className="font-bold text-white text-lg mb-6">Lean Staffing Model</h4>
+                                <div className="space-y-6 relative">
+                                    {/* Timeline connecting line */}
+                                    <div className="absolute left-0 top-2 bottom-2 w-px bg-white/20"></div>
+                                    
+                                    <div className="relative pl-6">
+                                        <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 bg-amber-500 rounded-full shadow-[0_0_10px_theme(colors.amber.500)]"></div>
+                                        <p className="text-xs font-bold uppercase text-amber-400 mb-1">Management</p>
+                                        <p className="text-stone-300">Plant Manager, QA/HACCP Coordinator</p>
+                                    </div>
+                                    <div className="relative pl-6">
+                                         <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 bg-stone-600 rounded-full"></div>
+                                        <p className="text-xs font-bold uppercase text-stone-500 mb-1">Production</p>
+                                        <p className="text-stone-300">Slaughter Lead + 4-8 Staff</p>
+                                        <p className="text-stone-300">2-6 Skilled Butchers</p>
+                                    </div>
+                                    <div className="relative pl-6">
+                                         <div className="absolute left-[-5px] top-1.5 w-2.5 h-2.5 bg-stone-600 rounded-full"></div>
+                                        <p className="text-xs font-bold uppercase text-stone-500 mb-1">Logistics</p>
+                                        <p className="text-stone-300">Route Coordinator, Driver</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </LuxuryCard>
+            </FadeIn>
 
-        <FadeIn>
-            <section id="acreage-analysis">
-                <SectionHeader icon={Scale} title="Acreage Analysis: Minimum vs. Optimal" subtitle="Finding the right balance between initial land cost and long-term operational efficiency is a critical decision for your business plan."/>
-                <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 items-start">
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>Minimum Acreage: 12 Acres</CardTitle>
-                            <CardDescription>An intensive management model with little room for error.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div>
-                                <h4 className="font-bold">How it Breaks Down:</h4>
-                                <ul className="list-disc list-inside text-muted-foreground text-sm mt-2">
-                                    <li><strong>10 acres Grazing Area:</strong> High-density (5 ewes/acre) requiring intensive rotational grazing.</li>
-                                    <li><strong>1 acre Sacrifice Area:</strong> Essential pen for feeding hay during wet periods to protect pastures.</li>
-                                    <li><strong>1 acre Infrastructure Area:</strong> Space for barn, handling systems, and storage.</li>
-                                </ul>
-                            </div>
-                            <div>
-                                <h4 className="font-bold">The Reality:</h4>
-                                 <ul className="list-disc list-inside text-muted-foreground text-sm mt-2">
-                                     <li>High management workload.</li>
-                                     <li>Higher annual feed costs due to less pasture recovery.</li>
-                                     <li>Higher risk from drought or disease.</li>
-                                     <li>No room for flock expansion.</li>
-                                 </ul>
-                            </div>
-                        </CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader>
-                            <CardTitle>Optimal Acreage: 25-40 Acres</CardTitle>
-                            <CardDescription>A resilient and sustainable model for long-term profitability.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                             <div>
-                                <h4 className="font-bold">How it Provides Value:</h4>
-                                <ul className="list-disc list-inside text-muted-foreground text-sm mt-2">
-                                    <li><strong>Generous Pasture Rotation:</strong> Low stocking density (2 ewes/acre) allows for long pasture rest periods, improving animal health and reducing vet bills.</li>
-                                    <li><strong>Ability to Make Hay:</strong> Dedicated fields to produce your own hay, drastically reducing operating costs.</li>
-                                    <li><strong>Flexibility & Biosecurity:</strong> Space for quarantine pastures and backup grazing during droughts.</li>
-                                    <li><strong>Room for Growth:</strong> Easily scale the flock to 75-100 ewes without buying more land.</li>
-                                </ul>
-                            </div>
-                             <div>
-                                <h4 className="font-bold">The Reality:</h4>
-                                 <ul className="list-disc list-inside text-muted-foreground text-sm mt-2">
-                                     <li>Moderate and more forgiving management.</li>
-                                     <li>Lower annual feed costs.</li>
-                                     <li>Lower animal health risks.</li>
-                                     <li>Excellent scalability.</li>
-                                 </ul>
-                            </div>
-                        </CardContent>
-                    </Card>
-                     <Card className="md:col-span-2 bg-primary/5 border-primary/20">
-                        <CardHeader>
-                            <CardTitle>Final Recommendation</CardTitle>
-                        </CardHeader>
-                        <CardContent className="prose prose-base max-w-none text-muted-foreground">
-                            <p>While a 12-acre farm is theoretically possible, it represents a high-stakes battle against overgrazing. For a robust and financially sound business plan, the <strong>optimal target is 25+ acres.</strong></p>
-                            <p>The higher initial land investment will pay for itself multiple times over through lower feed costs, better animal health, and the ability to grow the operation. This likely means searching for land 30-60 minutes outside of Hoover to find parcels of this size at an affordable agricultural price.</p>
-                        </CardContent>
-                    </Card>
-                </div>
-            </section>
-        </FadeIn>
+            {/* 4. FINANCIALS (INVESTOR CORE) */}
+            <FadeIn>
+                <section className="space-y-10">
+                    <div className="flex items-end justify-between border-b-2 border-stone-200 pb-6">
+                        <h2 className="text-4xl font-serif text-stone-900 flex items-center gap-4">
+                            <Scale className="w-10 h-10 text-amber-500" /> Financial Analysis
+                        </h2>
+                    </div>
 
-        <FadeIn>
-            <section id="livestock-selection">
-                <SectionHeader icon={Users} title="Livestock Selection and Initial Investment" subtitle="Hair sheep breeds like Katahdin and Dorper are highly recommended for Alabama's climate due to their hardiness and heat resistance."/>
-                 <div className="max-w-4xl mx-auto">
-                    <Card>
-                        <CardHeader><CardTitle>Sample Starter Flock Budget (50-Head Flock)</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
+                    <div className="grid lg:grid-cols-2 gap-10">
+                        {/* Procurement Table */}
+                        <LuxuryCard>
+                            <LuxuryCardHeader title="Procurement Strategy" icon={Briefcase} subtitle="Based on Jan 20, 2026 USDA Cullman Stockyard Data."/>
+                            <div className="px-8 py-6">
                                 <Table>
                                     <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Item</TableHead>
-                                            <TableHead>Price per Head</TableHead>
-                                            <TableHead className="text-right">Total Cost</TableHead>
+                                        <TableRow className="border-stone-200 hover:bg-transparent">
+                                            <TableHead className="text-stone-900 font-bold text-base">Category</TableHead>
+                                            <TableHead className="text-right text-stone-900 font-bold text-base">Mkt Price</TableHead>
+                                            <TableHead className="text-right text-amber-600 font-bold text-base">Est. Cost</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {starterFlock.map(item => (
-                                            <TableRow key={item.item}>
-                                                <TableCell>{item.item}</TableCell>
-                                                <TableCell>{item.price}</TableCell>
-                                                <TableCell className="text-right font-mono">{item.total}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                    <TableFooter>
-                                        <TableRow className="font-bold bg-muted text-lg">
-                                            <TableCell colSpan={2}>Total Estimated Livestock Cost</TableCell>
-                                            <TableCell className="text-right font-mono">${totalLivestockCost.toLocaleString()}</TableCell>
-                                        </TableRow>
-                                    </TableFooter>
-                                </Table>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </section>
-        </FadeIn>
-
-        <FadeIn>
-            <section id="infrastructure">
-                <SectionHeader icon={Construction} title="Farm Infrastructure and Equipment" subtitle="Setting up your farm is a major upfront cost. Buying used equipment can significantly reduce this initial investment."/>
-                <div className="max-w-4xl mx-auto">
-                     <Card>
-                        <CardHeader><CardTitle>Essential Infrastructure &amp; Equipment Costs</CardTitle></CardHeader>
-                        <CardContent>
-                             <div className="overflow-x-auto">
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Item</TableHead>
-                                            <TableHead className="text-right">Estimated Cost Range (Used)</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {infraCosts.map(item => (
-                                            <TableRow key={item.item}>
-                                                <TableCell>{item.item}</TableCell>
-                                                <TableCell className="text-right font-mono">{item.cost}</TableCell>
+                                        {procurementData.map((item, i) => (
+                                            <TableRow key={i} className="border-stone-100 hover:bg-stone-50/50">
+                                                <TableCell>
+                                                    <div className="font-bold text-stone-800 text-lg">{item.type}</div>
+                                                    <div className="text-sm text-stone-500">{item.target}</div>
+                                                </TableCell>
+                                                <TableCell className="text-right font-mono text-stone-600 text-lg">{item.marketPrice}</TableCell>
+                                                <TableCell className="text-right font-mono font-bold text-amber-600 text-lg">{item.finalCost}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
                             </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </section>
-        </FadeIn>
+                        </LuxuryCard>
 
-        <FadeIn>
-            <section id="marketing-sales">
-                <SectionHeader icon={ShoppingCart} title="Detailed Marketing and Sales Strategy" subtitle="This section moves from 'what' to 'how much,' outlining how you will price your products to ensure profitability."/>
-                 <div className="max-w-4xl mx-auto space-y-8">
-                    <Card>
-                        <CardHeader><CardTitle>Marketing Startup Costs</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
-                            <Table>
-                                <TableBody>
-                                {marketingCosts.map(item => (
-                                    <TableRow key={item.item}>
-                                        <TableCell>{item.item}</TableCell>
-                                        <TableCell className="text-right font-mono">{item.cost}</TableCell>
-                                    </TableRow>
+                        {/* Fixed Costs & Break Even */}
+                        <div className="space-y-10">
+                            {/* Monthly Nut Dashboard styled card */}
+                            <div className="bg-stone-900 rounded-xl shadow-xl overflow-hidden relative">
+                                <div className="absolute top-0 right-0 -mt-4 -mr-4 text-stone-800/20">
+                                    <Gem className="w-32 h-32" />
+                                </div>
+                                <div className="px-8 py-6 border-b border-white/10">
+                                    <h3 className="text-xl font-serif text-white flex items-center gap-2">
+                                        <Gem className="w-5 h-5 text-amber-400" /> Monthly "Nut" (Fixed Costs)
+                                    </h3>
+                                </div>
+                                <div className="px-8 py-6">
+                                    <div className="space-y-4">
+                                        {fixedCosts.map((item, i) => (
+                                            <div key={i} className="flex justify-between items-center border-b border-white/10 pb-3 last:border-0 last:pb-0">
+                                                <span className="text-stone-300 font-medium">{item.item}</span>
+                                                <span className="font-mono text-white text-lg">{item.cost}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mt-8 pt-6 border-t-2 border-amber-500/30 flex justify-between items-center">
+                                        <span className="font-bold uppercase tracking-widest text-amber-400">Total Burn Rate</span>
+                                        <span className="font-mono text-3xl font-bold text-white">~$41,500</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Break Even Indicators */}
+                            <div className="grid grid-cols-3 gap-6">
+                                {breakEvenScenarios.map((item, i) => (
+                                    <div key={i} className="bg-white p-6 rounded-xl border-t-4 border-emerald-500 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-center hover:-translate-y-1 transition-transform">
+                                        <item.icon className="w-8 h-8 text-emerald-700 mx-auto mb-3 opacity-80" strokeWidth={1.5} />
+                                        <p className="text-[11px] uppercase font-bold text-stone-400 mb-2 leading-tight">{item.title}</p>
+                                        <p className="text-2xl font-serif text-stone-900 font-bold">{item.daily}</p>
+                                        <p className="text-xs text-stone-500 font-medium mt-1">Daily Volume</p>
+                                    </div>
                                 ))}
-                                </TableBody>
-                            </Table>
                             </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader><CardTitle>Product Pricing Strategy: Whole Lamb Share Example</CardTitle></CardHeader>
-                        <CardContent>
-                            <p className="mb-4 text-muted-foreground">This example is based on a 100 lb live weight lamb, yielding 50 lbs hanging weight and approximately 37.5 lbs of take-home meat.</p>
-                            <h4 className="font-bold">Pricing Model: Based on Hanging Weight</h4>
-                            <p className="text-sm text-muted-foreground mb-2">The customer pays the farm for the meat based on hanging weight, and pays the processor separately. This is the most common and transparent method for direct-to-consumer sales.</p>
-                            <ol className="list-decimal list-inside space-y-1">
-                                <li>Your price to customer: <strong>$8.00/lb hanging weight</strong>.</li>
-                                <li>Customer pays you (50 lbs x $8.00): <strong>$400.00</strong></li>
-                                <li>Estimated processing cost (paid to processor): <strong>~$147.50</strong></li>
-                                <li>Total customer cost: <strong>~$547.50</strong></li>
-                                <li>Final price per pound of take-home meat: <strong>~$14.60/lb</strong></li>
-                            </ol>
-                        </CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader><CardTitle>Revenue Potential for Other Channels</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
-                             <Table>
-                                <TableBody>
-                                    <TableRow><TableCell><strong>Individual Cuts at Market</strong></TableCell><TableCell className="text-right"><strong>$600 - $750</strong> total revenue per lamb</TableCell></TableRow>
-                                    <TableRow><TableCell><strong>Livestock Auction (Live Weight)</strong></TableCell><TableCell className="text-right"><strong>$220 - $280</strong> per 100 lb lamb</TableCell></TableRow>
-                                    <TableRow><TableCell><strong>Breeding Stock</strong></TableCell><TableCell className="text-right"><strong>$500 - $1,200+</strong> per animal</TableCell></TableRow>
-                                </TableBody>
-                            </Table>
+                        </div>
+                    </div>
+                </section>
+            </FadeIn>
+
+            {/* 5. NEXT STEPS CTA */}
+            <FadeIn>
+                <div className="bg-gradient-to-br from-stone-900 to-emerald-950 rounded-2xl p-12 text-center text-white relative overflow-hidden shadow-2xl">
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+                    <div className="relative z-10">
+                        <div className="inline-flex p-4 bg-white/10 rounded-full mb-8 backdrop-blur-sm ring-1 ring-white/20">
+                            <ScrollText className="w-10 h-10 text-amber-300" strokeWidth={1.5} />
+                        </div>
+                        <h2 className="text-4xl font-serif mb-6">Immediate Next Steps</h2>
+                        
+                        <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto mt-12 text-left">
+                            {/* Step 1 */}
+                            <div className="bg-white/5 p-8 rounded-xl border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors group">
+                                <h4 className="font-bold text-xl text-white mb-3 flex items-center gap-3">
+                                    <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/20 text-amber-300 group-hover:bg-amber-500 group-hover:text-white transition-colors">1</span>
+                                    Licensing
+                                </h4>
+                                <p className="text-stone-300 leading-relaxed">Confirm regulatory requirements for Retail Sales exemption versus securing a separate license.</p>
                             </div>
-                        </CardContent>
-                    </Card>
+                             {/* Step 2 */}
+                            <div className="bg-white/5 p-8 rounded-xl border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors group">
+                                <h4 className="font-bold text-xl text-white mb-3 flex items-center gap-3">
+                                     <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/20 text-amber-300 group-hover:bg-amber-500 group-hover:text-white transition-colors">2</span>
+                                    Audit
+                                </h4>
+                                <p className="text-stone-300 leading-relaxed">Verify current facility rail capacity to handle target throughput for both Goat and Beef.</p>
+                            </div>
+                             {/* Step 3 */}
+                            <div className="bg-white/5 p-8 rounded-xl border border-white/10 backdrop-blur-md hover:bg-white/10 transition-colors group">
+                                <h4 className="font-bold text-xl text-white mb-3 flex items-center gap-3">
+                                     <span className="flex items-center justify-center w-8 h-8 rounded-full bg-amber-500/20 text-amber-300 group-hover:bg-amber-500 group-hover:text-white transition-colors">3</span>
+                                    Pilot
+                                </h4>
+                                <p className="text-stone-300 leading-relaxed">Secure Letters of Intent (LOIs) from 3 major Halal grocers in the Birmingham area.</p>
+                            </div>
+                        </div>
+
+                        <div className="mt-16">
+                            <Button asChild size="lg" className="bg-amber-500 hover:bg-amber-400 text-stone-900 font-bold px-8 py-6 text-lg shadow-lg shadow-amber-500/20 border-0">
+                                <Link href="/agriculture">Return to Portfolio Overview</Link>
+                            </Button>
+                        </div>
+                    </div>
                 </div>
-            </section>
-        </FadeIn>
-        
-        <FadeIn>
-            <section id="processing-plan">
-                <SectionHeader icon={ChevronsRight} title="Meat Processing Plan" />
-                <Card className="max-w-4xl mx-auto">
-                    <CardHeader><CardTitle>Typical Processing Costs in Alabama (late 2025)</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="overflow-x-auto">
-                        <Table>
-                            <TableBody>
-                            {processingCosts.map(item => (
-                                <TableRow key={item.item}>
-                                    <TableCell>{item.item}</TableCell>
-                                    <TableCell className="text-right font-mono">{item.cost}</TableCell>
-                                </TableRow>
-                            ))}
-                            </TableBody>
-                        </Table>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
-        </FadeIn>
+            </FadeIn>
 
-        <FadeIn>
-            <section id="risk-management">
-                <SectionHeader icon={ShieldCheck} title="Risk Management Plan" />
-                 <Card className="max-w-4xl mx-auto">
-                    <CardHeader><CardTitle>Associated Costs for Mitigation</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="overflow-x-auto">
-                        <Table>
-                            <TableBody>
-                            {riskCosts.map(item => (
-                                <TableRow key={item.item}>
-                                    <TableCell>{item.item}</TableCell>
-                                    <TableCell className="text-right font-mono">{item.cost}</TableCell>
-                                </TableRow>
-                            ))}
-                            </TableBody>
-                        </Table>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
-        </FadeIn>
-
-        <FadeIn>
-            <section id="regulatory-health">
-                <SectionHeader icon={ClipboardCheck} title="Regulatory Compliance and Flock Health" />
-                <Card className="max-w-4xl mx-auto">
-                    <CardHeader><CardTitle>Associated Costs for Health &amp; Compliance</CardTitle></CardHeader>
-                    <CardContent>
-                        <div className="overflow-x-auto">
-                        <Table>
-                            <TableBody>
-                            {healthCosts.map(item => (
-                                <TableRow key={item.item}>
-                                    <TableCell>{item.item}</TableCell>
-                                    <TableCell className="text-right font-mono">{item.cost}</TableCell>
-                                </TableRow>
-                            ))}
-                            </TableBody>
-                        </Table>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
-        </FadeIn>
-
-        <FadeIn>
-            <section id="financials">
-                <SectionHeader icon={BarChart} title="Financial Projections: Two Startup Scenarios" subtitle="A simplified projection for a 50-ewe operation, comparing models with land purchase vs. land lease." />
-                <div className="max-w-4xl mx-auto grid md:grid-cols-2 gap-8 items-start">
-                     <Card>
-                        <CardHeader><CardTitle>A. Initial Investment Breakdown (with Land Purchase)</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
-                             <Table>
-                                <TableBody>
-                                    {initialInvestmentPurchase.map(item => (
-                                        <TableRow key={item.item}>
-                                            <TableCell>{item.item}</TableCell>
-                                            <TableCell className="text-right font-mono">${item.cost.toLocaleString()}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow className="font-bold text-lg"><TableCell>Total Estimated Initial Investment</TableCell><TableCell className="text-right font-mono">${totalInitialInvestmentPurchase.toLocaleString()}</TableCell></TableRow>
-                                    <TableRow className="font-bold text-lg bg-primary/10 text-primary"><TableCell>Investment per Member (10 Members)</TableCell><TableCell className="text-right font-mono">${investmentPerMemberPurchase.toLocaleString()}</TableCell></TableRow>
-                                </TableFooter>
-                            </Table>
-                            </div>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader><CardTitle>B. Initial Investment Breakdown (with Land Lease)</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
-                             <Table>
-                                <TableBody>
-                                    {initialInvestmentLease.map(item => (
-                                        <TableRow key={item.item}>
-                                            <TableCell>{item.item}</TableCell>
-                                            <TableCell className="text-right font-mono">${item.cost.toLocaleString()}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow className="font-bold text-lg"><TableCell>Total Estimated Initial Investment</TableCell><TableCell className="text-right font-mono">${totalInitialInvestmentLease.toLocaleString()}</TableCell></TableRow>
-                                    <TableRow className="font-bold text-lg bg-primary/10 text-primary"><TableCell>Investment per Member (10 Members)</TableCell><TableCell className="text-right font-mono">${investmentPerMemberLease.toLocaleString()}</TableCell></TableRow>
-                                </TableFooter>
-                            </Table>
-                            </div>
-                        </CardContent>
-                    </Card>
-                     <Card className="md:col-span-2">
-                        <CardHeader><CardTitle>C. Projected Annual Operating Costs (50-Ewe Flock on Leased Land)</CardTitle></CardHeader>
-                        <CardContent>
-                            <div className="overflow-x-auto">
-                            <Table>
-                                <TableBody>
-                                    {annualOperatingCosts.map(item => (
-                                        <TableRow key={item.item}>
-                                            <TableCell>{item.item}</TableCell>
-                                            <TableCell className="text-right font-mono">{item.cost}</TableCell>
-                                        </TableRow>
-                                    ))}
-                                </TableBody>
-                                <TableFooter>
-                                    <TableRow className="font-bold text-lg"><TableCell>Total Estimated Annual Costs</TableCell><TableCell className="text-right font-mono">${totalAnnualOperatingCosts.toLocaleString()}</TableCell></TableRow>
-                                </TableFooter>
-                            </Table>
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
-            </section>
-        </FadeIn>
-
-         <FadeIn>
-            <section id="flock-calendar">
-                <SectionHeader icon={Calendar} title="Detailed Annual Flock Management Calendar" />
-                <Card className="max-w-4xl mx-auto">
-                    <CardHeader><CardTitle>Budgeting Notes by Season</CardTitle></CardHeader>
-                    <CardContent className="space-y-4">
-                        <div>
-                            <h4 className="font-bold">Jan-Feb (Lambing Season)</h4>
-                            <p className="text-muted-foreground">Budget <strong>$300 - $500</strong> for lambing supplies: milk replacer, heat lamps, and potential vet assistance.</p>
-                        </div>
-                        <div>
-                            <h4 className="font-bold">May-June (Weaning)</h4>
-                            <p className="text-muted-foreground">Feed costs rise as you supplement lambs for market growth.</p>
-                        </div>
-                        <div>
-                            <h4 className="font-bold">July-Aug (Market Time)</h4>
-                            <p className="text-muted-foreground">Budget for processing fees and marketing expenses (e.g., farmers' market fees).</p>
-                        </div>
-                        <div>
-                            <h4 className="font-bold">Sept-Oct (Breeding Season)</h4>
-                            <p className="text-muted-foreground">Ideal time to invest in a new, high-quality ram. Budget <strong>$700+</strong> for this periodic investment.</p>
-                        </div>
-                        <div>
-                            <h4 className="font-bold">Nov-Dec (Gestation)</h4>
-                            <p className="text-muted-foreground">Hay and supplemental feed are the primary expenses. Ensure winter hay supply is purchased.</p>
-                        </div>
-                    </CardContent>
-                </Card>
-            </section>
-        </FadeIn>
-        
-        <FadeIn>
-            <section id="financing">
-                <SectionHeader icon={DollarSign} title="Financing and Resources"/>
-                <div className="prose prose-lg max-w-3xl mx-auto text-muted-foreground">
-                    <p><strong>Alabama Farm Credit &amp; Alabama Ag Credit:</strong> These institutions offer specialized loan programs for young, beginning, and small farmers.</p>
-                    <p><strong>USDA Farm Service Agency (FSA):</strong> The FSA provides a variety of loan programs for beginning farmers, including direct and guaranteed loans.</p>
-                    <p><strong>Grants:</strong> Grants for specific conservation practices or value-added producer initiatives may be available through the USDA's NRCS or the Alabama Department of Agriculture and Industries.</p>
-                </div>
-            </section>
-        </FadeIn>
-
-        <FadeIn>
-            <section id="conclusion" className="text-center">
-                 <Card className="max-w-4xl mx-auto bg-background border-2 border-primary/20">
-                    <CardHeader>
-                        <SectionHeader icon={Award} title="Conclusion: A Path to Success"/>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="prose prose-lg max-w-3xl mx-auto text-muted-foreground">Starting a sheep and lamb farm in Alabama as a 10-member LLC is a significant undertaking that requires meticulous planning, substantial capital, and a unified commitment. By establishing a solid legal foundation, developing a comprehensive operating agreement, and carefully managing finances, your LLC can build a thriving and profitable agricultural enterprise.</p>
-                    </CardContent>
-                    <CardFooter className="flex-col gap-2">
-                        <p className="text-sm text-muted-foreground">It is highly recommended to consult with a lawyer and a CPA for formation and financial planning.</p>
-                         <Button asChild>
-                            <Link href="/agriculture/alabama-livestock">Back to Alabama Livestock Overview</Link>
-                        </Button>
-                    </CardFooter>
-                 </Card>
-            </section>
-        </FadeIn>
-
-      </main>
+        </main>
     </div>
   );
 }
