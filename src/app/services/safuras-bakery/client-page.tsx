@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { 
-  ArrowLeft, ShoppingBag, MapPin, Phone, Star, 
+  ArrowLeft, MapPin, Phone, Star, 
   Truck, Instagram, Facebook, Sparkles, Heart, ChefHat
 } from 'lucide-react';
 
@@ -17,56 +17,56 @@ const HERO_IMAGE = "https://i.imgur.com/klLlEA4.jpeg";
 const CHEF_IMAGE = "https://i.imgur.com/oKurtPO.jpeg"; 
 const TEXTURE_URL = "https://www.transparenttextures.com/patterns/cream-paper.png"; 
 
-// --- DATA: 10 ITEMS (2x5 Grid - LV Style) ---
+// --- DATA: 10 ITEMS (2x5 Grid) ---
 const COLLECTIONS = [
     { 
         title: "Wedding Cakes", 
-        price: "Bespoke",
+        price: "Bespoke", 
         img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000&auto=format&fit=crop" 
     },
     { 
         title: "Signature Cupcakes", 
-        price: "Box of 6 / $35",
+        price: "Box of 6 / $35", 
         img: "https://i.imgur.com/9wVuwPK.jpeg" 
     },
     { 
         title: "Artisan Macarons", 
-        price: "Box of 12 / $45",
+        price: "Box of 12 / $45", 
         img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000&auto=format&fit=crop" 
     },
     { 
         title: "Rustic Tarts", 
-        price: "From $55",
+        price: "From $55", 
         img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000&auto=format&fit=crop" 
     },
     { 
         title: "Sourdough Loaves", 
-        price: "$18",
+        price: "$18", 
         img: "https://images.unsplash.com/photo-1627308595171-d1b5d67129c4?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
     },
     { 
         title: "Cream Puffs", 
-        price: "Set of 4 / $28",
+        price: "Set of 4 / $28", 
         img: "https://images.unsplash.com/photo-1633424411336-f5b7a6886d88?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
     },
     { 
         title: "Dark Chocolates", 
-        price: "Gift Box / $40",
+        price: "Gift Box / $40", 
         img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000&auto=format&fit=crop" 
     },
     { 
         title: "Croissants", 
-        price: "Dozen / $48",
+        price: "Dozen / $48", 
         img: "https://images.unsplash.com/photo-1651604033534-e66b281f1981?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
     },
     { 
         title: "Layered Parfaits", 
-        price: "$12 ea",
+        price: "$12 ea", 
         img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000&auto=format&fit=crop" 
     },
     { 
         title: "Custom Gift Sets", 
-        price: "Inquire",
+        price: "Inquire", 
         img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000&auto=format&fit=crop" 
     }
 ];
@@ -80,7 +80,7 @@ const GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1558326567-98ae2405596b?q=80&w=759", 
   "https://images.unsplash.com/photo-1525253086316-d0c936c814f8?q=80&w=1200", 
   "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1200", 
-  "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1200"  
+  "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000&auto=format&fit=crop"  
 ];
 
 const BRAND_NAME = "SAFURA'S";
@@ -158,7 +158,6 @@ function SectionHeading({ subtitle, title, align = "center", dark = false }: { s
 
 export default function SafuraLuxuryPage() {
     const { scrollYProgress } = useScroll();
-    const yHero = useTransform(scrollYProgress, [0, 1], ['0%', '30%']);
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -189,56 +188,82 @@ export default function SafuraLuxuryPage() {
             />
 
             {/* --- HERO SECTION --- */}
-            <section className="relative h-[100svh] w-full overflow-hidden flex items-center justify-center">
-                <motion.div 
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: 1.5, duration: 1 }}
-                    className="absolute top-6 w-full z-50 flex flex-col md:flex-row justify-center items-center gap-2 md:gap-6 text-[#FADADD] pointer-events-none"
-                >
-                    <span className="font-serif italic text-base md:text-lg tracking-wide flex items-center gap-2">
-                        <Sparkles size={12} /> Complimentary Concierge Delivery <Sparkles size={12} />
-                    </span>
-                </motion.div>
+            {/* 'justify-center' to vertically center everything */}
+            <section className="relative h-[100svh] w-full overflow-hidden flex flex-col items-center justify-center pb-12 md:pb-24">
+                
+                {/* --- TOP BANNER (Exact Light Beige) --- */}
+                <div className="absolute top-0 left-0 w-full z-50 bg-[#F4EBE8] text-[#5D4037] py-3 md:py-4 text-center px-4 shadow-sm border-b border-[#E8D8D5] flex flex-col items-center justify-center gap-1">
+                     <p className="font-serif italic text-xs md:text-base leading-none text-[#8C6A64]">
+                        Complimentary Concierge Delivery
+                    </p>
+                    <p className="font-sans text-[8px] md:text-[10px] tracking-[0.2em] uppercase font-semibold text-[#5D4037]/80">
+                        Exclusive to Hoover & Birmingham
+                    </p>
+                </div>
 
-                <div className="absolute top-8 left-6 z-40">
-                    <a href="/services" className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/40 text-white hover:bg-white/30 transition-all duration-300">
+                {/* Back Button */}
+                <div className="absolute top-24 md:top-28 left-6 z-40">
+                    <a href="/services" className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300">
                         <ArrowLeft size={16} />
                     </a>
                 </div>
 
-                <motion.div style={{ y: isMobile ? 0 : yHero }} className="absolute inset-0 z-0">
-                    <img src={HERO_IMAGE} alt="Hero" className="w-full h-full object-cover brightness-[0.5]" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-[#2B120A]/70 via-[#2B120A]/20 to-[#2B120A]/40" />
-                </motion.div>
+                <div className="absolute inset-0 z-0">
+                    {/* IMAGE STYLING */}
+                    <img 
+                        src={HERO_IMAGE} 
+                        alt="Hero" 
+                        className="w-full h-full object-cover object-[center_25%] brightness-[0.85] contrast-[1.0] saturate-[1.0] blur-[0.5px]" 
+                    />
+                    
+                    {/* --- LAYERS --- */}
+                    {/* Lighter Gradient Overlay: 50% via 25% */}
+                    <div className="absolute top-0 left-0 w-full h-2/3 bg-gradient-to-b from-black/50 via-black/25 to-transparent" />
+                    
+                    {/* Bottom Fade */}
+                    <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-[#FFFDFD] via-[#FFFDFD]/80 to-transparent" />
+                </div>
                 
-                <div className="relative z-10 text-center px-4 w-full max-w-5xl">
+                {/* POSITIONING:
+                   - 'mt-20 md:mt-32': Pushes text down onto the cake.
+                */}
+                <div className="relative z-10 text-center px-4 w-full max-w-5xl mt-20 md:mt-32"> 
                     <motion.div 
                         initial={{ opacity: 0, y: 30 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ duration: 1.5, ease: "easeOut" }}
                     >
-                        <div className="flex items-center justify-center gap-4 mb-6 md:mb-8 opacity-90">
-                            <div className="h-[1px] bg-[#FADADD] w-12 md:w-20" />
-                            <div className="text-[#FADADD] flex items-center gap-2 text-[10px] md:text-xs tracking-[0.3em] uppercase font-sans font-bold">
+                        {/* DECORATIVE LINES (Very Light Pink) */}
+                        <div className="flex items-center justify-center gap-4 mb-4 md:mb-8 opacity-90">
+                            <div className="h-[1px] bg-[#FFF5F5]/70 w-8 md:w-20" />
+                            <div className="text-[#FFF5F5]/90 flex items-center gap-2 text-[9px] md:text-xs tracking-[0.3em] uppercase font-sans font-bold">
                                 Est. 2024 • Hoover, AL
                             </div>
-                            <div className="h-[1px] bg-[#FADADD] w-12 md:w-20" />
+                            <div className="h-[1px] bg-[#FFF5F5]/70 w-8 md:w-20" />
                         </div>
                         
-                        <h1 className="text-white font-serif text-[4rem] md:text-[7rem] lg:text-[9rem] leading-[0.85] tracking-normal font-normal mb-0 drop-shadow-sm uppercase">
+                        {/* MAIN TITLE (Very Light Pink / Almost White - #FFF5F5) */}
+                        <h1 className="text-[#FFF5F5] font-serif text-[3.5rem] md:text-[6.5rem] lg:text-[8rem] leading-[0.85] tracking-normal font-normal mb-0 drop-shadow-sm uppercase">
                             SAFURA'S
                         </h1>
 
-                        <p className="font-script text-[#FADADD] text-[3rem] md:text-[5.5rem] lg:text-[7rem] leading-[1.2] mb-12 -mt-1 md:-mt-4 relative z-10 drop-shadow-md">
+                        {/* SCRIPT SUBTITLE (UPDATED: Lighter Pink #FFD9D5) */}
+                        {/* Changed from #E09F99 to #FFD9D5 for better readability on dark cake */}
+                        <p className="font-script text-[#FFD9D5] text-[3rem] md:text-[6rem] lg:text-[8rem] leading-[1.1] mb-8 md:mb-12 mt-4 relative z-10 drop-shadow-md">
                             Atelier & Bakery
                         </p>
                         
-                        <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
-                            <a href="#collections" className="bg-[#C08A82] text-white px-10 py-4 text-[11px] uppercase tracking-[0.25em] font-sans font-bold hover:bg-[#A8726A] transition-all duration-500 w-full md:w-auto min-w-[220px] rounded-[4px] shadow-lg text-center">
+                        {/* BUTTONS CONTAINER:
+                           - 'mt-24 md:mt-32': Pushes buttons further down to keep them at the bottom.
+                        */}
+                        <div className="flex flex-col items-center justify-center gap-3 md:gap-4 w-full max-w-xs mx-auto mt-24 md:mt-32">
+                            {/* Top Button: "Deep Terracotta" */}
+                            <a href="#collections" className="bg-[#CC8C82] text-white px-6 py-3 md:px-8 md:py-4 text-[10px] md:text-[11px] uppercase tracking-[0.25em] font-sans font-bold hover:bg-[#B57970] transition-all duration-500 w-full rounded-[2px] shadow-lg text-center">
                                 View Collection
                             </a>
-                            <a href="#contact" className="bg-[#F2D4D0] text-[#5A3A35] px-10 py-4 text-[11px] uppercase tracking-[0.25em] font-sans font-bold hover:bg-[#EBC0BB] transition-all w-full md:w-auto min-w-[220px] rounded-[4px] shadow-lg text-center">
+                            
+                            {/* Bottom Button: "Pale Blush" */}
+                            <a href="#contact" className="bg-[#F5D0CD] text-[#5A3A35] px-6 py-3 md:px-8 md:py-4 text-[10px] md:text-[11px] uppercase tracking-[0.25em] font-sans font-bold hover:bg-[#EBC5C2] transition-all w-full rounded-[2px] shadow-lg text-center">
                                 Custom Inquiry
                             </a>
                         </div>

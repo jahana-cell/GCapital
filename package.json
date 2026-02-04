@@ -4,6 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "login": "gcloud auth login --update-adc --no-launch-browser",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
