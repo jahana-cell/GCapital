@@ -69,12 +69,10 @@
     "zod": "^4.3.5"
   },
   "devDependencies": {
-    "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/typography": "^0.5.13",
     "@types/node": "^25.0.9",
     "@types/react": "^19.2.9",
     "@types/react-dom": "^19.2.3",
-    "@types/uuid": "^10.0.0",
     "autoprefixer": "^10.4.20",
     "esbuild": "^0.19.2",
     "postcss": "^8.4.49",

@@ -215,7 +215,7 @@ export default function AlabamaLivestockPage() {
                     </p>
 
                     <div className="flex flex-col sm:flex-row justify-center gap-4">
-                        <Link href="/agriculture/alabama-livestock/payment" className="w-full sm:w-auto bg-black text-white h-14 flex items-center justify-center px-10 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-neutral-800 transition-all rounded-sm shadow-lg">
+                        <Link href="/agriculture/livestock/invest" className="w-full sm:w-auto bg-black text-white h-14 flex items-center justify-center px-10 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-neutral-800 transition-all rounded-sm shadow-lg">
                             Invest Now
                         </Link>
                         <Link href="/contact" className="w-full sm:w-auto border border-neutral-300 text-black h-14 flex items-center justify-center px-10 text-[11px] tracking-[0.3em] uppercase font-bold hover:bg-white transition-all rounded-sm">
