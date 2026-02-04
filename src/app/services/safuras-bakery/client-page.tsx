@@ -248,7 +248,6 @@ export default function SafuraLuxuryPage() {
                         </h1>
 
                         {/* SCRIPT SUBTITLE (UPDATED: Lighter Pink #FFD9D5) */}
-                        {/* Changed from #E09F99 to #FFD9D5 for better readability on dark cake */}
                         <p className="font-script text-[#FFD9D5] text-[3rem] md:text-[6rem] lg:text-[8rem] leading-[1.1] mb-8 md:mb-12 mt-4 relative z-10 drop-shadow-md">
                             Atelier & Bakery
                         </p>
@@ -276,11 +275,13 @@ export default function SafuraLuxuryPage() {
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                     <div className="lg:col-span-5 order-2 lg:order-1">
                        <Reveal>
-                            <div className="aspect-[4/5] relative p-4 border border-[#D48F85]/20 rounded-t-[100px] rounded-b-[20px]">
-                                <div className="absolute inset-0 border border-[#D48F85]/10 rounded-t-[100px] rounded-b-[20px] -rotate-2 z-0" />
-                                <div className="relative h-full w-full overflow-hidden rounded-t-[90px] rounded-b-[10px]">
-                                     <ParallaxImage src={CHEF_IMAGE} alt="Safura Signature Cake" className="relative z-10 w-full h-full grayscale-[10%] contrast-[1.1]" />
-                                </div>
+                            {/* UPDATED: Clean, full-frame container without complex borders */}
+                            <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-sm">
+                                 <ParallaxImage 
+                                    src={CHEF_IMAGE} 
+                                    alt="Safura Signature Cake" 
+                                    className="w-full h-full grayscale-[10%] contrast-[1.1]" 
+                                 />
                             </div>
                        </Reveal>
                     </div>
