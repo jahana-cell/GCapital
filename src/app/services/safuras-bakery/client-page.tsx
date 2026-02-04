@@ -18,6 +18,51 @@ const SAFURA_IMAGE = "https://i.imgur.com/47VIaGf.jpeg";
 const CHEF_IMAGE = "https://i.imgur.com/oKurtPO.jpeg"; 
 const TEXTURE_URL = "https://www.transparenttextures.com/patterns/cream-paper.png"; 
 
+// --- LUXURY ANIMATION COMPONENTS ---
+
+// 1. SPARKLE (Existing)
+const LuxurySparkle = ({ className, delay = 0 }: { className?: string, delay?: number }) => (
+    <motion.svg 
+        viewBox="0 0 24 24" 
+        fill="currentColor" 
+        className={cn("absolute pointer-events-none z-20", className)}
+        initial={{ opacity: 0, scale: 0.5 }}
+        animate={{ 
+            opacity: [0, 0.8, 0], 
+            scale: [0.5, 1.1, 0.5],
+            rotate: [0, 45, 0] 
+        }}
+        transition={{ 
+            duration: 4, 
+            repeat: Infinity, 
+            delay: delay,
+            ease: "easeInOut" 
+        }}
+    >
+        <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
+    </motion.svg>
+);
+
+// 2. SHEEN SWEEP (New!)
+// A soft band of light that wipes across the image
+const LuxurySheen = () => (
+    <motion.div 
+        className="absolute inset-0 z-10 pointer-events-none"
+        initial={{ x: '-100%' }}
+        animate={{ x: '200%' }}
+        transition={{ 
+            repeat: Infinity, 
+            repeatDelay: 5, // Happens every 5 seconds
+            duration: 1.5, 
+            ease: "easeInOut" 
+        }}
+        style={{
+            background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0.0) 60%)',
+            mixBlendMode: 'overlay'
+        }}
+    />
+);
+
 // --- DATA: 10 ITEMS (2x5 Grid) ---
 const COLLECTIONS = [
     { 
@@ -276,15 +321,24 @@ export default function SafuraLuxuryPage() {
             <section id="meet-safura" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
                     
-                    {/* LEFT: SAFURA IMAGE */}
-                    <div className="lg:col-span-5 order-2 lg:order-1">
+                    {/* LEFT: SAFURA IMAGE WITH LUXURY EFFECTS */}
+                    <div className="lg:col-span-5 order-2 lg:order-1 relative">
                        <Reveal>
-                            <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-xl border border-[#2B120A]/5">
+                            {/* Container */}
+                            <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-xl border border-[#2B120A]/5 group">
                                  <ParallaxImage 
                                     src={SAFURA_IMAGE} 
                                     alt="Safura - Founder & Artist" 
                                     className="w-full h-full grayscale-[5%] contrast-[1.05]" 
                                  />
+                                 
+                                 {/* --- ANIMATION: Luxury Sheen Sweep --- */}
+                                 <LuxurySheen />
+
+                                 {/* --- ANIMATION: Diamond Dust Sparkles --- */}
+                                 <LuxurySparkle className="w-8 h-8 top-6 right-6 text-[#FFD9D5]/80" delay={0} />
+                                 <LuxurySparkle className="w-6 h-6 bottom-8 left-8 text-[#FFD9D5]/60" delay={1.5} />
+                                 <LuxurySparkle className="w-4 h-4 top-1/3 left-4 text-white/70" delay={2.5} />
                             </div>
                        </Reveal>
                     </div>
@@ -320,7 +374,8 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- PHILOSOPHY SECTION --- */}
+            {/* --- PHILOSOPHY SECTION (RESTORED) --- */}
+            {/* Layout Swapped: Text Left, Image Right for visual flow */}
             <section id="our-philosophy" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                     
