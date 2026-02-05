@@ -1,4 +1,3 @@
-
 "use client";
 
 import * as React from "react";
@@ -6,8 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { 
-  Menu, UserSquare, Facebook, Instagram, 
-  Youtube, LogOut, X, Search, ChevronRight, ArrowRight
+  Menu, UserSquare, LogOut, ArrowRight
 } from "lucide-react";
 import { 
   Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger, SheetClose, SheetDescription
@@ -15,8 +13,9 @@ import {
 import { 
   Accordion, AccordionContent, AccordionItem, AccordionTrigger 
 } from "@/components/ui/accordion";
-import SocialIcons from './SocialIcons'; // Import the new component
+import SocialIcons from './SocialIcons'; 
 import { Cart } from "./cart"; 
+// --- IMPORT GLOBAL SEARCH ---
 import { GlobalSearch } from "@/components/global-search"; 
 import { useAuth } from "@/context/auth-context";
 import { Button } from "./ui/button";
@@ -42,7 +41,7 @@ const healthcareLinks = [
   { title: "Maternal Health Tech", href: "/healthcare/maternal-health", description: "A dedicated investment thesis for prenatal, delivery, and postnatal care." },
 ];
 
-const servicesLinks: { title: string; href: string; description: string }[] = [
+const servicesLinks = [
   {
     title: "Services Overview",
     href: "/services",
@@ -121,50 +120,67 @@ export default function Header() {
 
   return (
     <header className={`sticky top-0 z-50 w-full transition-all duration-500 border-b border-neutral-100 ${
-        scrolled ? "bg-white/80 backdrop-blur-md shadow-sm" : "bg-white"
+        scrolled ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-white"
     }`}>
-      <div className="w-full px-4 md:px-12 h-[80px] md:h-[90px] flex items-center justify-between relative">
+      <div className="flex flex-col w-full">
         
-        <div className="flex items-center flex-1">
-          <SiteMenu isMenuOpen={isMenuOpen} setMenuOpen={setMenuOpen} />
-        </div>
-
-        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <Link href="/" className="block hover:opacity-70 transition-opacity">
-            <Image 
-              src="https://firebasestorage.googleapis.com/v0/b/growshare-capital.firebasestorage.app/o/Logo%2FGrowshare%20Capital%20Transparent.png?alt=media&token=b53577e6-eb64-409d-aa7a-e9aa4fe01c49" 
-              alt="GrowShare" 
-              width={180} 
-              height={45} 
-              className="h-8 md:h-10 w-auto object-contain"
-              priority 
-            />
-          </Link>
-        </div>
-
-        <div className="flex items-center justify-end gap-3 md:gap-6 flex-1">
-          <div className="flex items-center">
-             <GlobalSearch />
-          </div>
-          <div className="h-4 w-[1px] bg-neutral-200 hidden md:block" />
-          {user ? (
-            <div className="flex items-center gap-2">
-                <Link href={isMember ? "/services/admin" : "/contact"} className="hover:text-neutral-500 transition-colors p-2">
-                    <UserSquare className="h-5 w-5 stroke-[1.5px]" />
-                </Link>
-                <Button onClick={signOut} variant="ghost" size="icon" className="w-8 h-8 hidden md:inline-flex hover:bg-transparent hover:text-neutral-500">
-                    <LogOut className="h-5 w-5 stroke-[1.5px]" />
-                </Button>
+        {/* === ROW 1: Main Header (Logo, Menu, Icons) === */}
+        <div className="w-full px-4 md:px-12 h-[70px] md:h-[90px] flex items-center justify-between relative">
+            
+            {/* LEFT: Menu */}
+            <div className="flex items-center flex-1">
+              <SiteMenu isMenuOpen={isMenuOpen} setMenuOpen={setMenuOpen} />
             </div>
-          ) : (
-            <Link href="/login" className="hover:text-neutral-500 transition-colors p-2">
-                 <UserSquare className="h-5 w-5 stroke-[1.5px]" /> 
-            </Link>
-          )}
-          <Cart />
+
+            {/* CENTER: Logo */}
+            <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+              <Link href="/" className="block hover:opacity-70 transition-opacity">
+                <Image 
+                  src="https://firebasestorage.googleapis.com/v0/b/growshare-capital.firebasestorage.app/o/Logo%2FGrowshare%20Capital%20Transparent.png?alt=media&token=b53577e6-eb64-409d-aa7a-e9aa4fe01c49" 
+                  alt="GrowShare" 
+                  width={180} 
+                  height={45} 
+                  className="h-7 md:h-10 w-auto object-contain"
+                  priority 
+                />
+              </Link>
+            </div>
+
+            {/* RIGHT: User & Cart (Search is hidden here on mobile, visible on desktop) */}
+            <div className="flex items-center justify-end gap-3 md:gap-6 flex-1">
+              {/* Desktop Only Search */}
+              <div className="hidden md:flex items-center">
+                 <GlobalSearch />
+              </div>
+              
+              <div className="h-4 w-[1px] bg-neutral-200 hidden md:block" />
+              
+              {user ? (
+                <div className="flex items-center gap-2">
+                    <Link href={isMember ? "/services/admin" : "/contact"} className="hover:text-neutral-500 transition-colors p-2">
+                        <UserSquare className="h-5 w-5 stroke-[1.5px]" />
+                    </Link>
+                    <Button onClick={signOut} variant="ghost" size="icon" className="w-8 h-8 hidden md:inline-flex hover:bg-transparent hover:text-neutral-500">
+                        <LogOut className="h-5 w-5 stroke-[1.5px]" />
+                    </Button>
+                </div>
+              ) : (
+                <Link href="/login" className="hover:text-neutral-500 transition-colors p-2">
+                     <UserSquare className="h-5 w-5 stroke-[1.5px]" /> 
+                </Link>
+              )}
+              <Cart />
+            </div>
         </div>
+
+        {/* === ROW 2: Mobile Search Bar (Visible only on Mobile) === */}
+        <div className="md:hidden w-full px-4 pb-4 animate-in fade-in slide-in-from-top-1 duration-300">
+            <GlobalSearch />
+        </div>
+
       </div>
-      {/* --- DESKTOP MEGA MENU --- */}
+
+      {/* --- DESKTOP MEGA MENU (Unchanged) --- */}
       <div className="hidden lg:flex justify-center border-t border-neutral-100 bg-white/50 backdrop-blur-sm">
         <NavigationMenu>
             <NavigationMenuList>

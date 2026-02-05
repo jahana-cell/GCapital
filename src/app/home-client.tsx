@@ -88,11 +88,7 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
   const [recentStories, setRecentStories] = useState<Story[]>(initialStories);
   const [loading, setLoading] = useState(initialStories.length === 0);
   
-  // Parallax hook 
   const { scrollYProgress } = useScroll();
-  
-  // (Unused var removed or kept if needed for other effects, typically used like: style={{ y }})
-  // const y = useTransform(scrollYProgress, [0, 1], [0, -50]); 
 
   useEffect(() => {
     if (initialStories.length > 0) {
@@ -101,7 +97,6 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
       return;
     }
 
-    // Client-side rescue fetch
     const fetchStories = async () => {
       setLoading(true);
       try {
@@ -140,7 +135,7 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
         `}</style>
 
         {/* --- 1. HERO SECTION --- */}
-        <section className="relative w-full min-h-[90vh] md:min-h-screen flex flex-col justify-center items-center px-6 overflow-hidden pt-20 pb-12">
+        <section className="relative w-full min-h-[90vh] md:min-h-screen flex flex-col justify-center items-center px-4 md:px-6 overflow-hidden pt-20 pb-12">
             
             <motion.div 
                 initial="hidden"
@@ -148,14 +143,19 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                 variants={staggerContainer}
                 className="relative z-10 w-full max-w-[1400px] mx-auto flex flex-col items-center text-center"
             >
-                {/* LOGO AREA */}
-                <motion.div variants={fadeUp} className="mb-12 md:mb-16">
-                    <div className="relative w-[240px] h-[70px] md:w-[450px] md:h-[120px]">
+                {/* LOGO AREA - MASSIVE SIZE FIX */}
+                <motion.div variants={fadeUp} className="mb-10 md:mb-16 w-full flex justify-center">
+                    {/* UPDATED SIZE LOGIC:
+                       - w-[95vw]: Take up 95% of screen width on mobile
+                       - h-[180px]: Give it plenty of vertical room to grow
+                       - md:w-[600px]: Cap it at a reasonable size on desktop
+                    */}
+                    <div className="relative w-[95vw] h-[180px] md:w-[600px] md:h-[160px]">
                         <Image
                             src="https://firebasestorage.googleapis.com/v0/b/growshare-capital.firebasestorage.app/o/Logo%2FGrowshare%20Capital%20Transparent.png?alt=media&token=b53577e6-eb64-409d-aa7a-e9aa4fe01c49"
                             alt="GrowShare Capital"
                             fill
-                            sizes="(max-width: 768px) 80vw, 500px"
+                            sizes="(max-width: 768px) 100vw, 600px"
                             className="object-contain"
                             priority
                         />
@@ -163,13 +163,13 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                 </motion.div>
 
                 {/* MAIN HEADLINE */}
-                <motion.h1 variants={fadeUp} className="text-5xl sm:text-6xl md:text-8xl lg:text-[6.5rem] font-serif leading-[1.1] md:leading-[0.95] tracking-tight mb-8 md:mb-12 text-[#1a1a1a]">
+                <motion.h1 variants={fadeUp} className="text-4xl sm:text-6xl md:text-8xl lg:text-[6.5rem] font-serif leading-[1.1] md:leading-[0.95] tracking-tight mb-8 md:mb-12 text-[#1a1a1a]">
                     The Architect of <br />
                     <span className="italic font-light text-neutral-400">American Resilience.</span>
                 </motion.h1>
 
                 {/* SUBTEXT */}
-                <motion.div variants={fadeUp} className="flex flex-col items-center gap-6 md:gap-8 px-4">
+                <motion.div variants={fadeUp} className="flex flex-col items-center gap-6 md:gap-8 px-2 md:px-4">
                     <div className="h-[30px] md:h-[40px] w-[1px] bg-neutral-300"></div>
                     <p className="text-sm md:text-base font-light tracking-wide text-neutral-600 max-w-xl leading-relaxed">
                         <strong className="font-semibold text-neutral-900 uppercase tracking-widest text-[10px] md:text-xs block mb-3">Intelligent. Ethical. High-Yield.</strong>
@@ -215,7 +215,6 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                             className="group block cursor-pointer"
                         >
                             <Link href={item.link}>
-                                {/* ✅ FIX: Replaced 'aspect-[3/4]' with fixed height 'h-[500px]' to prevent 0-height warning */}
                                 <div className="relative w-full h-[400px] md:h-[500px] overflow-hidden bg-[#F0F0F0] mb-6 md:mb-8">
                                     <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-700 z-10" />
                                     <Image
@@ -333,7 +332,6 @@ export default function HomeClientPage({ initialStories }: { initialStories: Sto
                                     </span>
                                 </div>
                                 
-                                {/* ✅ FIX: Replaced 'aspect-[16/10]' with 'h-64' to prevent 0-height warning */}
                                 <div className="relative w-full h-64 overflow-hidden bg-neutral-100 mb-6 md:grayscale md:group-hover:grayscale-0 transition-all duration-700">
                                     <Image
                                         src={safeImage}
