@@ -17,7 +17,7 @@ import {
 } from "@/components/ui/accordion";
 import SocialIcons from './SocialIcons'; // Import the new component
 import { Cart } from "./cart"; 
-import { SearchComponent } from "./search-component"; 
+import { GlobalSearch } from "@/components/global-search"; 
 import { useAuth } from "@/context/auth-context";
 import { Button } from "./ui/button";
 import { NavigationMenu, NavigationMenuList, NavigationMenuItem, NavigationMenuTrigger, NavigationMenuContent, NavigationMenuLink, navigationMenuTriggerStyle } from '@/components/ui/navigation-menu';
@@ -143,8 +143,8 @@ export default function Header() {
         </div>
 
         <div className="flex items-center justify-end gap-3 md:gap-6 flex-1">
-          <div className="hidden md:flex items-center">
-             <SearchComponent />
+          <div className="flex items-center">
+             <GlobalSearch />
           </div>
           <div className="h-4 w-[1px] bg-neutral-200 hidden md:block" />
           {user ? (
