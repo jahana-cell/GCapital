@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import Fuse from "fuse.js";
-import { Search, ArrowRight, CornerDownLeft, FileText, Briefcase, LayoutTemplate, X } from "lucide-react";
+import { Search, ArrowRight, CornerDownLeft, FileText, Briefcase, LayoutTemplate } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "cmdk";
 import { allSearchableLinks } from "@/lib/constants"; 
@@ -50,7 +50,7 @@ export function GlobalSearch() {
 
   return (
     <>
-      {/* --- TRIGGER BUTTON (ADAPTIVE WIDTH) --- */}
+      {/* --- TRIGGER BUTTON --- */}
       <button
         onClick={() => setOpen(true)}
         className="group relative flex items-center w-full md:w-auto outline-none"
@@ -59,8 +59,6 @@ export function GlobalSearch() {
         <div className="flex h-11 md:h-10 w-full md:w-64 items-center gap-3 rounded-md md:rounded-full bg-neutral-100/50 md:bg-neutral-50 border border-neutral-200/60 md:border-neutral-200 px-4 pr-2 text-sm text-neutral-500 hover:border-neutral-300 hover:bg-white hover:text-black transition-all shadow-sm">
           <Search className="w-4 h-4 opacity-50 stroke-[1.5px]" />
           <span className="flex-1 text-left font-light tracking-wide">Search...</span>
-          
-          {/* Hide shortcut hint on mobile */}
           <kbd className="hidden md:inline-flex pointer-events-none h-5 select-none items-center gap-1 rounded bg-neutral-200 px-1.5 font-mono text-[10px] font-medium text-neutral-500 opacity-70">
             <span className="text-xs">⌘</span>K
           </kbd>
@@ -69,9 +67,15 @@ export function GlobalSearch() {
 
       {/* --- SEARCH MODAL --- */}
       <Dialog open={open} onOpenChange={setOpen}>
-        <DialogContent className="overflow-hidden p-0 shadow-2xl bg-white/95 backdrop-blur-xl border border-neutral-100 max-w-2xl sm:rounded-xl">
+        {/* FIX: 
+            1. Added `top-[10%] translate-y-0` to force it higher up so keyboard doesn't cover it.
+            2. Added `data-[state=open]:slide-in-from-top-2` for a nice slide-down effect.
+        */}
+        <DialogContent className="fixed left-[50%] top-[10%] translate-x-[-50%] translate-y-0 overflow-hidden p-0 shadow-2xl bg-white/95 backdrop-blur-xl border border-neutral-100 max-w-2xl w-[90vw] sm:rounded-xl z-[200] data-[state=open]:slide-in-from-top-2 duration-200">
           <DialogTitle className="sr-only">Search Website</DialogTitle>
           <Command className="bg-transparent [&_[cmdk-group-heading]]:px-4 [&_[cmdk-group-heading]]:font-medium [&_[cmdk-group-heading]]:text-neutral-400 [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:tracking-widest [&_[cmdk-group-heading]]:mb-2 [&_[cmdk-item]]:px-4 [&_[cmdk-item]]:py-3">
+            
+            {/* Input Area - FIX: Removed the manual <button><X/></button> here */}
             <div className="flex items-center border-b border-neutral-100 px-4" cmdk-input-wrapper="">
               <Search className="mr-3 h-5 w-5 shrink-0 opacity-30 text-black stroke-[1.5px]" />
               <CommandInput
@@ -79,13 +83,12 @@ export function GlobalSearch() {
                 value={query}
                 onValueChange={setQuery}
                 className="flex h-16 w-full rounded-md bg-transparent py-3 text-lg outline-none placeholder:text-neutral-400 text-black font-serif disabled:cursor-not-allowed disabled:opacity-50 border-none focus:ring-0"
-                style={{ fontSize: '16px' }}
+                style={{ fontSize: '16px' }} // Prevents iOS auto-zoom
               />
-               <button onClick={() => setOpen(false)} className="ml-2 p-1 hover:bg-neutral-100 rounded-full transition-colors md:hidden">
-                  <X className="w-5 h-5 text-neutral-400" />
-              </button>
             </div>
-            <CommandList className="max-h-[60vh] overflow-y-auto overflow-x-hidden p-2">
+
+            {/* Results Area */}
+            <CommandList className="max-h-[50vh] overflow-y-auto overflow-x-hidden p-2">
               <CommandEmpty className="py-12 text-center text-sm text-neutral-400 font-sans">No results found.</CommandEmpty>
               {query.length > 0 && (
                   <CommandGroup heading="Suggestions">
