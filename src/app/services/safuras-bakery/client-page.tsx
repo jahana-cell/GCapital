@@ -1,10 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, MapPin, Phone, Star, 
-  Truck, Instagram, Facebook, Sparkles, Heart, ChefHat, X
+  Truck, Instagram, Facebook, Sparkles, ChefHat, X,
+  Ban, Leaf, Check
 } from 'lucide-react';
 
 // --- UTILITY: Class Merger ---
@@ -20,7 +21,7 @@ const TEXTURE_URL = "https://www.transparenttextures.com/patterns/cream-paper.pn
 
 // --- LUXURY ANIMATION COMPONENTS ---
 
-// 1. SPARKLE (Existing)
+// 1. SPARKLE
 const LuxurySparkle = ({ className, delay = 0 }: { className?: string, delay?: number }) => (
     <motion.svg 
         viewBox="0 0 24 24" 
@@ -43,8 +44,7 @@ const LuxurySparkle = ({ className, delay = 0 }: { className?: string, delay?: n
     </motion.svg>
 );
 
-// 2. SHEEN SWEEP (New!)
-// A soft band of light that wipes across the image
+// 2. SHEEN SWEEP
 const LuxurySheen = () => (
     <motion.div 
         className="absolute inset-0 z-10 pointer-events-none"
@@ -52,7 +52,7 @@ const LuxurySheen = () => (
         animate={{ x: '200%' }}
         transition={{ 
             repeat: Infinity, 
-            repeatDelay: 5, // Happens every 5 seconds
+            repeatDelay: 5,
             duration: 1.5, 
             ease: "easeInOut" 
         }}
@@ -63,7 +63,7 @@ const LuxurySheen = () => (
     />
 );
 
-// --- DATA: 10 ITEMS (2x5 Grid) ---
+// --- DATA ---
 const COLLECTIONS = [
     { 
         title: "Wedding Cakes", 
@@ -127,7 +127,6 @@ const COLLECTIONS = [
     }
 ];
 
-// 8 Images for a perfect 4x2 Grid
 const GALLERY_IMAGES = [
   "https://images.unsplash.com/photo-1535141192574-5d4897c12636?q=80&w=1200", 
   "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1200", 
@@ -189,7 +188,6 @@ function SectionHeading({ subtitle, title, align = "center", dark = false }: { s
         <Reveal width="100%">
             <div className={cn("mb-12 md:mb-24", align === "center" ? "text-center" : "text-left")}>
                 <div className={cn("inline-flex items-center gap-2 mb-4 md:mb-6", align === "center" ? "justify-center" : "justify-start")}>
-                    {/* Bow Icon Decoration */}
                     <BowIcon className={cn("w-4 h-4 opacity-70", dark ? "text-[#D48F85]" : "text-[#D48F85]")} />
                     <span className={cn(
                         "block text-[10px] md:text-[11px] font-bold uppercase tracking-[0.3em] font-sans",
@@ -214,15 +212,7 @@ function SectionHeading({ subtitle, title, align = "center", dark = false }: { s
 
 export default function SafuraLuxuryPage() {
     const { scrollYProgress } = useScroll();
-    const [isMobile, setIsMobile] = useState(false);
     const [selectedItem, setSelectedItem] = useState<typeof COLLECTIONS[0] | null>(null);
-
-    useEffect(() => {
-        const checkMobile = () => setIsMobile(window.innerWidth < 768);
-        checkMobile();
-        window.addEventListener('resize', checkMobile);
-        return () => window.removeEventListener('resize', checkMobile);
-    }, []);
 
     // Prevent scrolling when modal is open
     useEffect(() => {
@@ -256,7 +246,7 @@ export default function SafuraLuxuryPage() {
             {/* --- HERO SECTION --- */}
             <section className="relative h-[100svh] w-full overflow-hidden flex flex-col items-center justify-center pb-12 md:pb-24">
                 
-                {/* --- TOP BANNER (Exact Light Beige) --- */}
+                {/* --- TOP BANNER --- */}
                 <div className="absolute top-0 left-0 w-full z-50 bg-[#F4EBE8] text-[#5D4037] py-3 md:py-4 text-center px-4 shadow-sm border-b border-[#E8D8D5] flex flex-col items-center justify-center gap-1">
                      <p className="font-serif italic text-xs md:text-base leading-none text-[#8C6A64]">
                         Complimentary Concierge Delivery
@@ -266,10 +256,10 @@ export default function SafuraLuxuryPage() {
                     </p>
                 </div>
 
-                {/* Back Button */}
-                <div className="absolute top-24 md:top-28 left-6 z-40">
-                    <a href="/services" className="flex items-center justify-center w-10 h-10 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300">
-                        <ArrowLeft size={16} />
+                {/* Mobile-Friendly Back Button */}
+                <div className="absolute top-24 md:top-28 left-4 md:left-6 z-40">
+                    <a href="/services" className="flex items-center justify-center w-10 h-10 md:w-12 md:h-12 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all duration-300">
+                        <ArrowLeft size={18} />
                     </a>
                 </div>
 
@@ -297,15 +287,16 @@ export default function SafuraLuxuryPage() {
                             <div className="h-[1px] bg-[#FFF5F5]/70 w-8 md:w-20" />
                         </div>
                         
-                        <h1 className="text-[#FFF5F5] font-serif text-[3.5rem] md:text-[6.5rem] lg:text-[8rem] leading-[0.85] tracking-normal font-normal mb-0 drop-shadow-sm uppercase">
+                        {/* HERO TITLE: Responsive Text Size */}
+                        <h1 className="text-[#FFF5F5] font-serif text-[3.2rem] md:text-[6.5rem] lg:text-[8rem] leading-[0.9] tracking-normal font-normal mb-0 drop-shadow-sm uppercase">
                             SAFURA'S
                         </h1>
 
-                        <p className="font-script text-[#FFD9D5] text-[3rem] md:text-[6rem] lg:text-[8rem] leading-[1.1] mb-8 md:mb-12 mt-4 relative z-10 drop-shadow-md">
+                        <p className="font-script text-[#FFD9D5] text-[2.8rem] md:text-[6rem] lg:text-[8rem] leading-[1.2] mb-8 md:mb-12 mt-2 relative z-10 drop-shadow-md">
                             Atelier & Bakery
                         </p>
                         
-                        <div className="flex flex-col items-center justify-center gap-3 md:gap-4 w-full max-w-xs mx-auto mt-24 md:mt-32">
+                        <div className="flex flex-col items-center justify-center gap-3 md:gap-4 w-full max-w-xs mx-auto mt-16 md:mt-32">
                             <a href="#collections" className="bg-[#CC8C82] text-white px-6 py-3 md:px-8 md:py-4 text-[10px] md:text-[11px] uppercase tracking-[0.25em] font-sans font-bold hover:bg-[#B57970] transition-all duration-500 w-full rounded-[2px] shadow-lg text-center">
                                 View Collection
                             </a>
@@ -321,24 +312,18 @@ export default function SafuraLuxuryPage() {
             <section id="meet-safura" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
                     
-                    {/* LEFT: SAFURA IMAGE WITH LUXURY EFFECTS */}
+                    {/* LEFT: SAFURA IMAGE */}
                     <div className="lg:col-span-5 order-2 lg:order-1 relative">
                        <Reveal>
-                            {/* Container */}
                             <div className="aspect-[4/5] w-full relative overflow-hidden rounded-lg shadow-xl border border-[#2B120A]/5 group">
                                  <ParallaxImage 
                                     src={SAFURA_IMAGE} 
                                     alt="Safura - Founder & Artist" 
                                     className="w-full h-full grayscale-[5%] contrast-[1.05]" 
                                  />
-                                 
-                                 {/* --- ANIMATION: Luxury Sheen Sweep --- */}
                                  <LuxurySheen />
-
-                                 {/* --- ANIMATION: Diamond Dust Sparkles --- */}
                                  <LuxurySparkle className="w-8 h-8 top-6 right-6 text-[#FFD9D5]/80" delay={0} />
                                  <LuxurySparkle className="w-6 h-6 bottom-8 left-8 text-[#FFD9D5]/60" delay={1.5} />
-                                 <LuxurySparkle className="w-4 h-4 top-1/3 left-4 text-white/70" delay={2.5} />
                             </div>
                        </Reveal>
                     </div>
@@ -364,7 +349,6 @@ export default function SafuraLuxuryPage() {
                                 Every bespoke commission is a collaboration, transforming your vision into an edible masterpiece using exclusively sourced European butters and grand cru chocolates. My promise is simple: absolute beauty, uncompromised taste.
                             </p>
 
-                            {/* SIGNATURE */}
                             <div className="flex flex-col items-start gap-1">
                                 <span className="font-sans text-[10px] uppercase tracking-[0.2em] text-[#2B120A]/60">With Love,</span>
                                 <span className="font-script text-5xl md:text-7xl text-[#D48F85]">Safura</span>
@@ -374,8 +358,7 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- PHILOSOPHY SECTION (RESTORED) --- */}
-            {/* Layout Swapped: Text Left, Image Right for visual flow */}
+            {/* --- PHILOSOPHY SECTION (UPDATED) --- */}
             <section id="our-philosophy" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                     
@@ -390,14 +373,44 @@ export default function SafuraLuxuryPage() {
                             <p className="font-sans text-[#8C6A64] text-sm md:text-base leading-relaxed md:leading-loose max-w-xl font-light mb-8">
                                 Safura's is a boutique bakery for the romantic at heart. We specialize in the art of chocolate and floral design, sculpting flavor using premium Belgian cocoa and locally sourced botanicals.
                             </p>
-                            <div className="grid grid-cols-2 gap-6">
-                                <div className="border-l border-[#D48F85] pl-4">
-                                    <h4 className="font-serif text-xl text-[#2B120A] flex items-center gap-2"><Heart size={14} className="text-[#D48F85]" /> Small Batch</h4>
-                                    <p className="text-xs text-[#8C6A64] mt-1">Baked fresh with love.</p>
+                            
+                            {/* --- MOBILE OPTIMIZED PURE PROMISE GRID --- */}
+                            <div className="grid grid-cols-2 gap-x-4 gap-y-8 mt-10 border-t border-[#D48F85]/20 pt-8">
+                                <div className="flex gap-3 md:gap-4 items-start">
+                                    <div className="w-8 h-8 md:w-8 md:h-8 rounded-full bg-[#D48F85]/10 flex items-center justify-center text-[#D48F85] flex-shrink-0">
+                                        <Ban size={16} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-serif text-base md:text-lg text-[#2B120A] leading-tight">No Preservatives</h4>
+                                        <p className="text-[9px] md:text-[10px] uppercase tracking-wider text-[#8C6A64] mt-1">100% Natural</p>
+                                    </div>
                                 </div>
-                                <div className="border-l border-[#D48F85] pl-4">
-                                    <h4 className="font-serif text-xl text-[#2B120A] flex items-center gap-2"><BowIcon className="w-4 h-4 text-[#D48F85]" /> Hand Piped</h4>
-                                    <p className="text-xs text-[#8C6A64] mt-1">No molds, just artistry.</p>
+                                <div className="flex gap-3 md:gap-4 items-start">
+                                    <div className="w-8 h-8 md:w-8 md:h-8 rounded-full bg-[#D48F85]/10 flex items-center justify-center text-[#D48F85] flex-shrink-0">
+                                        <Leaf size={16} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-serif text-base md:text-lg text-[#2B120A] leading-tight">No Chemicals</h4>
+                                        <p className="text-[9px] md:text-[10px] uppercase tracking-wider text-[#8C6A64] mt-1">Clean Label</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3 md:gap-4 items-start">
+                                    <div className="w-8 h-8 md:w-8 md:h-8 rounded-full bg-[#D48F85]/10 flex items-center justify-center text-[#D48F85] flex-shrink-0">
+                                        <Sparkles size={16} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-serif text-base md:text-lg text-[#2B120A] leading-tight">Baked Fresh</h4>
+                                        <p className="text-[9px] md:text-[10px] uppercase tracking-wider text-[#8C6A64] mt-1">Made to Order</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-3 md:gap-4 items-start">
+                                    <div className="w-8 h-8 md:w-8 md:h-8 rounded-full bg-[#D48F85]/10 flex items-center justify-center text-[#D48F85] flex-shrink-0">
+                                        <Check size={16} />
+                                    </div>
+                                    <div>
+                                        <h4 className="font-serif text-base md:text-lg text-[#2B120A] leading-tight">100% Halal</h4>
+                                        <p className="text-[9px] md:text-[10px] uppercase tracking-wider text-[#8C6A64] mt-1">Certified Ingredients</p>
+                                    </div>
                                 </div>
                             </div>
                         </Reveal>
@@ -418,23 +431,22 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- COLLECTIONS (2x5 Grid - LV Style) --- */}
+            {/* --- COLLECTIONS --- */}
             <section id="collections" className="py-20 md:py-32 bg-[#FFFDFD] px-4 md:px-12 relative">
                 <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-[#FDF5F5] to-transparent" />
                 
                 <div className="max-w-[1200px] mx-auto">
                     <SectionHeading subtitle="The Atelier" title="Curated Sweets" />
                     
-                    {/* LOUIS VUITTON STYLE GRID: 2 Columns, 10 Items */}
+                    {/* GRID */}
                     <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-20">
                         {COLLECTIONS.map((item, i) => (
                             <Reveal key={i} delay={i * 0.05} width="100%">
                                 <div 
-                                    className="group cursor-pointer flex flex-col items-center text-center"
+                                    className="group cursor-pointer flex flex-col items-center text-center touch-manipulation"
                                     onClick={() => setSelectedItem(item)}
                                 >
-                                    {/* Image Container */}
-                                    <div className="relative w-full aspect-[4/5] mb-6 overflow-hidden bg-gradient-to-b from-[#F9F7F5] to-[#F0EFED] rounded-[4px]">
+                                    <div className="relative w-full aspect-[4/5] mb-4 md:mb-6 overflow-hidden bg-gradient-to-b from-[#F9F7F5] to-[#F0EFED] rounded-[4px]">
                                         <img 
                                             src={item.img} 
                                             alt={item.title}
@@ -443,7 +455,7 @@ export default function SafuraLuxuryPage() {
                                         <div className="absolute inset-0 bg-[#D48F85]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                                     </div>
                                     
-                                    <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-2 group-hover:text-[#D48F85] transition-colors">
+                                    <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-1 md:mb-2 group-hover:text-[#D48F85] transition-colors">
                                         {item.title}
                                     </h3>
                                     <span className="font-serif text-sm md:text-base text-[#8C6A64] italic">
@@ -464,24 +476,25 @@ export default function SafuraLuxuryPage() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setSelectedItem(null)}
-                        className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-center justify-center p-4 md:p-8"
+                        className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-md flex items-end md:items-center justify-center p-0 md:p-8"
                     >
                         <motion.div 
-                            initial={{ scale: 0.95, opacity: 0, y: 20 }}
-                            animate={{ scale: 1, opacity: 1, y: 0 }}
-                            exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                            initial={{ y: "100%" }}
+                            animate={{ y: 0 }}
+                            exit={{ y: "100%" }}
+                            transition={{ type: "spring", damping: 25, stiffness: 200 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-[#FFFDFD] w-full max-w-4xl max-h-[85vh] overflow-y-auto rounded-lg shadow-2xl relative flex flex-col md:flex-row"
+                            className="bg-[#FFFDFD] w-full md:max-w-4xl h-[85vh] md:h-auto max-h-[85vh] overflow-y-auto rounded-t-2xl md:rounded-lg shadow-2xl relative flex flex-col md:flex-row"
                         >
                             <button 
                                 onClick={() => setSelectedItem(null)}
                                 className="absolute top-4 right-4 z-10 p-2 bg-white/50 hover:bg-white rounded-full transition-colors"
                             >
-                                <X className="w-5 h-5 text-[#2B120A]" />
+                                <X className="w-6 h-6 text-[#2B120A]" />
                             </button>
 
                             {/* Modal Image */}
-                            <div className="w-full md:w-1/2 h-64 md:h-auto relative bg-[#F9F7F5]">
+                            <div className="w-full md:w-1/2 h-64 md:h-auto relative bg-[#F9F7F5] flex-shrink-0">
                                 <img 
                                     src={selectedItem.img} 
                                     alt={selectedItem.title} 
@@ -490,8 +503,8 @@ export default function SafuraLuxuryPage() {
                             </div>
 
                             {/* Modal Content */}
-                            <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-center">
-                                <div className="mb-8">
+                            <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-start md:justify-center overflow-y-auto">
+                                <div className="mb-6 md:mb-8">
                                     <h3 className="font-serif text-3xl md:text-4xl text-[#2B120A] mb-2">{selectedItem.title}</h3>
                                     <p className="font-sans text-[#D48F85] text-sm uppercase tracking-widest font-bold">{selectedItem.price}</p>
                                 </div>
@@ -500,7 +513,7 @@ export default function SafuraLuxuryPage() {
                                     <div>
                                         <h4 className="font-sans text-xs uppercase tracking-[0.2em] text-[#8C6A64] mb-4 border-b border-[#2B120A]/10 pb-2">Key Notes & Ingredients</h4>
                                         <ul className="space-y-3">
-                                            {selectedItem.ingredients.split(',').map((ingredient, idx) => (
+                                            {selectedItem.ingredients.split(',').map((ingredient: string, idx: number) => (
                                                 <li key={idx} className="flex items-start gap-3 text-[#2B120A] font-serif text-lg leading-relaxed">
                                                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#D48F85] flex-shrink-0" />
                                                     <span className="capitalize">{ingredient.trim()}</span>
@@ -509,7 +522,7 @@ export default function SafuraLuxuryPage() {
                                         </ul>
                                     </div>
                                     
-                                    <div className="pt-6">
+                                    <div className="pt-6 pb-8 md:pb-0">
                                         <a 
                                             href={WHATSAPP_LINK}
                                             className="inline-block w-full text-center bg-[#2B120A] text-[#FFFDFD] py-4 px-8 text-xs uppercase tracking-[0.2em] hover:bg-[#4A3228] transition-colors rounded-[2px]"
@@ -524,7 +537,7 @@ export default function SafuraLuxuryPage() {
                 )}
             </AnimatePresence>
 
-            {/* --- GALLERY (8 IMAGES) --- */}
+            {/* --- GALLERY --- */}
             <section className="py-20 md:py-32 bg-[#FDF5F5] overflow-hidden">
                 <div className="max-w-[1600px] mx-auto px-6">
                     <Reveal>
@@ -554,7 +567,6 @@ export default function SafuraLuxuryPage() {
             <section id="the-process" className="py-20 md:py-32 px-6 md:px-12 bg-[#2B120A] text-[#FDF5F5]">
                 <div className="max-w-7xl mx-auto">
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-32">
-                        
                         <div>
                             <div className="flex items-center gap-3 mb-8">
                                 <Sparkles className="text-[#D48F85] w-5 h-5" />
@@ -563,7 +575,6 @@ export default function SafuraLuxuryPage() {
                             <h2 className="font-serif text-4xl md:text-5xl text-[#FDF5F5] mb-12 leading-tight">
                                 From Sketch <br/> to <span className="font-script text-[#D48F85] text-5xl md:text-7xl relative top-2">Slice.</span>
                             </h2>
-
                             <div className="space-y-12">
                                 {[
                                     { icon: Star, title: "01. Consultation", text: "We discuss your vision via WhatsApp or phone to curate the perfect flavor profile." },
@@ -596,7 +607,6 @@ export default function SafuraLuxuryPage() {
                                     alt="Process Image"
                                 />
                             </div>
-
                             <motion.div 
                                 initial={{ opacity: 0, y: 20 }}
                                 whileInView={{ opacity: 1, y: 0 }}
@@ -674,7 +684,6 @@ export default function SafuraLuxuryPage() {
                                 <span className="font-serif italic text-lg md:text-xl">Company</span>
                             </div>
                         </div>
-
                     </Reveal>
                 </div>
             </section>
