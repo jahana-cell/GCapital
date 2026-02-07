@@ -20,110 +20,260 @@ const CHEF_IMAGE = "https://i.imgur.com/oKurtPO.jpeg";
 const TEXTURE_URL = "https://www.transparenttextures.com/patterns/cream-paper.png"; 
 
 // --- LUXURY ANIMATION COMPONENTS ---
-
-// 1. SPARKLE
 const LuxurySparkle = ({ className, delay = 0 }: { className?: string, delay?: number }) => (
-    <motion.svg 
-        viewBox="0 0 24 24" 
-        fill="currentColor" 
-        className={cn("absolute pointer-events-none z-20", className)}
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ 
-            opacity: [0, 0.8, 0], 
-            scale: [0.5, 1.1, 0.5],
-            rotate: [0, 45, 0] 
-        }}
-        transition={{ 
-            duration: 4, 
-            repeat: Infinity, 
-            delay: delay,
-            ease: "easeInOut" 
-        }}
-    >
+    <motion.svg viewBox="0 0 24 24" fill="currentColor" className={cn("absolute pointer-events-none z-20", className)} initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: [0, 0.8, 0], scale: [0.5, 1.1, 0.5], rotate: [0, 45, 0] }} transition={{ duration: 4, repeat: Infinity, delay: delay, ease: "easeInOut" }}>
         <path d="M12 0L14.59 9.41L24 12L14.59 14.59L12 24L9.41 14.59L0 12L9.41 9.41L12 0Z" />
     </motion.svg>
 );
 
-// 2. SHEEN SWEEP
 const LuxurySheen = () => (
-    <motion.div 
-        className="absolute inset-0 z-10 pointer-events-none"
-        initial={{ x: '-100%' }}
-        animate={{ x: '200%' }}
-        transition={{ 
-            repeat: Infinity, 
-            repeatDelay: 5,
-            duration: 1.5, 
-            ease: "easeInOut" 
-        }}
-        style={{
-            background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0.0) 60%)',
-            mixBlendMode: 'overlay'
-        }}
-    />
+    <motion.div className="absolute inset-0 z-10 pointer-events-none" initial={{ x: '-100%' }} animate={{ x: '200%' }} transition={{ repeat: Infinity, repeatDelay: 5, duration: 1.5, ease: "easeInOut" }} style={{ background: 'linear-gradient(105deg, transparent 20%, rgba(255,255,255,0.4) 40%, rgba(255,255,255,0.0) 60%)', mixBlendMode: 'overlay' }} />
 );
 
 // --- DATA ---
-const COLLECTIONS = [
+type CollectionItem = {
+    title: string;
+    price: string;
+    img: string;
+    ingredients: string;
+    variants?: { title: string; img: string; ingredients: string }[]; 
+};
+
+const COLLECTIONS: CollectionItem[] = [
     { 
         title: "Wedding Cakes", 
         price: "Bespoke", 
-        img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000&auto=format&fit=crop",
-        ingredients: "Madagascan vanilla bean, European cultured butter, Swiss meringue, edible gold leaf"
+        img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000",
+        ingredients: "Select a design style below to view details.",
+        variants: [
+            {
+                title: "Classic Vanilla Tier",
+                img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000",
+                ingredients: "Madagascan vanilla bean, European cultured butter, Swiss meringue, edible gold leaf"
+            },
+            {
+                title: "Botanical Pressed",
+                img: "https://images.unsplash.com/photo-1626803775151-61d756612fcd?q=80&w=1000",
+                ingredients: "Lemon elderflower sponge, organic edible pressed flowers, smooth white fondant"
+            },
+            {
+                title: "Rustic Naked Cake",
+                img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?q=80&w=1000",
+                ingredients: "Almond amaretto sponge, semi-exposed crumb, fresh seasonal berries, powdered sugar dust"
+            }
+        ]
     },
     { 
         title: "Signature Cupcakes", 
-        price: "Box of 6 / $35", 
+        price: "Starts at $6 / 12 Cupcakes", 
         img: "https://i.imgur.com/9wVuwPK.jpeg",
-        ingredients: "Valrhona cocoa, sea salt caramel core, italian buttercream, candied hazelnut"
+        ingredients: "Our signature collection. Select a flavor below to view details.",
+        variants: [
+            {
+                title: "Vanilla Whipped Cream",
+                img: "https://i.imgur.com/mREpZSN.png",
+                ingredients: "Madagascan vanilla bean sponge, house-made airy whipped cream, white chocolate shaving"
+            },
+            {
+                title: "Midnight Silk",
+                img: "https://i.imgur.com/JiRSUy2.png",
+                ingredients: "Valrhona dark chocolate sponge, ganache core, italian chocolate buttercream"
+            },
+            {
+                title: "Strawberry Rose",
+                img: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1000",
+                ingredients: "Fresh strawberry reduction, rose water infused sponge, pink chantilly cream"
+            },
+            {
+                title: "Salted Caramel",
+                img: "https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?q=80&w=1000",
+                ingredients: "Brown butter sponge, house-made salted caramel drizzle, sea salt flake"
+            }
+        ]
     },
     { 
         title: "Artisan Macarons", 
         price: "Box of 12 / $45", 
-        img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000&auto=format&fit=crop",
-        ingredients: "California almond flour, ganache monté, seasonal fruit coulis, rose water"
+        img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000",
+        ingredients: "Delicate almond meringue shells. Select flavor:",
+        variants: [
+            {
+                title: "Raspberry Rose",
+                img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000",
+                ingredients: "California almond flour, fresh raspberry coulis center, rose-infused ganache"
+            },
+            {
+                title: "Pistachio Creme",
+                img: "https://images.unsplash.com/photo-1558326567-98ae2405596b?q=80&w=1000",
+                ingredients: "Roasted sicilian pistachio paste, white chocolate ganache, crushed pistachio dust"
+            },
+            {
+                title: "Salted Caramel",
+                img: "https://images.unsplash.com/photo-1610607677699-317424d9d13d?q=80&w=1000",
+                ingredients: "Toasted sugar shell, fleur de sel caramel filling, gold luster dust"
+            }
+        ]
     },
     { 
         title: "Rustic Tarts", 
         price: "From $55", 
-        img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000&auto=format&fit=crop",
-        ingredients: "Pâte sablée, crème diplomat, fresh locally sourced berries, apricot glaze"
+        img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000",
+        ingredients: "Hand-pressed pâte sablée crusts. Choose your filling:",
+        variants: [
+            {
+                title: "Fresh Fruit Tart",
+                img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000",
+                ingredients: "Vanilla bean pastry cream, seasonal glazed berries, mint garnish"
+            },
+            {
+                title: "Lemon Meringue",
+                img: "https://images.unsplash.com/photo-1599639668350-2d937061d331?q=80&w=1000",
+                ingredients: "Zesty lemon curd, torched italian meringue, buttery shortbread crust"
+            },
+            {
+                title: "Dark Chocolate Ganache",
+                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000",
+                ingredients: "70% cocoa ganache, sea salt, roasted hazelnut topping"
+            }
+        ]
     },
     { 
         title: "Sourdough Loaves", 
         price: "$18", 
-        img: "https://images.unsplash.com/photo-1627308595171-d1b5d67129c4?q=80&w=735&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        ingredients: "Organic stone-ground flour, 48-hour natural levain, filtered spring water, sea salt"
+        img: "https://i.imgur.com/Er6tzs2.jpeg",
+        ingredients: "Naturally leavened, 48-hour fermentation.",
+        variants: [
+            {
+                title: "Classic Country",
+                img: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=80&w=1000",
+                ingredients: "Organic stone-ground flour, water, sea salt. The perfect crust."
+            },
+            {
+                title: "Rosemary & Olive",
+                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000",
+                ingredients: "Kalamata olives, fresh rosemary sprigs, olive oil infusion"
+            },
+            {
+                title: "Walnut & Cranberry",
+                img: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=80&w=1000",
+                ingredients: "Toasted walnuts, dried cranberries, hint of orange zest"
+            }
+        ]
     },
     { 
         title: "Cream Puffs", 
         price: "Set of 4 / $28", 
-        img: "https://images.unsplash.com/photo-1633424411336-f5b7a6886d88?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        ingredients: "Choux pastry, craquelin crust, Tahitian vanilla bean chantilly, praline paste"
+        img: "https://i.imgur.com/48NzFvC.jpeg",
+        ingredients: "Crisp choux pastry with craquelin top.",
+        variants: [
+            {
+                title: "Vanilla Bean",
+                img: "https://images.unsplash.com/photo-1626233519760-5e879a574b91?q=80&w=1000",
+                ingredients: "Tahitian vanilla bean chantilly, classic craquelin crust"
+            },
+            {
+                title: "Double Chocolate",
+                img: "https://images.unsplash.com/photo-1550614000-4b9519e0947f?q=80&w=1000",
+                ingredients: "Chocolate pastry cream, cocoa nib crust, dark chocolate drizzle"
+            },
+            {
+                title: "Matcha Green Tea",
+                img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1000",
+                ingredients: "Premium matcha infused cream, white chocolate dusting"
+            }
+        ]
     },
     { 
         title: "Dark Chocolates", 
         price: "Gift Box / $40", 
-        img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000&auto=format&fit=crop",
-        ingredients: "70% Single-origin dark chocolate, espresso infusion, freeze-dried raspberry dust"
+        img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000",
+        ingredients: "Hand-tempered couverture chocolate.",
+        variants: [
+            {
+                title: "70% Dark Truffle",
+                img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000",
+                ingredients: "Single-origin dark chocolate, espresso infusion, cocoa dust"
+            },
+            {
+                title: "White Raspberry",
+                img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000",
+                ingredients: "Creamy white chocolate, freeze-dried raspberry center"
+            },
+            {
+                title: "Milk Hazelnut",
+                img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?q=80&w=1000",
+                ingredients: "38% milk chocolate, roasted whole hazelnut, praline paste"
+            }
+        ]
     },
     { 
         title: "Croissants", 
         price: "Dozen / $48", 
-        img: "https://images.unsplash.com/photo-1651604033534-e66b281f1981?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-        ingredients: "Isigny Ste Mère butter, organic wheat flour, acacia honey glaze"
+        img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=1000",
+        ingredients: "Laminated dough with Isigny Ste Mère butter.",
+        variants: [
+            {
+                title: "Classic Butter",
+                img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=1000",
+                ingredients: "Pure butter layers, golden egg wash, honeycomb interior"
+            },
+            {
+                title: "Pain au Chocolat",
+                img: "https://images.unsplash.com/photo-1530610476181-d83430b64dcd?q=80&w=1000",
+                ingredients: "Dual batons of dark chocolate folded into buttery pastry"
+            },
+            {
+                title: "Almond Twice-Baked",
+                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000",
+                ingredients: "Filled with frangipane cream, topped with sliced toasted almonds"
+            }
+        ]
     },
     { 
         title: "Layered Parfaits", 
         price: "$12 ea", 
-        img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000&auto=format&fit=crop",
-        ingredients: "Mascarpone mousse, espresso-soaked sponge, cocoa nibs, dark chocolate shavings"
+        img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000",
+        ingredients: "Individual dessert cups layers with texture and flavor.",
+        variants: [
+            {
+                title: "Espresso Tiramisu",
+                img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000",
+                ingredients: "Mascarpone mousse, espresso-soaked sponge, cocoa nibs"
+            },
+            {
+                title: "Berry Cheesecake",
+                img: "https://images.unsplash.com/photo-1534432182912-63863115e106?q=80&w=1000",
+                ingredients: "No-bake cheesecake filling, graham crumble, fresh berry compote"
+            },
+            {
+                title: "Mango Coconut",
+                img: "https://images.unsplash.com/photo-1525253086316-d0c936c814f8?q=80&w=1000",
+                ingredients: "Coconut chia pudding, fresh mango puree, toasted coconut flakes"
+            }
+        ]
     },
     { 
         title: "Custom Gift Sets", 
         price: "Inquire", 
-        img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000&auto=format&fit=crop",
-        ingredients: "A curated selection of our finest seasonal offerings, wrapped in silk ribbon"
+        img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000",
+        ingredients: "Curated boxes wrapped in silk ribbon.",
+        variants: [
+            {
+                title: "The Signature Box",
+                img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000",
+                ingredients: "A mix of our bestseller macarons, cupcakes, and chocolates"
+            },
+            {
+                title: "Breakfast Box",
+                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000",
+                ingredients: "Assorted croissants, muffins, and preserves"
+            },
+            {
+                title: "Tea Time Set",
+                img: "https://images.unsplash.com/photo-1558326567-98ae2405596b?q=80&w=1000",
+                ingredients: "Petit fours, scones, and artisanal tea blends"
+            }
+        ]
     }
 ];
 
@@ -212,16 +362,22 @@ function SectionHeading({ subtitle, title, align = "center", dark = false }: { s
 
 export default function SafuraLuxuryPage() {
     const { scrollYProgress } = useScroll();
-    const [selectedItem, setSelectedItem] = useState<typeof COLLECTIONS[0] | null>(null);
+    const [selectedItem, setSelectedItem] = useState<CollectionItem | null>(null);
+    const [activeVariant, setActiveVariant] = useState(0);
 
     // Prevent scrolling when modal is open
     useEffect(() => {
         if (selectedItem) {
             document.body.style.overflow = 'hidden';
+            // Reset active variant to 0 (base item) whenever a new item is opened
+            setActiveVariant(0);
         } else {
             document.body.style.overflow = 'unset';
         }
     }, [selectedItem]);
+
+    // Helper to get current display data (Main Item or Specific Variant)
+    const currentDisplayItem = selectedItem?.variants ? selectedItem.variants[activeVariant] : selectedItem;
 
     return (
         <div className="bg-[#FFFDFD] text-[#2B120A] min-h-screen font-sans selection:bg-[#D48F85] selection:text-white relative">
@@ -308,7 +464,7 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- INTRO / MEET SAFURA SECTION --- */}
+            {/* --- INTRO / MEET SAFURA SECTION (UPDATED TEXT) --- */}
             <section id="meet-safura" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-20 items-center">
                     
@@ -342,11 +498,15 @@ export default function SafuraLuxuryPage() {
                             </h2>
                             
                             <p className="font-sans text-[#8C6A64] text-sm md:text-base leading-relaxed md:leading-loose max-w-xl font-light mb-6">
-                                "Welcome to my <strong>atelier</strong>. To me, a cake is more than a dessert; it is a moment of architecture and emotion. We don't just mix ingredients; we curate experiences."
+                                "Welcome to my <strong>Atelier</strong>. To me, a cake is more than a dessert; it is a moment of architecture and emotion. We don't just mix ingredients; we curate experiences."
+                            </p>
+
+                            <p className="font-sans text-[#8C6A64] text-sm md:text-base leading-relaxed md:leading-loose max-w-xl font-light mb-6">
+                                My promise is simple: absolute beauty, uncompromised taste, and <strong>strictly Halal ingredients</strong>. This is a labor of love for my community. I use only the finest and halal products, yet I charge only for the ingredients.
                             </p>
 
                             <p className="font-sans text-[#8C6A64] text-sm md:text-base leading-relaxed md:leading-loose max-w-xl font-light mb-10">
-                                Every bespoke commission is a collaboration, transforming your vision into an edible masterpiece using exclusively sourced European butters and grand cru chocolates. My promise is simple: absolute beauty, uncompromised taste.
+                                My time and labor are a gift, because my goal is simply to provide fresh, healthy, and affordable luxuries to my friends and families.
                             </p>
 
                             <div className="flex flex-col items-start gap-1">
@@ -468,7 +628,7 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- PRODUCT MODAL --- */}
+            {/* --- PRODUCT MODAL (UPDATED WITH VISUAL FLAVOR PALETTE) --- */}
             <AnimatePresence>
                 {selectedItem && (
                     <motion.div 
@@ -495,9 +655,13 @@ export default function SafuraLuxuryPage() {
 
                             {/* Modal Image */}
                             <div className="w-full md:w-1/2 h-64 md:h-auto relative bg-[#F9F7F5] flex-shrink-0">
-                                <img 
-                                    src={selectedItem.img} 
-                                    alt={selectedItem.title} 
+                                <motion.img 
+                                    key={currentDisplayItem?.title} // Triggers animation on change
+                                    initial={{ opacity: 0 }}
+                                    animate={{ opacity: 1 }}
+                                    transition={{ duration: 0.5 }}
+                                    src={currentDisplayItem?.img} 
+                                    alt={currentDisplayItem?.title} 
                                     className="w-full h-full object-cover"
                                 />
                             </div>
@@ -505,24 +669,73 @@ export default function SafuraLuxuryPage() {
                             {/* Modal Content */}
                             <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-start md:justify-center overflow-y-auto">
                                 <div className="mb-6 md:mb-8">
-                                    <h3 className="font-serif text-3xl md:text-4xl text-[#2B120A] mb-2">{selectedItem.title}</h3>
+                                    <motion.h3 
+                                        key={currentDisplayItem?.title}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        className="font-serif text-3xl md:text-4xl text-[#2B120A] mb-2"
+                                    >
+                                        {currentDisplayItem?.title}
+                                    </motion.h3>
                                     <p className="font-sans text-[#D48F85] text-sm uppercase tracking-widest font-bold">{selectedItem.price}</p>
                                 </div>
 
                                 <div className="space-y-6">
                                     <div>
                                         <h4 className="font-sans text-xs uppercase tracking-[0.2em] text-[#8C6A64] mb-4 border-b border-[#2B120A]/10 pb-2">Key Notes & Ingredients</h4>
-                                        <ul className="space-y-3">
-                                            {selectedItem.ingredients.split(',').map((ingredient: string, idx: number) => (
+                                        <motion.ul 
+                                            key={currentDisplayItem?.ingredients}
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            className="space-y-3"
+                                        >
+                                            {currentDisplayItem?.ingredients.split(',').map((ingredient: string, idx: number) => (
                                                 <li key={idx} className="flex items-start gap-3 text-[#2B120A] font-serif text-lg leading-relaxed">
                                                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#D48F85] flex-shrink-0" />
                                                     <span className="capitalize">{ingredient.trim()}</span>
                                                 </li>
                                             ))}
-                                        </ul>
+                                        </motion.ul>
                                     </div>
+
+                                    {/* --- LUXURY FLAVOR PALETTE (Shows only if variants exist) --- */}
+                                    {selectedItem.variants && (
+                                        <div className="mt-6 pt-6 border-t border-[#2B120A]/10">
+                                             <div className="flex items-center gap-2 mb-4">
+                                                <Sparkles className="w-3 h-3 text-[#D48F85]" />
+                                                <p className="font-sans text-[9px] uppercase tracking-widest text-[#8C6A64]">Select Flavor to Preview</p>
+                                             </div>
+                                             
+                                             <div className="grid grid-cols-4 gap-3">
+                                                {selectedItem.variants.map((v, i) => (
+                                                    <button 
+                                                        key={i} 
+                                                        onClick={() => setActiveVariant(i)}
+                                                        className={cn(
+                                                            "group flex flex-col items-center gap-2 transition-all duration-300",
+                                                            activeVariant === i ? "opacity-100 scale-105" : "opacity-60 hover:opacity-100"
+                                                        )}
+                                                        title={v.title}
+                                                    >
+                                                        <div className={cn(
+                                                            "relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all shadow-sm",
+                                                            activeVariant === i ? "border-[#D48F85] ring-1 ring-[#D48F85]/30" : "border-transparent group-hover:border-[#D48F85]/30"
+                                                        )}>
+                                                            <img src={v.img} alt={v.title} className="w-full h-full object-cover" />
+                                                        </div>
+                                                        <span className={cn(
+                                                            "text-[8px] font-sans uppercase tracking-wider text-center leading-tight max-w-[60px]",
+                                                            activeVariant === i ? "text-[#2B120A] font-bold" : "text-[#8C6A64]"
+                                                        )}>
+                                                            {v.title.split(' ')[0]}
+                                                        </span>
+                                                    </button>
+                                                ))}
+                                             </div>
+                                        </div>
+                                    )}
                                     
-                                    <div className="pt-6 pb-8 md:pb-0">
+                                    <div className="pt-8 pb-8 md:pb-0">
                                         <a 
                                             href={WHATSAPP_LINK}
                                             className="inline-block w-full text-center bg-[#2B120A] text-[#FFFDFD] py-4 px-8 text-xs uppercase tracking-[0.2em] hover:bg-[#4A3228] transition-colors rounded-[2px]"
@@ -684,6 +897,20 @@ export default function SafuraLuxuryPage() {
                                 <span className="font-serif italic text-lg md:text-xl">Company</span>
                             </div>
                         </div>
+
+                        {/* --- DIGITAL ATELIER NOTICE --- */}
+                        <div className="mt-12 mb-8 max-w-2xl mx-auto bg-[#FDF5F5] border border-[#D48F85]/20 p-6 rounded-sm">
+                            <div className="flex flex-col items-center gap-3">
+                                <Sparkles className="w-4 h-4 text-[#D48F85]" />
+                                <p className="font-serif text-[#2B120A] text-lg text-center">
+                                    Digital Atelier Preview
+                                </p>
+                                <p className="font-sans text-[#8C6A64] text-xs text-center leading-relaxed max-w-md">
+                                    Please note: Our digital home is currently being refined. Pricing and collection details may vary as we perfect the experience. For confirmed availability, kindly inquire directly.
+                                </p>
+                            </div>
+                        </div>
+
                     </Reveal>
                 </div>
             </section>
