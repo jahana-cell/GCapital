@@ -77,6 +77,10 @@ export default function RebuildGuidePage() {
 
             <main className="container mx-auto px-4 py-16">
                 <div className="max-w-3xl mx-auto">
+                    <div className="prose prose-lg max-w-none text-center mb-16 text-muted-foreground">
+                        <p>This document outlines the strategic, high-level prompts used to guide an AI assistant in the incremental construction of the GrowShare Capital web application. By following these steps in sequence, a developer can leverage AI to rapidly prototype and build the entire platform, from initial project setup and Firebase integration to implementing core features like the newsroom, e-commerce functionality, and user authentication, culminating in a production-ready application.</p>
+                    </div>
+
                     {prompts.map((p, i) => (
                         <PromptCard key={i} step={i + 1} title={p.title} prompt={p.prompt} />
                     ))}
