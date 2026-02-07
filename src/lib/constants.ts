@@ -1,9 +1,10 @@
+
 import { 
   ShieldCheck, Users, Recycle, MapPin, CheckSquare, TrendingUp,
   BarChart, Brush, FileText, FlaskConical, Globe, Goal, LayoutTemplate, 
   Library, Mail, Megaphone, MousePointerClick, Rocket, Scaling, Search, 
   Settings, Target, TestTube2, FileUp, Accessibility, PartyPopper, PenSquare,
-  Handshake, Briefcase, DollarSign, Tractor, Home, Award, Wheat, Sprout, Combine, Droplets, Package, PieChart, GitCompareArrows, Eye, ShoppingCart, Repeat2, Video, AlertTriangle, Calendar, Clock, Vote, Landmark, Heart, Building, Scale
+  Handshake, Briefcase, DollarSign, Tractor, Home, Award, Wheat, Sprout, Combine, Droplets, Package, PieChart, GitCompareArrows, Eye, ShoppingCart, Repeat2, Video, AlertTriangle, Calendar, Clock, Vote, Landmark, Heart, Building, Scale, Bot
 } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
@@ -404,6 +405,7 @@ export const allSearchableLinks = [
 { url: '/marketing/flyers', title: 'Marketing', type: "Page", description: 'A collection of our promotional and informational assets.'},
 { url: '/marketing/flyers/collection', title: 'Flyers', type: "Page", description: 'A collection of our promotional and informational flyers for various campaigns and investment opportunities.'},
 { url: '/marketing/social-media', title: 'Social Media Posts', type: "Page", description: 'A library of ready-to-use social media posts to promote our initiatives across various platforms.'},
+{ url: '/docs/rebuild-guide', title: 'AI Rebuild Guide', type: 'Page', description: 'A step-by-step guide on how to instruct an AI assistant to build this application from scratch.'}
 ];
 
 export const alabamaLivestockRoadmap: RoadmapItem[] = [
