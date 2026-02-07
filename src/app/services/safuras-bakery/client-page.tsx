@@ -628,7 +628,7 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- PRODUCT MODAL (UPDATED WITH VISUAL FLAVOR PALETTE) --- */}
+            {/* --- PRODUCT MODAL (UPDATED FOR MOBILE VISIBILITY) --- */}
             <AnimatePresence>
                 {selectedItem && (
                     <motion.div 
@@ -644,7 +644,8 @@ export default function SafuraLuxuryPage() {
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="bg-[#FFFDFD] w-full md:max-w-4xl h-[85vh] md:h-auto max-h-[85vh] overflow-y-auto rounded-t-2xl md:rounded-lg shadow-2xl relative flex flex-col md:flex-row"
+                            // FIX: Increased height on mobile (h-[90vh]), removed max-height constraint for mobile to allow full content flow
+                            className="bg-[#FFFDFD] w-full md:max-w-4xl h-[90vh] md:h-auto max-h-[90vh] overflow-hidden md:overflow-y-auto rounded-t-2xl md:rounded-lg shadow-2xl relative flex flex-col md:flex-row"
                         >
                             <button 
                                 onClick={() => setSelectedItem(null)}
@@ -653,10 +654,10 @@ export default function SafuraLuxuryPage() {
                                 <X className="w-6 h-6 text-[#2B120A]" />
                             </button>
 
-                            {/* Modal Image */}
-                            <div className="w-full md:w-1/2 h-64 md:h-auto relative bg-[#F9F7F5] flex-shrink-0">
+                            {/* Modal Image - FIX: Reduced height on mobile (h-40) to give room for content */}
+                            <div className="w-full md:w-1/2 h-40 md:h-auto relative bg-[#F9F7F5] flex-shrink-0">
                                 <motion.img 
-                                    key={currentDisplayItem?.title} // Triggers animation on change
+                                    key={currentDisplayItem?.title} 
                                     initial={{ opacity: 0 }}
                                     animate={{ opacity: 1 }}
                                     transition={{ duration: 0.5 }}
@@ -666,31 +667,31 @@ export default function SafuraLuxuryPage() {
                                 />
                             </div>
 
-                            {/* Modal Content */}
-                            <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-start md:justify-center overflow-y-auto">
-                                <div className="mb-6 md:mb-8">
+                            {/* Modal Content - FIX: Reduced padding on mobile (p-6) */}
+                            <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-start md:justify-center overflow-y-auto">
+                                <div className="mb-4 md:mb-8">
                                     <motion.h3 
                                         key={currentDisplayItem?.title}
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
-                                        className="font-serif text-3xl md:text-4xl text-[#2B120A] mb-2"
+                                        className="font-serif text-2xl md:text-4xl text-[#2B120A] mb-2"
                                     >
                                         {currentDisplayItem?.title}
                                     </motion.h3>
-                                    <p className="font-sans text-[#D48F85] text-sm uppercase tracking-widest font-bold">{selectedItem.price}</p>
+                                    <p className="font-sans text-[#D48F85] text-xs md:text-sm uppercase tracking-widest font-bold">{selectedItem.price}</p>
                                 </div>
 
-                                <div className="space-y-6">
+                                <div className="space-y-4 md:space-y-6">
                                     <div>
-                                        <h4 className="font-sans text-xs uppercase tracking-[0.2em] text-[#8C6A64] mb-4 border-b border-[#2B120A]/10 pb-2">Key Notes & Ingredients</h4>
+                                        <h4 className="font-sans text-[10px] md:text-xs uppercase tracking-[0.2em] text-[#8C6A64] mb-3 md:mb-4 border-b border-[#2B120A]/10 pb-2">Key Notes & Ingredients</h4>
                                         <motion.ul 
                                             key={currentDisplayItem?.ingredients}
                                             initial={{ opacity: 0 }}
                                             animate={{ opacity: 1 }}
-                                            className="space-y-3"
+                                            className="space-y-2 md:space-y-3"
                                         >
                                             {currentDisplayItem?.ingredients.split(',').map((ingredient: string, idx: number) => (
-                                                <li key={idx} className="flex items-start gap-3 text-[#2B120A] font-serif text-lg leading-relaxed">
+                                                <li key={idx} className="flex items-start gap-3 text-[#2B120A] font-serif text-base md:text-lg leading-relaxed">
                                                     <span className="mt-2 w-1.5 h-1.5 rounded-full bg-[#D48F85] flex-shrink-0" />
                                                     <span className="capitalize">{ingredient.trim()}</span>
                                                 </li>
@@ -698,15 +699,15 @@ export default function SafuraLuxuryPage() {
                                         </motion.ul>
                                     </div>
 
-                                    {/* --- LUXURY FLAVOR PALETTE (Shows only if variants exist) --- */}
+                                    {/* --- LUXURY FLAVOR PALETTE --- */}
                                     {selectedItem.variants && (
-                                        <div className="mt-6 pt-6 border-t border-[#2B120A]/10">
-                                             <div className="flex items-center gap-2 mb-4">
+                                        <div className="mt-4 pt-4 border-t border-[#2B120A]/10">
+                                             <div className="flex items-center gap-2 mb-3">
                                                 <Sparkles className="w-3 h-3 text-[#D48F85]" />
                                                 <p className="font-sans text-[9px] uppercase tracking-widest text-[#8C6A64]">Select Flavor to Preview</p>
                                              </div>
                                              
-                                             <div className="grid grid-cols-4 gap-3">
+                                             <div className="grid grid-cols-4 gap-2 md:gap-3">
                                                 {selectedItem.variants.map((v, i) => (
                                                     <button 
                                                         key={i} 
@@ -718,13 +719,13 @@ export default function SafuraLuxuryPage() {
                                                         title={v.title}
                                                     >
                                                         <div className={cn(
-                                                            "relative w-14 h-14 rounded-lg overflow-hidden border-2 transition-all shadow-sm",
+                                                            "relative w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden border-2 transition-all shadow-sm",
                                                             activeVariant === i ? "border-[#D48F85] ring-1 ring-[#D48F85]/30" : "border-transparent group-hover:border-[#D48F85]/30"
                                                         )}>
                                                             <img src={v.img} alt={v.title} className="w-full h-full object-cover" />
                                                         </div>
                                                         <span className={cn(
-                                                            "text-[8px] font-sans uppercase tracking-wider text-center leading-tight max-w-[60px]",
+                                                            "text-[7px] md:text-[8px] font-sans uppercase tracking-wider text-center leading-tight max-w-[60px]",
                                                             activeVariant === i ? "text-[#2B120A] font-bold" : "text-[#8C6A64]"
                                                         )}>
                                                             {v.title.split(' ')[0]}
@@ -735,7 +736,7 @@ export default function SafuraLuxuryPage() {
                                         </div>
                                     )}
                                     
-                                    <div className="pt-8 pb-8 md:pb-0">
+                                    <div className="pt-6 pb-8 md:pb-0">
                                         <a 
                                             href={WHATSAPP_LINK}
                                             className="inline-block w-full text-center bg-[#2B120A] text-[#FFFDFD] py-4 px-8 text-xs uppercase tracking-[0.2em] hover:bg-[#4A3228] transition-colors rounded-[2px]"
