@@ -404,8 +404,7 @@ export const allSearchableLinks = [
 { url: '/shop', title: 'Shop', type: "Page", description: 'Sustainably sourced products from our farms and partners.'},
 { url: '/marketing/flyers', title: 'Marketing', type: "Page", description: 'A collection of our promotional and informational assets.'},
 { url: '/marketing/flyers/collection', title: 'Flyers', type: "Page", description: 'A collection of our promotional and informational flyers for various campaigns and investment opportunities.'},
-{ url: '/marketing/social-media', title: 'Social Media Posts', type: "Page", description: 'A library of ready-to-use social media posts to promote our initiatives across various platforms.'},
-{ url: '/docs/rebuild-guide', title: 'AI Rebuild Guide', type: 'Page', description: 'A step-by-step guide on how to instruct an AI assistant to build this application from scratch.'}
+{ url: '/marketing/social-media', title: 'Social Media Posts', type: "Page", description: 'A library of ready-to-use social media posts to promote our initiatives across various platforms.'}
 ];
 
 export const alabamaLivestockRoadmap: RoadmapItem[] = [
