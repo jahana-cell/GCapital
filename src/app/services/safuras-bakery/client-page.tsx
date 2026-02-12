@@ -5,7 +5,7 @@ import { motion, useScroll, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, MapPin, Phone, Star, 
   Truck, Instagram, Facebook, Sparkles, ChefHat, X,
-  Ban, Leaf, Check
+  Ban, Leaf, Check, ChevronRight, ChevronLeft
 } from 'lucide-react';
 
 // --- UTILITY: Class Merger ---
@@ -31,247 +31,177 @@ const LuxurySheen = () => (
 );
 
 // --- DATA ---
+type Variant = {
+    title: string;
+    images: string[]; 
+    ingredients: string;
+};
+
 type CollectionItem = {
     title: string;
     price: string;
-    img: string;
+    img: string; // Main thumbnail for the grid
     ingredients: string;
-    variants?: { title: string; img: string; ingredients: string }[]; 
+    variants?: Variant[]; 
 };
 
 const COLLECTIONS: CollectionItem[] = [
     { 
-        title: "Wedding Cakes", 
-        price: "Bespoke", 
-        img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000",
-        ingredients: "Select a design style below to view details.",
+        title: "The Cake Collection", 
+        price: "From $65", 
+        // UPDATED: Main Picture changed as requested
+        img: "https://i.imgur.com/zfhCw5I.png",
+        ingredients: "Layered sponge cakes with artisan fillings.",
         variants: [
             {
-                title: "Classic Vanilla Tier",
-                img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000",
-                ingredients: "Madagascan vanilla bean, European cultured butter, Swiss meringue, edible gold leaf"
+                title: "Luxury Chocolate Berry Cake",
+                images: [
+                    "https://i.imgur.com/zfhCw5I.png", 
+                    "https://i.imgur.com/f4ggfx9.png"
+                ],
+                ingredients: "Rich chocolate sponge, fresh berry compote, smooth buttercream, gold leaf"
             },
             {
-                title: "Botanical Pressed",
-                img: "https://images.unsplash.com/photo-1626803775151-61d756612fcd?q=80&w=1000",
-                ingredients: "Lemon elderflower sponge, organic edible pressed flowers, smooth white fondant"
+                title: "Chocolate Walnut Cake",
+                images: ["https://i.imgur.com/wnfAXbT.jpeg"],
+                ingredients: "Belgian chocolate cake, toasted walnuts, 70% ganache"
             },
             {
-                title: "Rustic Naked Cake",
-                img: "https://images.unsplash.com/photo-1519340333755-56e9c1d04579?q=80&w=1000",
-                ingredients: "Almond amaretto sponge, semi-exposed crumb, fresh seasonal berries, powdered sugar dust"
+                title: "Lemon Elderflower",
+                images: ["https://i.imgur.com/KMjQe7w.jpeg"],
+                ingredients: "Zesty lemon cake, elderflower soak, lemon curd filling"
+            },
+            {
+                title: "Hazelnut Rocher Royale",
+                // UPDATED: Confirmed image
+                images: ["https://i.imgur.com/0y5XJ9x.png"],
+                ingredients: "Roasted hazelnut meringue, milk chocolate ganache, whole toasted hazelnuts, gold leaf"
             }
         ]
     },
     { 
-        title: "Signature Cupcakes", 
-        price: "Starts at $6 / 12 Cupcakes", 
+        title: "Artisan Cupcakes", 
+        price: "$6 / 12 Cupcakes", 
         img: "https://i.imgur.com/9wVuwPK.jpeg",
-        ingredients: "Our signature collection. Select a flavor below to view details.",
+        ingredients: "Our signature miniature cakes.",
         variants: [
             {
                 title: "Vanilla Whipped Cream",
-                img: "https://i.imgur.com/mREpZSN.png",
-                ingredients: "Madagascan vanilla bean sponge, house-made airy whipped cream, white chocolate shaving"
+                images: ["https://i.imgur.com/mREpZSN.png"],
+                ingredients: "Madagascan vanilla bean sponge, house-made airy whipped cream"
             },
             {
                 title: "Midnight Silk",
-                img: "https://i.imgur.com/JiRSUy2.png",
-                ingredients: "Valrhona dark chocolate sponge, ganache core, italian chocolate buttercream"
+                images: ["https://i.imgur.com/JiRSUy2.png"],
+                ingredients: "Valrhona dark chocolate sponge, ganache core"
             },
             {
                 title: "Strawberry Rose",
-                img: "https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1000",
-                ingredients: "Fresh strawberry reduction, rose water infused sponge, pink chantilly cream"
+                images: ["https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1000"],
+                ingredients: "Fresh strawberry reduction, rose water infused sponge"
             },
             {
                 title: "Salted Caramel",
-                img: "https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?q=80&w=1000",
-                ingredients: "Brown butter sponge, house-made salted caramel drizzle, sea salt flake"
+                images: ["https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?q=80&w=1000"],
+                ingredients: "Brown butter sponge, house-made salted caramel drizzle"
             }
         ]
     },
     { 
-        title: "Artisan Macarons", 
-        price: "Box of 12 / $45", 
-        img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000",
-        ingredients: "Delicate almond meringue shells. Select flavor:",
+        title: "Bespoke Wedding Cakes", 
+        price: "Bespoke Pricing", 
+        img: "https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000",
+        ingredients: "Designed for your special day.",
         variants: [
             {
-                title: "Raspberry Rose",
-                img: "https://images.unsplash.com/photo-1569864358642-9d1684040f43?q=80&w=1000",
-                ingredients: "California almond flour, fresh raspberry coulis center, rose-infused ganache"
+                title: "Classic Vanilla Tier",
+                images: ["https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000"],
+                ingredients: "European cultured butter, Swiss meringue, edible gold leaf"
             },
             {
-                title: "Pistachio Creme",
-                img: "https://images.unsplash.com/photo-1558326567-98ae2405596b?q=80&w=1000",
-                ingredients: "Roasted sicilian pistachio paste, white chocolate ganache, crushed pistachio dust"
+                title: "Hand Piped Floral",
+                images: [
+                    "https://i.imgur.com/zqk9uCy.jpeg", 
+                    "https://i.imgur.com/2QZnRBO.jpeg"
+                ],
+                ingredients: "Intricate hand-piped buttercream flowers, smooth white fondant base"
             },
             {
-                title: "Salted Caramel",
-                img: "https://images.unsplash.com/photo-1610607677699-317424d9d13d?q=80&w=1000",
-                ingredients: "Toasted sugar shell, fleur de sel caramel filling, gold luster dust"
+                title: "Rustic Naked Cake",
+                images: ["https://images.unsplash.com/photo-1519340333755-56e9c1d04579?q=80&w=1000"],
+                ingredients: "Almond amaretto sponge, semi-exposed crumb, fresh berries"
             }
         ]
     },
     { 
-        title: "Rustic Tarts", 
-        price: "From $55", 
-        img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000",
-        ingredients: "Hand-pressed pâte sablée crusts. Choose your filling:",
+        title: "Fudgy Brownies", 
+        price: "Box of 6 / $35", 
+        img: "https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000",
+        ingredients: "Dense, rich, and intensely chocolatey.",
         variants: [
-            {
-                title: "Fresh Fruit Tart",
-                img: "https://images.unsplash.com/photo-1519915028121-7d3463d20b13?q=80&w=1000",
-                ingredients: "Vanilla bean pastry cream, seasonal glazed berries, mint garnish"
-            },
-            {
-                title: "Lemon Meringue",
-                img: "https://images.unsplash.com/photo-1599639668350-2d937061d331?q=80&w=1000",
-                ingredients: "Zesty lemon curd, torched italian meringue, buttery shortbread crust"
-            },
-            {
-                title: "Dark Chocolate Ganache",
-                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000",
-                ingredients: "70% cocoa ganache, sea salt, roasted hazelnut topping"
-            }
-        ]
-    },
-    { 
-        title: "Sourdough Loaves", 
-        price: "$18", 
-        img: "https://i.imgur.com/Er6tzs2.jpeg",
-        ingredients: "Naturally leavened, 48-hour fermentation.",
-        variants: [
-            {
-                title: "Classic Country",
-                img: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=80&w=1000",
-                ingredients: "Organic stone-ground flour, water, sea salt. The perfect crust."
-            },
-            {
-                title: "Rosemary & Olive",
-                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000",
-                ingredients: "Kalamata olives, fresh rosemary sprigs, olive oil infusion"
-            },
-            {
-                title: "Walnut & Cranberry",
-                img: "https://images.unsplash.com/photo-1549931319-a545dcf3bc73?q=80&w=1000",
-                ingredients: "Toasted walnuts, dried cranberries, hint of orange zest"
-            }
-        ]
-    },
-    { 
-        title: "Cream Puffs", 
-        price: "Set of 4 / $28", 
-        img: "https://i.imgur.com/48NzFvC.jpeg",
-        ingredients: "Crisp choux pastry with craquelin top.",
-        variants: [
-            {
-                title: "Vanilla Bean",
-                img: "https://images.unsplash.com/photo-1626233519760-5e879a574b91?q=80&w=1000",
-                ingredients: "Tahitian vanilla bean chantilly, classic craquelin crust"
-            },
             {
                 title: "Double Chocolate",
-                img: "https://images.unsplash.com/photo-1550614000-4b9519e0947f?q=80&w=1000",
-                ingredients: "Chocolate pastry cream, cocoa nib crust, dark chocolate drizzle"
+                images: [
+                    "https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000",
+                    "https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1000"
+                ],
+                ingredients: "Belgian dark chocolate chunks folded into fudge batter"
+            },
+            {
+                title: "Salted Caramel Swirl",
+                images: ["https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000"],
+                ingredients: "House-made caramel ribbons, sea salt flake topping"
+            },
+            {
+                title: "Walnut Crunch",
+                images: ["https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1000"],
+                ingredients: "Toasted California walnuts, espresso infusion"
+            }
+        ]
+    },
+    { 
+        title: "Signature Tiramisu", 
+        price: "$45 / Tray", 
+        img: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=1000",
+        ingredients: "The classic Italian pick-me-up.",
+        variants: [
+            {
+                title: "Classic Espresso",
+                images: ["https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=1000"],
+                ingredients: "Savoiardi ladyfingers, espresso soak, mascarpone cream"
+            },
+            {
+                title: "Biscoff Tiramisu",
+                images: ["https://i.imgur.com/zGcGIrf.png"],
+                ingredients: "Lotus Biscoff cookie soak, spiced spread swirls, mascarpone cream, crushed biscuit topping"
             },
             {
                 title: "Matcha Green Tea",
-                img: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?q=80&w=1000",
-                ingredients: "Premium matcha infused cream, white chocolate dusting"
+                images: ["https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1000"],
+                ingredients: "Kyoto matcha powder, white chocolate shavings"
+            },
+            {
+                title: "Berry Infusion",
+                images: ["https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1000"],
+                ingredients: "Raspberry reduction soak, fresh berry topping"
             }
         ]
     },
     { 
-        title: "Dark Chocolates", 
-        price: "Gift Box / $40", 
-        img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000",
-        ingredients: "Hand-tempered couverture chocolate.",
+        title: "Tres Leches", 
+        price: "$40 / Tray", 
+        img: "https://i.imgur.com/kN0qZa8.png",
+        ingredients: "Soaked in three milks for melt-in-the-mouth texture.",
         variants: [
             {
-                title: "70% Dark Truffle",
-                img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000",
-                ingredients: "Single-origin dark chocolate, espresso infusion, cocoa dust"
+                title: "Classic Vanilla",
+                images: ["https://i.imgur.com/kN0qZa8.png"],
+                ingredients: "Evaporated milk, condensed milk, whole cream soak, cinnamon dust"
             },
             {
-                title: "White Raspberry",
-                img: "https://images.unsplash.com/photo-1548907040-4baa42d10919?q=80&w=1000",
-                ingredients: "Creamy white chocolate, freeze-dried raspberry center"
-            },
-            {
-                title: "Milk Hazelnut",
-                img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?q=80&w=1000",
-                ingredients: "38% milk chocolate, roasted whole hazelnut, praline paste"
-            }
-        ]
-    },
-    { 
-        title: "Croissants", 
-        price: "Dozen / $48", 
-        img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=1000",
-        ingredients: "Laminated dough with Isigny Ste Mère butter.",
-        variants: [
-            {
-                title: "Classic Butter",
-                img: "https://images.unsplash.com/photo-1555507036-ab1f4038808a?q=80&w=1000",
-                ingredients: "Pure butter layers, golden egg wash, honeycomb interior"
-            },
-            {
-                title: "Pain au Chocolat",
-                img: "https://images.unsplash.com/photo-1530610476181-d83430b64dcd?q=80&w=1000",
-                ingredients: "Dual batons of dark chocolate folded into buttery pastry"
-            },
-            {
-                title: "Almond Twice-Baked",
-                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000",
-                ingredients: "Filled with frangipane cream, topped with sliced toasted almonds"
-            }
-        ]
-    },
-    { 
-        title: "Layered Parfaits", 
-        price: "$12 ea", 
-        img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000",
-        ingredients: "Individual dessert cups layers with texture and flavor.",
-        variants: [
-            {
-                title: "Espresso Tiramisu",
-                img: "https://images.unsplash.com/photo-1488477181946-6428a0291777?q=80&w=1000",
-                ingredients: "Mascarpone mousse, espresso-soaked sponge, cocoa nibs"
-            },
-            {
-                title: "Berry Cheesecake",
-                img: "https://images.unsplash.com/photo-1534432182912-63863115e106?q=80&w=1000",
-                ingredients: "No-bake cheesecake filling, graham crumble, fresh berry compote"
-            },
-            {
-                title: "Mango Coconut",
-                img: "https://images.unsplash.com/photo-1525253086316-d0c936c814f8?q=80&w=1000",
-                ingredients: "Coconut chia pudding, fresh mango puree, toasted coconut flakes"
-            }
-        ]
-    },
-    { 
-        title: "Custom Gift Sets", 
-        price: "Inquire", 
-        img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000",
-        ingredients: "Curated boxes wrapped in silk ribbon.",
-        variants: [
-            {
-                title: "The Signature Box",
-                img: "https://images.unsplash.com/photo-1595246140625-573b715d11dc?q=80&w=1000",
-                ingredients: "A mix of our bestseller macarons, cupcakes, and chocolates"
-            },
-            {
-                title: "Breakfast Box",
-                img: "https://images.unsplash.com/photo-1509440159596-0249088772ff?q=80&w=1000",
-                ingredients: "Assorted croissants, muffins, and preserves"
-            },
-            {
-                title: "Tea Time Set",
-                img: "https://images.unsplash.com/photo-1558326567-98ae2405596b?q=80&w=1000",
-                ingredients: "Petit fours, scones, and artisanal tea blends"
+                title: "Rose & Pistachio",
+                images: ["https://i.imgur.com/hDw8y4g.jpeg"],
+                ingredients: "Rose water infusion, crushed pistachio garnish, edible rose petals"
             }
         ]
     }
@@ -364,20 +294,48 @@ export default function SafuraLuxuryPage() {
     const { scrollYProgress } = useScroll();
     const [selectedItem, setSelectedItem] = useState<CollectionItem | null>(null);
     const [activeVariant, setActiveVariant] = useState(0);
+    const [activeImageIndex, setActiveImageIndex] = useState(0); 
 
     // Prevent scrolling when modal is open
     useEffect(() => {
         if (selectedItem) {
             document.body.style.overflow = 'hidden';
-            // Reset active variant to 0 (base item) whenever a new item is opened
             setActiveVariant(0);
+            setActiveImageIndex(0);
         } else {
             document.body.style.overflow = 'unset';
         }
     }, [selectedItem]);
 
-    // Helper to get current display data (Main Item or Specific Variant)
+    // Reset image index when user switches flavor variant
+    useEffect(() => {
+        setActiveImageIndex(0);
+    }, [activeVariant]);
+
+    // Helper to get current display data
     const currentDisplayItem = selectedItem?.variants ? selectedItem.variants[activeVariant] : selectedItem;
+    
+    // Helper to get image data
+    const variantImages = selectedItem?.variants ? selectedItem.variants[activeVariant].images : [];
+    
+    // Handle Arrow Clicks
+    const nextImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (variantImages.length > 0) {
+            setActiveImageIndex((prev) => (prev + 1) % variantImages.length);
+        }
+    };
+
+    const prevImage = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (variantImages.length > 0) {
+            setActiveImageIndex((prev) => (prev - 1 + variantImages.length) % variantImages.length);
+        }
+    };
+
+    const currentImageSrc = variantImages.length > 0 
+        ? variantImages[activeImageIndex] 
+        : selectedItem?.img;
 
     return (
         <div className="bg-[#FFFDFD] text-[#2B120A] min-h-screen font-sans selection:bg-[#D48F85] selection:text-white relative">
@@ -644,27 +602,54 @@ export default function SafuraLuxuryPage() {
                             exit={{ y: "100%" }}
                             transition={{ type: "spring", damping: 25, stiffness: 200 }}
                             onClick={(e) => e.stopPropagation()}
-                            // FIX: Increased height on mobile (h-[90vh]), removed max-height constraint for mobile to allow full content flow
                             className="bg-[#FFFDFD] w-full md:max-w-4xl h-[90vh] md:h-auto max-h-[90vh] overflow-hidden md:overflow-y-auto rounded-t-2xl md:rounded-lg shadow-2xl relative flex flex-col md:flex-row"
                         >
                             <button 
                                 onClick={() => setSelectedItem(null)}
-                                className="absolute top-4 right-4 z-10 p-2 bg-white/50 hover:bg-white rounded-full transition-colors"
+                                className="absolute top-4 right-4 z-30 p-2 bg-white/50 hover:bg-white rounded-full transition-colors"
                             >
                                 <X className="w-6 h-6 text-[#2B120A]" />
                             </button>
 
-                            {/* Modal Image - FIX: Reduced height on mobile (h-40) to give room for content */}
-                            <div className="w-full md:w-1/2 h-40 md:h-auto relative bg-[#F9F7F5] flex-shrink-0">
-                                <motion.img 
-                                    key={currentDisplayItem?.title} 
-                                    initial={{ opacity: 0 }}
-                                    animate={{ opacity: 1 }}
-                                    transition={{ duration: 0.5 }}
-                                    src={currentDisplayItem?.img} 
-                                    alt={currentDisplayItem?.title} 
-                                    className="w-full h-full object-cover"
-                                />
+                            {/* --- MODAL IMAGE GALLERY (LEFT SIDE) --- */}
+                            <div className="w-full md:w-1/2 h-56 md:h-auto relative bg-[#F9F7F5] flex-shrink-0 flex flex-col group">
+                                <div className="flex-grow relative overflow-hidden">
+                                     <AnimatePresence mode="wait">
+                                        <motion.img 
+                                            key={`${currentDisplayItem?.title}-${activeImageIndex}`}
+                                            initial={{ opacity: 0, scale: 0.95 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 0.4 }}
+                                            src={currentImageSrc} 
+                                            alt={currentDisplayItem?.title} 
+                                            className="absolute inset-0 w-full h-full object-contain p-2"
+                                        />
+                                     </AnimatePresence>
+                                     
+                                     {/* ARROW BUTTONS */}
+                                     {variantImages && variantImages.length > 1 && (
+                                         <>
+                                            <button 
+                                                onClick={prevImage}
+                                                className="absolute left-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-2 rounded-full shadow-md z-20 transition-all opacity-0 group-hover:opacity-100"
+                                            >
+                                                <ChevronLeft className="w-5 h-5 text-[#2B120A]" />
+                                            </button>
+                                            <button 
+                                                onClick={nextImage}
+                                                className="absolute right-2 top-1/2 -translate-y-1/2 bg-white/70 hover:bg-white p-2 rounded-full shadow-md z-20 transition-all opacity-0 group-hover:opacity-100"
+                                            >
+                                                <ChevronRight className="w-5 h-5 text-[#2B120A]" />
+                                            </button>
+                                            
+                                            {/* Mobile Always Visible Hint */}
+                                            <div className="md:hidden absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full pointer-events-none">
+                                                {activeImageIndex + 1} / {variantImages.length}
+                                            </div>
+                                         </>
+                                     )}
+                                </div>
                             </div>
 
                             {/* Modal Content - FIX: Reduced padding on mobile (p-6) */}
@@ -722,7 +707,7 @@ export default function SafuraLuxuryPage() {
                                                             "relative w-12 h-12 md:w-14 md:h-14 rounded-lg overflow-hidden border-2 transition-all shadow-sm",
                                                             activeVariant === i ? "border-[#D48F85] ring-1 ring-[#D48F85]/30" : "border-transparent group-hover:border-[#D48F85]/30"
                                                         )}>
-                                                            <img src={v.img} alt={v.title} className="w-full h-full object-cover" />
+                                                            <img src={v.images[0]} alt={v.title} className="w-full h-full object-cover" />
                                                         </div>
                                                         <span className={cn(
                                                             "text-[7px] md:text-[8px] font-sans uppercase tracking-wider text-center leading-tight max-w-[60px]",
