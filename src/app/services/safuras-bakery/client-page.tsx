@@ -35,12 +35,13 @@ type Variant = {
     title: string;
     images: string[]; 
     ingredients: string;
+    price?: string; // Added optional specific price for variants
 };
 
 type CollectionItem = {
     title: string;
     price: string;
-    img: string; // Main thumbnail for the grid
+    img: string; 
     ingredients: string;
     variants?: Variant[]; 
 };
@@ -49,7 +50,6 @@ const COLLECTIONS: CollectionItem[] = [
     { 
         title: "The Cake Collection", 
         price: "From $65", 
-        // UPDATED: Main Picture changed as requested
         img: "https://i.imgur.com/zfhCw5I.png",
         ingredients: "Layered sponge cakes with artisan fillings.",
         variants: [
@@ -73,7 +73,6 @@ const COLLECTIONS: CollectionItem[] = [
             },
             {
                 title: "Hazelnut Rocher Royale",
-                // UPDATED: Confirmed image
                 images: ["https://i.imgur.com/0y5XJ9x.png"],
                 ingredients: "Roasted hazelnut meringue, milk chocolate ganache, whole toasted hazelnuts, gold leaf"
             }
@@ -81,29 +80,44 @@ const COLLECTIONS: CollectionItem[] = [
     },
     { 
         title: "Artisan Cupcakes", 
-        price: "$6 / 12 Cupcakes", 
-        img: "https://i.imgur.com/9wVuwPK.jpeg",
-        ingredients: "Our signature miniature cakes.",
+        // UPDATED: Shows range to be accurate
+        price: "$8 - $16 / Box", 
+        img: "https://i.imgur.com/N3Gy5l0.jpeg",
+        ingredients: "Our signature miniature cakes. Select flavor for pricing.",
         variants: [
             {
-                title: "Vanilla Whipped Cream",
+                title: "Red Velvet",
+                price: "$10 / Box",
+                images: [
+                    "https://i.imgur.com/8Hr4l6s.png",
+                    "https://i.imgur.com/qAeXFSS.png"
+                ],
+                ingredients: "Cloud-light whipped cream, velvet cheese cream, premium fruit jam, pure halal extract"
+            },
+            {
+                title: "Signature Floral Cupcake",
+                price: "$16 / Box",
+                images: [
+                    "https://i.imgur.com/fSuWEBn.jpeg",
+                    "https://i.imgur.com/L1GzAwU.png",
+                    "https://i.imgur.com/PWdaCvT.png"
+                ],
+                ingredients: "Premium buttercream frosting, intricate artisanal hand-piped cream décor"
+            },
+            {
+                title: "Chocolate Cupcake",
+                price: "$10 / Box",
+                images: [
+                    "https://i.imgur.com/9jo36MS.png",
+                    "https://i.imgur.com/0jwoLxg.png"
+                ],
+                ingredients: "Premium halal Belgian chocolate, airy whipped cream, rich chocolate ganache core"
+            },
+            {
+                title: "Vanilla",
+                price: "$8 / Box",
                 images: ["https://i.imgur.com/mREpZSN.png"],
-                ingredients: "Madagascan vanilla bean sponge, house-made airy whipped cream"
-            },
-            {
-                title: "Midnight Silk",
-                images: ["https://i.imgur.com/JiRSUy2.png"],
-                ingredients: "Valrhona dark chocolate sponge, ganache core"
-            },
-            {
-                title: "Strawberry Rose",
-                images: ["https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?q=80&w=1000"],
-                ingredients: "Fresh strawberry reduction, rose water infused sponge"
-            },
-            {
-                title: "Salted Caramel",
-                images: ["https://images.unsplash.com/photo-1614707267537-b85aaf00c4b7?q=80&w=1000"],
-                ingredients: "Brown butter sponge, house-made salted caramel drizzle"
+                ingredients: "Madagascar vanilla whipped cream, pure halal extract, seasonal fruit customisation available"
             }
         ]
     },
@@ -142,7 +156,7 @@ const COLLECTIONS: CollectionItem[] = [
             {
                 title: "Double Chocolate",
                 images: [
-                    "https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000",
+                    "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?q=80&w=1000",
                     "https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1000"
                 ],
                 ingredients: "Belgian dark chocolate chunks folded into fudge batter"
@@ -318,6 +332,10 @@ export default function SafuraLuxuryPage() {
     // Helper to get image data
     const variantImages = selectedItem?.variants ? selectedItem.variants[activeVariant].images : [];
     
+    // Logic to determine which price to show in the modal header
+    // It prefers the specific variant price (if available), otherwise falls back to the main collection price
+    const currentPrice = selectedItem?.variants?.[activeVariant]?.price || selectedItem?.price;
+
     // Handle Arrow Clicks
     const nextImage = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -663,7 +681,11 @@ export default function SafuraLuxuryPage() {
                                     >
                                         {currentDisplayItem?.title}
                                     </motion.h3>
-                                    <p className="font-sans text-[#D48F85] text-xs md:text-sm uppercase tracking-widest font-bold">{selectedItem.price}</p>
+                                    
+                                    {/* DYNAMIC PRICE UPDATE: Shows specific variant price if available, else collection default */}
+                                    <p className="font-sans text-[#D48F85] text-xs md:text-sm uppercase tracking-widest font-bold">
+                                        {currentPrice}
+                                    </p>
                                 </div>
 
                                 <div className="space-y-4 md:space-y-6">
