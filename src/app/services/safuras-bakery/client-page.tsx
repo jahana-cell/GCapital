@@ -35,13 +35,13 @@ type Variant = {
     title: string;
     images: string[]; 
     ingredients: string;
-    price?: string; // Added optional specific price for variants
+    price?: string; 
 };
 
 type CollectionItem = {
     title: string;
     price: string;
-    img: string; 
+    img: string; // Main thumbnail for the grid
     ingredients: string;
     variants?: Variant[]; 
 };
@@ -80,7 +80,6 @@ const COLLECTIONS: CollectionItem[] = [
     },
     { 
         title: "Artisan Cupcakes", 
-        // UPDATED: Shows range to be accurate
         price: "$8 - $16 / Box", 
         img: "https://i.imgur.com/N3Gy5l0.jpeg",
         ingredients: "Our signature miniature cakes. Select flavor for pricing.",
@@ -150,7 +149,7 @@ const COLLECTIONS: CollectionItem[] = [
     { 
         title: "Fudgy Brownies", 
         price: "Box of 6 / $35", 
-        img: "https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000",
+        img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?q=80&w=1000",
         ingredients: "Dense, rich, and intensely chocolatey.",
         variants: [
             {
@@ -333,7 +332,6 @@ export default function SafuraLuxuryPage() {
     const variantImages = selectedItem?.variants ? selectedItem.variants[activeVariant].images : [];
     
     // Logic to determine which price to show in the modal header
-    // It prefers the specific variant price (if available), otherwise falls back to the main collection price
     const currentPrice = selectedItem?.variants?.[activeVariant]?.price || selectedItem?.price;
 
     // Handle Arrow Clicks
