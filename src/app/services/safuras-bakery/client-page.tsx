@@ -49,10 +49,28 @@ type CollectionItem = {
 const COLLECTIONS: CollectionItem[] = [
     { 
         title: "The Cake Collection", 
-        price: "From $65", 
+        // UPDATED: Main price range for cakes
+        price: "From $15", 
         img: "https://i.imgur.com/zfhCw5I.png",
         ingredients: "Layered sponge cakes with artisan fillings.",
         variants: [
+            {
+                // ADDED: Vanilla Cake ($15)
+                title: "Vanilla Cake",
+                price: "$15",
+                images: [
+                    "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1000",
+                    "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?q=80&w=1000"
+                ],
+                ingredients: "Classic vanilla bean sponge, strawberry conserve, vanilla buttercream"
+            },
+            {
+                // UPDATED: Chocolate Cake ($20)
+                title: "Chocolate Cake",
+                price: "$20",
+                images: ["https://i.imgur.com/wnfAXbT.jpeg"], 
+                ingredients: "Decadent Belgian chocolate sponge, silky ganache, dark chocolate shavings"
+            },
             {
                 title: "Luxury Chocolate Berry Cake",
                 images: [
@@ -60,16 +78,6 @@ const COLLECTIONS: CollectionItem[] = [
                     "https://i.imgur.com/f4ggfx9.png"
                 ],
                 ingredients: "Rich chocolate sponge, fresh berry compote, smooth buttercream, gold leaf"
-            },
-            {
-                title: "Chocolate Walnut Cake",
-                images: ["https://i.imgur.com/wnfAXbT.jpeg"],
-                ingredients: "Belgian chocolate cake, toasted walnuts, 70% ganache"
-            },
-            {
-                title: "Lemon Elderflower",
-                images: ["https://i.imgur.com/KMjQe7w.jpeg"],
-                ingredients: "Zesty lemon cake, elderflower soak, lemon curd filling"
             },
             {
                 title: "Hazelnut Rocher Royale",
@@ -80,6 +88,7 @@ const COLLECTIONS: CollectionItem[] = [
     },
     { 
         title: "Artisan Cupcakes", 
+        // REVERTED: Correct Cupcake Box Pricing
         price: "$8 - $16 / Box", 
         img: "https://i.imgur.com/N3Gy5l0.jpeg",
         ingredients: "Our signature miniature cakes. Select flavor for pricing.",
@@ -149,7 +158,7 @@ const COLLECTIONS: CollectionItem[] = [
     { 
         title: "Fudgy Brownies", 
         price: "Box of 6 / $35", 
-        img: "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?q=80&w=1000",
+        img: "https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000",
         ingredients: "Dense, rich, and intensely chocolatey.",
         variants: [
             {
