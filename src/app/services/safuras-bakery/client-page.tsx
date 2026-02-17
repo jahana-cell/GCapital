@@ -159,14 +159,12 @@ const COLLECTIONS: CollectionItem[] = [
     { 
         title: "Fudgy Brownies", 
         price: "Box of 6 / $35", 
-        // UPDATED: Main Grid Picture
         img: "https://images.pexels.com/photos/1579926/pexels-photo-1579926.jpeg",
         ingredients: "Dense, rich, and intensely chocolatey.",
         variants: [
             {
                 title: "Double Chocolate",
                 price: "$35 / Box",
-                // UPDATED: Added new image to Double Chocolate
                 images: [
                     "https://images.pexels.com/photos/1579926/pexels-photo-1579926.jpeg",
                     "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?q=80&w=1000",
@@ -519,7 +517,59 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- PHILOSOPHY SECTION (UPDATED) --- */}
+            {/* --- COLLECTIONS (REORDERED: Moved Up) --- */}
+            <section id="collections" className="py-20 md:py-32 bg-[#FFFDFD] px-4 md:px-12 relative">
+                <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-[#FDF5F5] to-transparent" />
+                
+                <div className="max-w-[1200px] mx-auto">
+                    <SectionHeading subtitle="The Atelier" title="Curated Sweets" />
+                    
+                    {/* GRID */}
+                    <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-20">
+                        {COLLECTIONS.map((item, i) => (
+                            <Reveal key={i} delay={i * 0.05} width="100%">
+                                <div 
+                                    className="group cursor-pointer flex flex-col items-center text-center touch-manipulation"
+                                    onClick={() => setSelectedItem(item)}
+                                >
+                                    <div className="relative w-full aspect-[4/5] mb-4 md:mb-6 overflow-hidden bg-gradient-to-b from-[#F9F7F5] to-[#F0EFED] rounded-[4px]">
+                                        <img 
+                                            src={item.img} 
+                                            alt={item.title}
+                                            className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+                                        />
+                                        
+                                        {/* HOVER OVERLAY (DESKTOP) */}
+                                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                                            <span className="bg-white/90 backdrop-blur text-[#2B120A] px-6 py-3 text-[10px] uppercase tracking-[0.25em] font-bold">
+                                                Explore
+                                            </span>
+                                        </div>
+                                    </div>
+                                    
+                                    <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-1 md:mb-2 group-hover:text-[#D48F85] transition-colors">
+                                        {item.title}
+                                    </h3>
+                                    
+                                    <span className="font-serif text-sm md:text-base text-[#8C6A64] italic mb-2">
+                                        {item.price}
+                                    </span>
+
+                                    {/* LUXURY FLAVOR COUNT INDICATOR */}
+                                    {item.variants && item.variants.length > 0 && (
+                                        <p className="text-[9px] uppercase tracking-widest text-[#2B120A]/60 group-hover:text-[#D48F85] transition-colors flex items-center gap-1 border-b border-transparent group-hover:border-[#D48F85] pb-0.5">
+                                            View {item.variants.length} Flavors
+                                            <ArrowRight className="w-3 h-3" />
+                                        </p>
+                                    )}
+                                </div>
+                            </Reveal>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* --- PHILOSOPHY SECTION (REORDERED: Moved Down) --- */}
             <section id="our-philosophy" className="py-20 md:py-32 px-6 md:px-12 max-w-7xl mx-auto">
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
                     
@@ -588,58 +638,6 @@ export default function SafuraLuxuryPage() {
                                  />
                             </div>
                        </Reveal>
-                    </div>
-                </div>
-            </section>
-
-            {/* --- COLLECTIONS --- */}
-            <section id="collections" className="py-20 md:py-32 bg-[#FFFDFD] px-4 md:px-12 relative">
-                <div className="absolute top-0 left-0 w-full h-20 bg-gradient-to-b from-[#FDF5F5] to-transparent" />
-                
-                <div className="max-w-[1200px] mx-auto">
-                    <SectionHeading subtitle="The Atelier" title="Curated Sweets" />
-                    
-                    {/* GRID */}
-                    <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-20">
-                        {COLLECTIONS.map((item, i) => (
-                            <Reveal key={i} delay={i * 0.05} width="100%">
-                                <div 
-                                    className="group cursor-pointer flex flex-col items-center text-center touch-manipulation"
-                                    onClick={() => setSelectedItem(item)}
-                                >
-                                    <div className="relative w-full aspect-[4/5] mb-4 md:mb-6 overflow-hidden bg-gradient-to-b from-[#F9F7F5] to-[#F0EFED] rounded-[4px]">
-                                        <img 
-                                            src={item.img} 
-                                            alt={item.title}
-                                            className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-[1.2s] ease-out group-hover:scale-105"
-                                        />
-                                        
-                                        {/* HOVER OVERLAY (DESKTOP) */}
-                                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                                            <span className="bg-white/90 backdrop-blur text-[#2B120A] px-6 py-3 text-[10px] uppercase tracking-[0.25em] font-bold">
-                                                Explore
-                                            </span>
-                                        </div>
-                                    </div>
-                                    
-                                    <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-1 md:mb-2 group-hover:text-[#D48F85] transition-colors">
-                                        {item.title}
-                                    </h3>
-                                    
-                                    <span className="font-serif text-sm md:text-base text-[#8C6A64] italic mb-2">
-                                        {item.price}
-                                    </span>
-
-                                    {/* LUXURY FLAVOR COUNT INDICATOR */}
-                                    {item.variants && item.variants.length > 0 && (
-                                        <p className="text-[9px] uppercase tracking-widest text-[#2B120A]/60 group-hover:text-[#D48F85] transition-colors flex items-center gap-1 border-b border-transparent group-hover:border-[#D48F85] pb-0.5">
-                                            View {item.variants.length} Flavors
-                                            <ArrowRight className="w-3 h-3" />
-                                        </p>
-                                    )}
-                                </div>
-                            </Reveal>
-                        ))}
                     </div>
                 </div>
             </section>
