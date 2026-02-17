@@ -1,11 +1,11 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { motion, useScroll, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, AnimatePresence, PanInfo } from 'framer-motion';
 import { 
   ArrowLeft, MapPin, Phone, Star, 
   Truck, Instagram, Facebook, Sparkles, ChefHat, X,
-  Ban, Leaf, Check, ChevronRight, ChevronLeft, ArrowRight
+  Ban, Leaf, Check, ChevronRight, ChevronLeft, ArrowRight, Hand, ZoomIn
 } from 'lucide-react';
 
 // --- UTILITY: Class Merger ---
@@ -49,28 +49,25 @@ type CollectionItem = {
 const COLLECTIONS: CollectionItem[] = [
     { 
         title: "The Cake Collection", 
-        price: "From $15", 
+        // UPDATED: Lowest price is now $20
+        price: "From $20", 
         img: "https://i.imgur.com/zfhCw5I.png",
         ingredients: "Layered sponge cakes with artisan fillings.",
         variants: [
             {
-                title: "Vanilla Cake",
-                price: "$15",
+                // REPLACED: Vanilla -> Chocolate Creamy Cake
+                title: "Chocolate Creamy Cake",
+                price: "$20",
                 images: [
                     "https://images.unsplash.com/photo-1578985545062-69928b1d9587?q=80&w=1000",
-                    "https://images.unsplash.com/photo-1464349095431-e9a21285b5f3?q=80&w=1000"
+                    "https://i.imgur.com/wnfAXbT.jpeg"
                 ],
-                ingredients: "Classic vanilla bean sponge, strawberry conserve, vanilla buttercream"
-            },
-            {
-                title: "Chocolate Cake",
-                price: "$20",
-                images: ["https://i.imgur.com/wnfAXbT.jpeg"], 
-                ingredients: "Decadent Belgian chocolate sponge, silky ganache, dark chocolate shavings"
+                ingredients: "Velvety chocolate sponge, whipped milk chocolate ganache, dark chocolate glaze"
             },
             {
                 title: "Luxury Chocolate Berry Cake",
-                price: "$65",
+                // UPDATED: Price to $30
+                price: "$30",
                 images: [
                     "https://i.imgur.com/zfhCw5I.png", 
                     "https://i.imgur.com/f4ggfx9.png"
@@ -78,11 +75,12 @@ const COLLECTIONS: CollectionItem[] = [
                 ingredients: "Rich chocolate sponge, fresh berry compote, smooth buttercream, gold leaf"
             },
             {
-                title: "Hazelnut Rocher Royale",
-                price: "$75",
-                images: ["https://i.imgur.com/0y5XJ9x.png"],
-                ingredients: "Roasted hazelnut meringue, milk chocolate ganache, whole toasted hazelnuts, gold leaf"
+                title: "Chocolate Cake",
+                price: "$20",
+                images: ["https://i.imgur.com/wnfAXbT.jpeg"], 
+                ingredients: "Decadent Belgian chocolate sponge, silky ganache, dark chocolate shavings"
             }
+            // REMOVED: Hazelnut Rocher Royale
         ]
     },
     { 
@@ -158,13 +156,13 @@ const COLLECTIONS: CollectionItem[] = [
     },
     { 
         title: "Fudgy Brownies", 
-        price: "Box of 6 / $35", 
+        price: "Coming Soon", 
         img: "https://images.pexels.com/photos/1579926/pexels-photo-1579926.jpeg",
         ingredients: "Dense, rich, and intensely chocolatey.",
         variants: [
             {
                 title: "Double Chocolate",
-                price: "$35 / Box",
+                // Removed price to inherit 'Coming Soon'
                 images: [
                     "https://images.pexels.com/photos/1579926/pexels-photo-1579926.jpeg",
                     "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?q=80&w=1000",
@@ -174,13 +172,11 @@ const COLLECTIONS: CollectionItem[] = [
             },
             {
                 title: "Salted Caramel Swirl",
-                price: "$35 / Box",
                 images: ["https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000"],
                 ingredients: "House-made caramel ribbons, sea salt flake topping"
             },
             {
                 title: "Walnut Crunch",
-                price: "$38 / Box",
                 images: ["https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1000"],
                 ingredients: "Toasted California walnuts, espresso infusion"
             }
@@ -188,31 +184,27 @@ const COLLECTIONS: CollectionItem[] = [
     },
     { 
         title: "Signature Tiramisu", 
-        price: "$45 / Tray", 
+        price: "Coming Soon", 
         img: "https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=1000",
         ingredients: "The classic Italian pick-me-up.",
         variants: [
             {
                 title: "Classic Espresso",
-                price: "$45 / Tray",
                 images: ["https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=1000"],
                 ingredients: "Savoiardi ladyfingers, espresso soak, mascarpone cream"
             },
             {
                 title: "Biscoff Tiramisu",
-                price: "$50 / Tray",
                 images: ["https://i.imgur.com/zGcGIrf.png"],
                 ingredients: "Lotus Biscoff cookie soak, spiced spread swirls, mascarpone cream, crushed biscuit topping"
             },
             {
                 title: "Matcha Green Tea",
-                price: "$55 / Tray",
                 images: ["https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1000"],
                 ingredients: "Kyoto matcha powder, white chocolate shavings"
             },
             {
                 title: "Berry Infusion",
-                price: "$50 / Tray",
                 images: ["https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1000"],
                 ingredients: "Raspberry reduction soak, fresh berry topping"
             }
@@ -327,16 +319,23 @@ export default function SafuraLuxuryPage() {
     const { scrollYProgress } = useScroll();
     const [selectedItem, setSelectedItem] = useState<CollectionItem | null>(null);
     const [activeVariant, setActiveVariant] = useState(0);
-    const [activeImageIndex, setActiveImageIndex] = useState(0); 
+    const [activeImageIndex, setActiveImageIndex] = useState(0);
+    const [isFullScreen, setIsFullScreen] = useState(false);
 
     // Prevent scrolling when modal is open
     useEffect(() => {
-        if (selectedItem) {
+        if (selectedItem || isFullScreen) {
             document.body.style.overflow = 'hidden';
-            setActiveVariant(0);
-            setActiveImageIndex(0);
         } else {
             document.body.style.overflow = 'unset';
+        }
+    }, [selectedItem, isFullScreen]);
+
+    // Reset when modal opens
+    useEffect(() => {
+        if (selectedItem) {
+            setActiveVariant(0);
+            setActiveImageIndex(0);
         }
     }, [selectedItem]);
 
@@ -345,19 +344,31 @@ export default function SafuraLuxuryPage() {
         setActiveImageIndex(0);
     }, [activeVariant]);
 
-    // Helper to get current display data
-    // Added safety check to prevent crash if activeVariant is out of bounds
+    // --- CRASH PREVENTER LOGIC ---
     const safeActiveVariant = selectedItem?.variants && selectedItem.variants[activeVariant] 
         ? activeVariant 
         : 0;
 
     const currentDisplayItem = selectedItem?.variants ? selectedItem.variants[safeActiveVariant] : selectedItem;
     
-    // Helper to get image data
     const variantImages = selectedItem?.variants ? selectedItem.variants[safeActiveVariant]?.images : [];
     
-    // Logic to determine which price to show in the modal header
-    const currentPrice = selectedItem?.variants?.[safeActiveVariant]?.price || selectedItem?.price;
+    // Fallback logic for Price
+    const currentPrice = selectedItem?.variants?.[safeActiveVariant]?.price || selectedItem?.price || "Inquire";
+
+    // Handle Swipe (Touch Drag)
+    const handleDragEnd = (event: any, info: PanInfo) => {
+        const threshold = 50;
+        if (variantImages && variantImages.length > 1) {
+            if (info.offset.x > threshold) {
+                // Swiped Right -> Previous
+                setActiveImageIndex((prev) => (prev - 1 + variantImages.length) % variantImages.length);
+            } else if (info.offset.x < -threshold) {
+                // Swiped Left -> Next
+                setActiveImageIndex((prev) => (prev + 1) % variantImages.length);
+            }
+        }
+    };
 
     // Handle Arrow Clicks
     const nextImage = (e: React.MouseEvent) => {
@@ -526,45 +537,53 @@ export default function SafuraLuxuryPage() {
                     
                     {/* GRID */}
                     <div className="grid grid-cols-2 md:grid-cols-2 gap-4 md:gap-x-12 md:gap-y-20">
-                        {COLLECTIONS.map((item, i) => (
-                            <Reveal key={i} delay={i * 0.05} width="100%">
-                                <div 
-                                    className="group cursor-pointer flex flex-col items-center text-center touch-manipulation"
-                                    onClick={() => setSelectedItem(item)}
-                                >
-                                    <div className="relative w-full aspect-[4/5] mb-4 md:mb-6 overflow-hidden bg-gradient-to-b from-[#F9F7F5] to-[#F0EFED] rounded-[4px]">
-                                        <img 
-                                            src={item.img} 
-                                            alt={item.title}
-                                            className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-[1.2s] ease-out group-hover:scale-105"
-                                        />
-                                        
-                                        {/* HOVER OVERLAY (DESKTOP) */}
-                                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
-                                            <span className="bg-white/90 backdrop-blur text-[#2B120A] px-6 py-3 text-[10px] uppercase tracking-[0.25em] font-bold">
-                                                Explore
-                                            </span>
+                        {COLLECTIONS.map((item, i) => {
+                            const isComingSoon = item.price === "Coming Soon";
+                            return (
+                                <Reveal key={i} delay={i * 0.05} width="100%">
+                                    <div 
+                                        className={cn(
+                                            "group flex flex-col items-center text-center touch-manipulation",
+                                            isComingSoon ? "cursor-default opacity-80" : "cursor-pointer"
+                                        )}
+                                        onClick={() => !isComingSoon && setSelectedItem(item)}
+                                    >
+                                        <div className="relative w-full aspect-[4/5] mb-4 md:mb-6 overflow-hidden bg-gradient-to-b from-[#F9F7F5] to-[#F0EFED] rounded-[4px]">
+                                            <img 
+                                                src={item.img} 
+                                                alt={item.title}
+                                                className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-[1.2s] ease-out group-hover:scale-105"
+                                            />
+                                            
+                                            {/* HOVER OVERLAY (DESKTOP) - Hidden if coming soon */}
+                                            {!isComingSoon && (
+                                                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                                                    <span className="bg-white/90 backdrop-blur text-[#2B120A] px-6 py-3 text-[10px] uppercase tracking-[0.25em] font-bold">
+                                                        Explore
+                                                    </span>
+                                                </div>
+                                            )}
                                         </div>
-                                    </div>
-                                    
-                                    <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-1 md:mb-2 group-hover:text-[#D48F85] transition-colors">
-                                        {item.title}
-                                    </h3>
-                                    
-                                    <span className="font-serif text-sm md:text-base text-[#8C6A64] italic mb-2">
-                                        {item.price}
-                                    </span>
+                                        
+                                        <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-1 md:mb-2 group-hover:text-[#D48F85] transition-colors">
+                                            {item.title}
+                                        </h3>
+                                        
+                                        <span className="font-serif text-sm md:text-base text-[#8C6A64] italic mb-2">
+                                            {item.price}
+                                        </span>
 
-                                    {/* LUXURY FLAVOR COUNT INDICATOR */}
-                                    {item.variants && item.variants.length > 0 && (
-                                        <p className="text-[9px] uppercase tracking-widest text-[#2B120A]/60 group-hover:text-[#D48F85] transition-colors flex items-center gap-1 border-b border-transparent group-hover:border-[#D48F85] pb-0.5">
-                                            View {item.variants.length} Flavors
-                                            <ArrowRight className="w-3 h-3" />
-                                        </p>
-                                    )}
-                                </div>
-                            </Reveal>
-                        ))}
+                                        {/* LUXURY FLAVOR COUNT INDICATOR - Hidden if coming soon */}
+                                        {!isComingSoon && item.variants && item.variants.length > 0 && (
+                                            <p className="text-[9px] uppercase tracking-widest text-[#2B120A]/60 group-hover:text-[#D48F85] transition-colors flex items-center gap-1 border-b border-transparent group-hover:border-[#D48F85] pb-0.5">
+                                                View {item.variants.length} Flavors
+                                                <ArrowRight className="w-3 h-3" />
+                                            </p>
+                                        )}
+                                    </div>
+                                </Reveal>
+                            );
+                        })}
                     </div>
                 </div>
             </section>
@@ -642,7 +661,68 @@ export default function SafuraLuxuryPage() {
                 </div>
             </section>
 
-            {/* --- PRODUCT MODAL (UPDATED FOR MOBILE VISIBILITY) --- */}
+            {/* --- FULL SCREEN LIGHTBOX --- */}
+            <AnimatePresence>
+                {isFullScreen && selectedItem && (
+                    <motion.div 
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="fixed inset-0 z-[70] bg-black/95 flex flex-col justify-center items-center"
+                        onClick={() => setIsFullScreen(false)}
+                    >
+                        {/* Close Button */}
+                        <button 
+                            className="absolute top-6 right-6 p-2 bg-white/10 rounded-full text-white hover:bg-white/20 z-50"
+                            onClick={() => setIsFullScreen(false)}
+                        >
+                            <X className="w-8 h-8" />
+                        </button>
+
+                        <div className="w-full h-full max-w-5xl max-h-[80vh] relative flex items-center justify-center" onClick={(e) => e.stopPropagation()}>
+                             <AnimatePresence mode="wait">
+                                <motion.img 
+                                    key={`fs-${currentDisplayItem?.title}-${activeImageIndex}`}
+                                    initial={{ opacity: 0, scale: 0.95 }}
+                                    animate={{ opacity: 1, scale: 1 }}
+                                    exit={{ opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    src={currentImageSrc} 
+                                    alt="Full Screen View"
+                                    className="w-full h-full object-contain"
+                                    drag="x"
+                                    dragConstraints={{ left: 0, right: 0 }}
+                                    onDragEnd={handleDragEnd}
+                                />
+                             </AnimatePresence>
+
+                             {/* NAV BUTTONS FOR FULL SCREEN */}
+                             {selectedItem.variants && selectedItem.variants.length > 0 && selectedItem.variants[safeActiveVariant]?.images.length > 1 && (
+                                <>
+                                    <button 
+                                        onClick={prevImage}
+                                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-4 rounded-full text-white backdrop-blur-sm"
+                                    >
+                                        <ChevronLeft className="w-8 h-8" />
+                                    </button>
+                                    <button 
+                                        onClick={nextImage}
+                                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/20 hover:bg-white/40 p-4 rounded-full text-white backdrop-blur-sm"
+                                    >
+                                        <ChevronRight className="w-8 h-8" />
+                                    </button>
+                                </>
+                             )}
+                        </div>
+                        
+                        <div className="absolute bottom-10 text-white/80 text-sm font-sans tracking-widest">
+                            {activeImageIndex + 1} / {variantImages.length}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+
+            {/* --- PRODUCT MODAL --- */}
             <AnimatePresence>
                 {selectedItem && (
                     <motion.div 
@@ -668,7 +748,8 @@ export default function SafuraLuxuryPage() {
                             </button>
 
                             {/* --- MODAL IMAGE GALLERY (LEFT SIDE) --- */}
-                            <div className="w-full md:w-1/2 h-56 md:h-auto relative bg-[#F9F7F5] flex-shrink-0 flex flex-col group">
+                            {/* UPDATED: Increased height to h-80 for mobile to show larger image */}
+                            <div className="w-full md:w-1/2 h-80 md:h-auto relative bg-[#F9F7F5] flex-shrink-0 flex flex-col group cursor-zoom-in" onClick={() => setIsFullScreen(true)}>
                                 <div className="flex-grow relative overflow-hidden">
                                      <AnimatePresence mode="wait">
                                         <motion.img 
@@ -679,9 +760,31 @@ export default function SafuraLuxuryPage() {
                                             transition={{ duration: 0.4 }}
                                             src={currentImageSrc} 
                                             alt={currentDisplayItem?.title} 
-                                            className="absolute inset-0 w-full h-full object-contain p-2"
+                                            // UPDATED: object-cover for immersive view
+                                            className="absolute inset-0 w-full h-full object-cover"
+                                            drag="x" // Enable Swipe here too
+                                            dragConstraints={{ left: 0, right: 0 }}
+                                            onDragEnd={handleDragEnd}
                                         />
                                      </AnimatePresence>
+                                     
+                                     {/* TAP TO ZOOM HINT */}
+                                     <div className="absolute top-4 left-4 bg-white/30 backdrop-blur-sm p-2 rounded-full text-[#2B120A] opacity-0 group-hover:opacity-100 transition-opacity">
+                                         <ZoomIn className="w-4 h-4" />
+                                     </div>
+
+                                     {/* MOBILE SWIPE INDICATOR (Fades out) */}
+                                     {variantImages && variantImages.length > 1 && (
+                                         <motion.div 
+                                            initial={{ opacity: 1 }}
+                                            animate={{ opacity: 0 }}
+                                            transition={{ delay: 3, duration: 1 }} 
+                                            className="md:hidden absolute bottom-4 left-1/2 -translate-x-1/2 bg-black/40 backdrop-blur-sm text-white px-3 py-1.5 rounded-full pointer-events-none z-20 flex items-center gap-2"
+                                         >
+                                            <Hand className="w-3 h-3 animate-pulse" />
+                                            <span className="text-[9px] uppercase tracking-widest font-bold">Swipe ↔</span>
+                                         </motion.div>
+                                     )}
                                      
                                      {/* ARROW BUTTONS */}
                                      {variantImages && variantImages.length > 1 && (
@@ -699,8 +802,8 @@ export default function SafuraLuxuryPage() {
                                                 <ChevronRight className="w-5 h-5 text-[#2B120A]" />
                                             </button>
                                             
-                                            {/* Mobile Always Visible Hint */}
-                                            <div className="md:hidden absolute bottom-2 right-2 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full pointer-events-none">
+                                            {/* Mobile Always Visible Counter */}
+                                            <div className="md:hidden absolute bottom-4 right-4 bg-black/50 text-white text-[10px] px-2 py-1 rounded-full pointer-events-none z-20">
                                                 {activeImageIndex + 1} / {variantImages.length}
                                             </div>
                                          </>
@@ -708,7 +811,7 @@ export default function SafuraLuxuryPage() {
                                 </div>
                             </div>
 
-                            {/* Modal Content - FIX: Reduced padding on mobile (p-6) */}
+                            {/* Modal Content */}
                             <div className="w-full md:w-1/2 p-6 md:p-12 flex flex-col justify-start md:justify-center overflow-y-auto">
                                 <div className="mb-4 md:mb-8">
                                     <motion.h3 
@@ -720,7 +823,6 @@ export default function SafuraLuxuryPage() {
                                         {currentDisplayItem?.title}
                                     </motion.h3>
                                     
-                                    {/* DYNAMIC PRICE UPDATE: Shows specific variant price if available, else collection default */}
                                     <p className="font-sans text-[#D48F85] text-xs md:text-sm uppercase tracking-widest font-bold">
                                         {currentPrice}
                                     </p>
@@ -756,7 +858,10 @@ export default function SafuraLuxuryPage() {
                                                 {selectedItem.variants.map((v, i) => (
                                                     <button 
                                                         key={i} 
-                                                        onClick={() => setActiveVariant(i)}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            setActiveVariant(i);
+                                                        }}
                                                         className={cn(
                                                             "group flex flex-col items-center gap-2 transition-all duration-300",
                                                             activeVariant === i ? "opacity-100 scale-105" : "opacity-60 hover:opacity-100"
