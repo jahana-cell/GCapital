@@ -5,7 +5,7 @@ import { motion, useScroll, AnimatePresence } from 'framer-motion';
 import { 
   ArrowLeft, MapPin, Phone, Star, 
   Truck, Instagram, Facebook, Sparkles, ChefHat, X,
-  Ban, Leaf, Check, ChevronRight, ChevronLeft
+  Ban, Leaf, Check, ChevronRight, ChevronLeft, ArrowRight
 } from 'lucide-react';
 
 // --- UTILITY: Class Merger ---
@@ -49,13 +49,11 @@ type CollectionItem = {
 const COLLECTIONS: CollectionItem[] = [
     { 
         title: "The Cake Collection", 
-        // UPDATED: Main price range for cakes
         price: "From $15", 
         img: "https://i.imgur.com/zfhCw5I.png",
         ingredients: "Layered sponge cakes with artisan fillings.",
         variants: [
             {
-                // ADDED: Vanilla Cake ($15)
                 title: "Vanilla Cake",
                 price: "$15",
                 images: [
@@ -65,7 +63,6 @@ const COLLECTIONS: CollectionItem[] = [
                 ingredients: "Classic vanilla bean sponge, strawberry conserve, vanilla buttercream"
             },
             {
-                // UPDATED: Chocolate Cake ($20)
                 title: "Chocolate Cake",
                 price: "$20",
                 images: ["https://i.imgur.com/wnfAXbT.jpeg"], 
@@ -73,6 +70,7 @@ const COLLECTIONS: CollectionItem[] = [
             },
             {
                 title: "Luxury Chocolate Berry Cake",
+                price: "$65",
                 images: [
                     "https://i.imgur.com/zfhCw5I.png", 
                     "https://i.imgur.com/f4ggfx9.png"
@@ -81,6 +79,7 @@ const COLLECTIONS: CollectionItem[] = [
             },
             {
                 title: "Hazelnut Rocher Royale",
+                price: "$75",
                 images: ["https://i.imgur.com/0y5XJ9x.png"],
                 ingredients: "Roasted hazelnut meringue, milk chocolate ganache, whole toasted hazelnuts, gold leaf"
             }
@@ -88,7 +87,6 @@ const COLLECTIONS: CollectionItem[] = [
     },
     { 
         title: "Artisan Cupcakes", 
-        // REVERTED: Correct Cupcake Box Pricing
         price: "$8 - $16 / Box", 
         img: "https://i.imgur.com/N3Gy5l0.jpeg",
         ingredients: "Our signature miniature cakes. Select flavor for pricing.",
@@ -137,11 +135,13 @@ const COLLECTIONS: CollectionItem[] = [
         variants: [
             {
                 title: "Classic Vanilla Tier",
+                price: "Inquire",
                 images: ["https://images.unsplash.com/photo-1535254973040-607b474cb50d?q=80&w=1000"],
                 ingredients: "European cultured butter, Swiss meringue, edible gold leaf"
             },
             {
                 title: "Hand Piped Floral",
+                price: "Inquire",
                 images: [
                     "https://i.imgur.com/zqk9uCy.jpeg", 
                     "https://i.imgur.com/2QZnRBO.jpeg"
@@ -150,6 +150,7 @@ const COLLECTIONS: CollectionItem[] = [
             },
             {
                 title: "Rustic Naked Cake",
+                price: "Inquire",
                 images: ["https://images.unsplash.com/photo-1519340333755-56e9c1d04579?q=80&w=1000"],
                 ingredients: "Almond amaretto sponge, semi-exposed crumb, fresh berries"
             }
@@ -158,12 +159,16 @@ const COLLECTIONS: CollectionItem[] = [
     { 
         title: "Fudgy Brownies", 
         price: "Box of 6 / $35", 
-        img: "https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000",
+        // UPDATED: Main Grid Picture
+        img: "https://images.pexels.com/photos/1579926/pexels-photo-1579926.jpeg",
         ingredients: "Dense, rich, and intensely chocolatey.",
         variants: [
             {
                 title: "Double Chocolate",
+                price: "$35 / Box",
+                // UPDATED: Added new image to Double Chocolate
                 images: [
+                    "https://images.pexels.com/photos/1579926/pexels-photo-1579926.jpeg",
                     "https://images.unsplash.com/photo-1606313564200-e75d5e30476d?q=80&w=1000",
                     "https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1000"
                 ],
@@ -171,11 +176,13 @@ const COLLECTIONS: CollectionItem[] = [
             },
             {
                 title: "Salted Caramel Swirl",
+                price: "$35 / Box",
                 images: ["https://images.unsplash.com/photo-1589119908995-c6837fa14848?q=80&w=1000"],
                 ingredients: "House-made caramel ribbons, sea salt flake topping"
             },
             {
                 title: "Walnut Crunch",
+                price: "$38 / Box",
                 images: ["https://images.unsplash.com/photo-1515037893149-de7f840978e2?q=80&w=1000"],
                 ingredients: "Toasted California walnuts, espresso infusion"
             }
@@ -189,21 +196,25 @@ const COLLECTIONS: CollectionItem[] = [
         variants: [
             {
                 title: "Classic Espresso",
+                price: "$45 / Tray",
                 images: ["https://images.unsplash.com/photo-1571877227200-a0d98ea607e9?q=80&w=1000"],
                 ingredients: "Savoiardi ladyfingers, espresso soak, mascarpone cream"
             },
             {
                 title: "Biscoff Tiramisu",
+                price: "$50 / Tray",
                 images: ["https://i.imgur.com/zGcGIrf.png"],
                 ingredients: "Lotus Biscoff cookie soak, spiced spread swirls, mascarpone cream, crushed biscuit topping"
             },
             {
                 title: "Matcha Green Tea",
+                price: "$55 / Tray",
                 images: ["https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1000"],
                 ingredients: "Kyoto matcha powder, white chocolate shavings"
             },
             {
                 title: "Berry Infusion",
+                price: "$50 / Tray",
                 images: ["https://images.unsplash.com/photo-1563805042-7684c019e1cb?q=80&w=1000"],
                 ingredients: "Raspberry reduction soak, fresh berry topping"
             }
@@ -217,11 +228,13 @@ const COLLECTIONS: CollectionItem[] = [
         variants: [
             {
                 title: "Classic Vanilla",
+                price: "$40 / Tray",
                 images: ["https://i.imgur.com/kN0qZa8.png"],
                 ingredients: "Evaporated milk, condensed milk, whole cream soak, cinnamon dust"
             },
             {
                 title: "Rose & Pistachio",
+                price: "$45 / Tray",
                 images: ["https://i.imgur.com/hDw8y4g.jpeg"],
                 ingredients: "Rose water infusion, crushed pistachio garnish, edible rose petals"
             }
@@ -335,30 +348,35 @@ export default function SafuraLuxuryPage() {
     }, [activeVariant]);
 
     // Helper to get current display data
-    const currentDisplayItem = selectedItem?.variants ? selectedItem.variants[activeVariant] : selectedItem;
+    // Added safety check to prevent crash if activeVariant is out of bounds
+    const safeActiveVariant = selectedItem?.variants && selectedItem.variants[activeVariant] 
+        ? activeVariant 
+        : 0;
+
+    const currentDisplayItem = selectedItem?.variants ? selectedItem.variants[safeActiveVariant] : selectedItem;
     
     // Helper to get image data
-    const variantImages = selectedItem?.variants ? selectedItem.variants[activeVariant].images : [];
+    const variantImages = selectedItem?.variants ? selectedItem.variants[safeActiveVariant]?.images : [];
     
     // Logic to determine which price to show in the modal header
-    const currentPrice = selectedItem?.variants?.[activeVariant]?.price || selectedItem?.price;
+    const currentPrice = selectedItem?.variants?.[safeActiveVariant]?.price || selectedItem?.price;
 
     // Handle Arrow Clicks
     const nextImage = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (variantImages.length > 0) {
+        if (variantImages && variantImages.length > 0) {
             setActiveImageIndex((prev) => (prev + 1) % variantImages.length);
         }
     };
 
     const prevImage = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (variantImages.length > 0) {
+        if (variantImages && variantImages.length > 0) {
             setActiveImageIndex((prev) => (prev - 1 + variantImages.length) % variantImages.length);
         }
     };
 
-    const currentImageSrc = variantImages.length > 0 
+    const currentImageSrc = variantImages && variantImages.length > 0 
         ? variantImages[activeImageIndex] 
         : selectedItem?.img;
 
@@ -595,15 +613,30 @@ export default function SafuraLuxuryPage() {
                                             alt={item.title}
                                             className="absolute inset-0 w-full h-full object-cover mix-blend-multiply opacity-90 transition-transform duration-[1.2s] ease-out group-hover:scale-105"
                                         />
-                                        <div className="absolute inset-0 bg-[#D48F85]/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                                        
+                                        {/* HOVER OVERLAY (DESKTOP) */}
+                                        <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center">
+                                            <span className="bg-white/90 backdrop-blur text-[#2B120A] px-6 py-3 text-[10px] uppercase tracking-[0.25em] font-bold">
+                                                Explore
+                                            </span>
+                                        </div>
                                     </div>
                                     
                                     <h3 className="font-sans text-sm md:text-lg text-[#2B120A] font-medium uppercase tracking-widest mb-1 md:mb-2 group-hover:text-[#D48F85] transition-colors">
                                         {item.title}
                                     </h3>
-                                    <span className="font-serif text-sm md:text-base text-[#8C6A64] italic">
+                                    
+                                    <span className="font-serif text-sm md:text-base text-[#8C6A64] italic mb-2">
                                         {item.price}
                                     </span>
+
+                                    {/* LUXURY FLAVOR COUNT INDICATOR */}
+                                    {item.variants && item.variants.length > 0 && (
+                                        <p className="text-[9px] uppercase tracking-widest text-[#2B120A]/60 group-hover:text-[#D48F85] transition-colors flex items-center gap-1 border-b border-transparent group-hover:border-[#D48F85] pb-0.5">
+                                            View {item.variants.length} Flavors
+                                            <ArrowRight className="w-3 h-3" />
+                                        </p>
+                                    )}
                                 </div>
                             </Reveal>
                         ))}
